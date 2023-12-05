@@ -1,3 +1,7 @@
 {
-    "Language": "Français"
+    "Language": "Français",
+    "AppName": "ReadTheVoice",
+
+    "HomePage": "Accueil",
+    "QrCodeScan": "Qr Code"
 }
