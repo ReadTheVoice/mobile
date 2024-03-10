@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:readthevoice/page/QrCodePage.dart';
-import 'package:readthevoice/page/HomePage.dart';
+import 'package:readthevoice/screen/QrCodeScreen.dart';
+import 'package:readthevoice/screen/HomeScreen.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainScreenState extends State<MainScreen> {
   int selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -21,13 +21,13 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget page;
+    Widget screen;
     switch (selectedIndex) {
       case 0:
-        page = const HomePage();
+        screen = const HomeScreen();
         break;
       case 1:
-        page = const QrCodePage();
+        screen = const QrCodeScreen();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.zero,
             children: [
               ListTile(
-                  title: const Text("MainPage").tr(),
+                  title: const Text("HomeScreen").tr(),
                   leading: const Icon(Icons.home),
                   onTap: () {
                     _onItemTapped(0);
@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       ),
-      body: page,
+      body: screen,
     );
   }
 }

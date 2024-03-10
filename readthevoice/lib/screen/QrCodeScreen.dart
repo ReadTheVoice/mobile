@@ -1,4 +1,5 @@
-/*help : 
+/*
+help :
     - https://www.youtube.com/watch?v=yj4aNEOun6I*
     - https://www.youtube.com/watch?v=pKGTKdS8lAs
     - https://pub.dev/packages/qr_code_scanner
@@ -7,14 +8,14 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QrCodePage extends StatefulWidget {
-  const QrCodePage({super.key});
+class QrCodeScreen extends StatefulWidget {
+  const QrCodeScreen({super.key});
 
   @override
-  State<QrCodePage> createState() => _QrCodePageState();
+  State<QrCodeScreen> createState() => _QrCodeScreenState();
 }
 
-class _QrCodePageState extends State<QrCodePage> {
+class _QrCodeScreenState extends State<QrCodeScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
   QRViewController? controller;
   String result = "";
