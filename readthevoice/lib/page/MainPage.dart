@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:readthevoice/page/QrCodePage.dart';
-import 'package:readthevoice/page/homepage.dart';
+import 'package:readthevoice/page/HomePage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
