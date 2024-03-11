@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:readthevoice/screen/QrCodeScreen.dart';
-import 'package:readthevoice/screen/HomeScreen.dart';
+import 'package:readthevoice/ui/screen/QrCodeScreen.dart';
+import 'package:readthevoice/ui/screen/HomeScreen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
