@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:readthevoice/firebase_options.dart';
 
 import 'ui/screen/MainScreen.dart';
 
@@ -15,7 +16,9 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   // await Firebase.app("");
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
 
   runApp(
     EasyLocalization(
@@ -36,6 +39,8 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
+      // theme: ,
+      // darkTheme: ,
       home: const MainScreen(),
     );
   }
