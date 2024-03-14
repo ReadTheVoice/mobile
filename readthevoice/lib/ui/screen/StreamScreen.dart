@@ -50,6 +50,9 @@ item.add(f);
  */
 
 class _StreamScreenState extends State<StreamScreen> {
+
+  // dispose();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
