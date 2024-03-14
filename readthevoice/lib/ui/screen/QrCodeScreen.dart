@@ -30,26 +30,36 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      // setState(() {
-      //   result = scanData.code!;
-      // });
+      setState(() {
+        result = scanData.code!;
 
-      String meetingId = scanData.code!;
+        // Inside _onQRViewCreated (after the setState call):
+        // Navigator.of(context).push(MaterialPageRoute(
+        //   builder: (context) => MyNextPage(qrData: result!.code),
+        // ));
 
-      if(meetingId.isNotEmpty && meetingId.trim() != "") {
-      // if(result.isNotEmpty && result.trim() != "") {
-      //   String meetingId = result;
-      //   result = "";
+        // Navigate to meeting screen
+        String meetingId = result;
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
+        if(meetingId.isNotEmpty && meetingId.trim() != "") {
+          // if(result.isNotEmpty && result.trim() != "") {
+          //   String meetingId = result;
+          //   result = "";
+
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => StreamScreen(meetingId: meetingId),
-            // builder: (context) => DetailScreen(todo: todos[index]),
-            // builder: (context) => DetailScreen(todo: todos[index]),
-          ),
-        );
-      }
+          ));
+
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => StreamScreen(meetingId: meetingId),
+          //     // builder: (context) => DetailScreen(todo: todos[index]),
+          //     // builder: (context) => DetailScreen(todo: todos[index]),
+          //   ),
+          // );
+        }
+      });
     });
   }
 
