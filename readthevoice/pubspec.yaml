@@ -46,6 +46,9 @@ dependencies:
   firebase_database: ^10.4.9
   firebase_storage: ^11.6.9
   flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+  font_awesome_flutter: ^10.7.0
+  animated_gradient: ^0.0.3
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +60,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logos/logo_new.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -73,7 +83,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
-    - assets/fonts/
+#    - assets/theme/
     - assets/icons/
     - assets/logos/
   #   - images/a_dot_burr.jpeg
@@ -101,7 +111,19 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+
+  fonts:
+    - family: Madimi One
+      fonts:
+        - asset: assets/theme/fonts/MadimiOne-Regular.ttf
+          style: normal
+#    - family: RobotoMono
+#      fonts:
+#        - asset: fonts/RobotoMono-Regular.ttf
+#        - asset: fonts/RobotoMono-Bold.ttf
+#          weight: 700
+
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
@@ -110,16 +132,16 @@ flutter_native_splash:
   #  color: #E1FFA5
   # primary_color: "#6c63ff" # complementary_color: #F6FF63
   # primary_color: "#6c63ff" # tetradic_color: #FF63A8 - #F6FF63 - #63FFBA
-  color: "#6c63ff"
-  color_dark: "#6c63ff"
-  image: assets/icons/img_live-transcribe-svgrepo-com.jpg
-  image_dark: assets/icons/img_live-transcribe-svgrepo-com.jpg
+  color: "#2C3B55"  # lighter #3D5277
+  color_dark: "#131925"
+  image: assets/images/Shopaholics-Avatar.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
+  image_dark: assets/images/Shopaholics-Avatar.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
 
   android_12:
-    color: "#6c63ff"
-    color_dark: "#6c63ff"
-    image: assets/icons/img_live-transcribe-svgrepo-com.jpg
-    image_dark: assets/icons/img_live-transcribe-svgrepo-com.jpg
+    color: "#2C3B55"
+    color_dark: #131925
+    image: assets/images/Shopaholics-Avatar.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
+    image_dark: assets/images/Shopaholics-Avatar.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
 
   web: false
 
