@@ -214,3 +214,63 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+/*
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0; // Track current bottom navigation bar selection
+
+  void _onItemTapped(int index) {
+    setState(() => _selectedIndex = index);
+    // Handle navigation logic based on index
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('My App'),
+      ),
+      drawer: MyDrawer(), // Your drawer widget
+      body: Center(
+        child: Text('Content'),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class MyDrawer extends StatelessWidget {
+  // Implement your drawer content here
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        // ... drawer items
+      ),
+    );
+  }
+}
+
+ */
+
+
+
+
