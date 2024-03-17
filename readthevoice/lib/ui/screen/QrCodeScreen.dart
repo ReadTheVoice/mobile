@@ -70,19 +70,25 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Center(
-          child: SizedBox(
-            width: 300,
-            height: 300,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            const Spacer(),
+            Center(
+              child: SizedBox(
+                width: 300,
+                height: 300,
+                child: QRView(
+                  key: qrKey,
+                  onQRViewCreated: _onQRViewCreated,
+                ),
+              ),
             ),
-          ),
+            const Spacer()
+          ],
         ),
-      ],
+      ),
     );
   }
 }
