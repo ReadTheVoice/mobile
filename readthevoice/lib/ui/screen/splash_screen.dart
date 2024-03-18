@@ -7,6 +7,7 @@ import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
 import 'package:readthevoice/ui/component/PlaceholderComponent.dart';
 import 'package:readthevoice/ui/component/SplashComponents.dart';
 import 'package:readthevoice/ui/screen/MainScreen.dart';
+import 'package:readthevoice/ui/screen/MasterScreen.dart';
 
 class NativeSplashScreen extends StatefulWidget {
   const NativeSplashScreen({super.key});
@@ -25,9 +26,19 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
 
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainScreen()));
+          MaterialPageRoute(builder: (_) => const MasterScreen()));
+          // MaterialPageRoute(builder: (_) => const MainScreen()));
     });
   }
+
+  /*
+  Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const QrCodeScreen(),
+              ),
+            );
+   */
 
   @override
   void dispose() {
@@ -68,10 +79,8 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
                 ),
               ),
               const SizedBox(height: 10.0),
-              // Text("AppName").tr()
               Text(
-                "AppName",
-                // "Read The Voice",
+                "app_name",
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,

@@ -4,5 +4,16 @@
     "AppName": "Read The Voice",
 
     "HomeScreen": "Accueil",
-    "QrCodeScan": "Qr Code"
+    "QrCodeScan": "Qr Code",
+
+    "app_name": "Read The Voice",
+    "home_screen_title": "Accueil",  
+    "qr_code_scan_screen_title": "Scan QR Code",  
+    "favorite_meetings_screen_title": "Réunions favorites",  
+    "archived_meetings_screen_title": "Réunions archivées",  
+    "settings_screen_title": "Paramètres",  
+    "about_screen_title": "À propos de 'Read The Voice'",
+
+    "home_bottom_bar": "Accueil",
+    "favorite_bottom_bar": "Favoris"
 }

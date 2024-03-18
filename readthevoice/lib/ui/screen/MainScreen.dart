@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:readthevoice/ui/screen/FavoriteMeetingsScreen.dart';
 import 'package:readthevoice/ui/screen/HomeScreen.dart';
 import 'package:readthevoice/ui/screen/QrCodeScreen.dart';
 import 'package:readthevoice/ui/screen/StreamScreen.dart';
@@ -17,17 +18,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int selectedIndex = 0;
-
   dynamic selected = 0;
-  var heart = false;
+  Text screenTitle = const Text("app_name").tr();
   PageController controller = PageController();
 
-  // const Text("AppName").tr(),
-  String title = "AppName";
-
-  Text tt = const Text("AppName").tr();
-  // Widget tt = const Text("AppName").tr();
 
   @override
   void dispose() {
@@ -36,107 +30,36 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onItemTapped(int index) {
+    controller.jumpToPage(index);
     setState(() {
-      selectedIndex = index;
+      selected = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget screen;
-    switch (selectedIndex) {
-      case 0:
-        screen = const HomeScreen();
-        break;
-      case 1:
-        screen = const QrCodeScreen();
-        // tt = const Text("AppName").tr();
-        tt = const Text("QrCodeScan").tr();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
     switch (selected) {
       case 0:
-        // screen = const HomeScreen();
-        tt = const Text("AppName").tr();
-        heart = false;
+        screenTitle = const Text("app_name").tr();
         break;
       case 1:
-        // screen = const QrCodeScreen();
-        tt = const Text("QrCodeScan").tr();
-        heart = false;
-        break;
-      case 2:
-        // screen = const QrCodeScreen();
-        tt = const Text("Meeting");
-        // tt = const Text("QrCodeScan").tr();
-        heart = false;
-        break;
-      case 3:
-        // screen = const QrCodeScreen();
-        tt = const Text("Meeting");
-        // tt = const Text("QrCodeScan").tr();
-        heart = false;
+      // FavoriteMeetingsScreen
+        screenTitle = const Text("favorite_meetings_screen_title").tr();
         break;
       default:
-        heart = false;
         throw UnimplementedError('no widget for $selected');
     }
 
     return Scaffold(
       extendBody: true,
-      //to make floating action button notch transparent
-
-      //to avoid the floating action button overlapping behavior,
-      // when a soft keyboard is displayed
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        // title: const Text("AppName").tr(),
-        title: tt,
-        // leading: const FaIcon(FontAwesomeIcons.barsStaggered),  // <i class="fa-solid fa-bars-staggered"></i>
-        // leading: IconButton(
-        //   icon: const FaIcon(FontAwesomeIcons.barsStaggered),
-        //   onPressed: () => Scaffold.of(context).openDrawer(),
-        // ),
-      ),
-      drawer: Drawer(
-        child: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                  title: const Text("HomeScreen").tr(),
-                  leading: const Icon(Icons.home),
-                  onTap: () {
-                    _onItemTapped(0);
-                    Navigator.pop(context);
-                  }),
-              ListTile(
-                  title: const Text("QrCodeScan").tr(),
-                  leading: const Icon(Icons.qr_code_scanner),
-                  onTap: () {
-                    _onItemTapped(1);
-                    Navigator.pop(context);
-                  })
-            ],
-          ),
-        ),
-      ),
-      // body: screen,
       body: SafeArea(
         child: PageView(
           controller: controller,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
+          // physics: const NeverScrollableScrollPhysics(),
+          children: const [
             Center(child: HomeScreen()),
-            Center(child: QrCodeScreen()),
-            Center(child: StreamScreen(meetingId: "meetingId")),
-            // Center(child: screen),
-            Center(child: Text('Home')),
-            // Center(child: Text('Star')),
-            // Center(child: Text('Style')),
+            Center(child: FavoriteMeetingsScreen()),
           ],
         ),
       ),
@@ -158,44 +81,25 @@ class _MainScreenState extends State<MainScreen> {
             selectedColor: Colors.yellow,
             backgroundColor: Colors.teal,
             title: const Text('Home'),
-            // badge: const Text('9+'),
-            // showBadge: true,
           ),
           BottomBarItem(
             icon: const Icon(Icons.star_border_rounded),
             selectedIcon: const Icon(Icons.star_rounded),
-            selectedColor: Colors.red,
-            title: const Text('Star'),
+            selectedColor: Colors.deepPurple,
+            title: const Text('favorite'),
           ),
-          BottomBarItem(
-              icon: const Icon(
-                Icons.style_outlined,
-              ),
-              selectedIcon: const Icon(
-                Icons.style,
-              ),
-              backgroundColor: Colors.amber,
-              selectedColor: Colors.deepOrangeAccent,
-              title: const Text('Style')),
         ],
         hasNotch: true,
         fabLocation: StylishBarFabLocation.end,
         currentIndex: selected ?? 0,
         onTap: (index) {
-          controller.jumpToPage(index);
-          setState(() {
-            selected = index;
-          });
+          _onItemTapped(index);
         },
       ),
       floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
+        // shape: const CircleBorder(),
         onPressed: () {
-          controller.jumpToPage(3);
           setState(() {
-            heart = true;
-
-            // screen = const QrCodeScreen();
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -205,8 +109,8 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         backgroundColor: Colors.white,
-        child: Icon(
-          heart ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+        child: const Icon(
+          CupertinoIcons.qrcode_viewfinder,
           color: Colors.red,
         ),
       ),
@@ -214,63 +118,4 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-
-/*
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0; // Track current bottom navigation bar selection
-
-  void _onItemTapped(int index) {
-    setState(() => _selectedIndex = index);
-    // Handle navigation logic based on index
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My App'),
-      ),
-      drawer: MyDrawer(), // Your drawer widget
-      body: Center(
-        child: Text('Content'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  // Implement your drawer content here
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        // ... drawer items
-      ),
-    );
-  }
-}
-
- */
-
-
-
 
