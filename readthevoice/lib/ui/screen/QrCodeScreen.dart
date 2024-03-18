@@ -36,6 +36,12 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         if (meetingId.isNotEmpty && meetingId.trim() != "") {
           controller.pauseCamera();
 
+          // Add progress bar
+          // Then run with logic
+          // If ok, proceed to meetingScreen
+          // If not, display error saying "Either the meeting does not exist or has been deleted! Sorry for the inconvenience!"
+          // If not yet started, display pop-up saying "Meeting has not yet started! Wait for the host to launch the meeting. Time of meeting: 10:20 AM"
+
           Navigator.push(
             context,
             MaterialPageRoute(

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/firebase_options.dart';
 import 'package:readthevoice/ui/screen/splash_screen.dart';
 
@@ -16,6 +18,8 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final database = $FloorAppDatabase.databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db').build();
 
   runApp(
     EasyLocalization(
