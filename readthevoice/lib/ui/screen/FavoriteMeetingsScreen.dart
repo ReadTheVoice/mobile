@@ -19,8 +19,6 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(
-      child: Text("Favorite meetings"),
-    );
+    return const Text("Favorite meetings");
   }
 }

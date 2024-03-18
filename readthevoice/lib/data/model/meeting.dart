@@ -1,35 +1,40 @@
-/*
-class Transcript {
-  String id;
-  String data = "";
-  String meetingId;
-  String userId = "";
-  DateTime lastUpdatedDate = DateTime.now();
+import 'package:floor/floor.dart';
 
-  Transcript({required this.id, required this.meetingId});
+enum MeetingStatus {
+  createdNotStarted,
+  started,
+  ended;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Transcript && other.meetingId == meetingId && other.userId == userId;
-  }
-
-  @override
-  int get hashCode => data.hashCode * meetingId.hashCode * userId.hashCode * lastUpdatedDate.hashCode;
-
-  @override
-  String toString() {
-    return "Transcript { id: $id, meetingId: $meetingId, userId: $userId, data: $data, lastUpdatedDate: $lastUpdatedDate }";
+  String get getStatusTitle {
+    switch(this) {
+      case MeetingStatus.createdNotStarted:
+        return "yoyo";
+      case MeetingStatus.started:
+        return "started";
+      case MeetingStatus.ended:
+        return "ended";
+      default:
+        return "started";
+    }
   }
 }
 
-/*
-class Todo {
+@entity
+class Meeting {
+  @primaryKey
+  final String id;
+
   final String title;
-  final String description;
+  final MeetingStatus status;
+  final DateTime creationDate;
+  final bool? autoDeletion;
+  final DateTime? autoDeletionDate;
+  final String transcription;
+  final String userEmail;
+  final String? username;
+  final bool favorite;
+  final bool archived;
 
-  const Todo(this.title, this.description);
+  // Meeting();
+  Meeting(this.id, this.title, this.creationDate, this.autoDeletionDate, this.transcription, this.userEmail, this.username, [this.status = MeetingStatus.createdNotStarted, this.autoDeletion = false, this.favorite = false, this.archived = false]);
 }
- */
- */
