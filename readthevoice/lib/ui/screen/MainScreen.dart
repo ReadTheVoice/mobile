@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
 import 'package:readthevoice/ui/screen/FavoriteMeetingsScreen.dart';
 import 'package:readthevoice/ui/screen/HomeScreen.dart';
 import 'package:readthevoice/ui/screen/QrCodeScreen.dart';
@@ -21,7 +22,6 @@ class _MainScreenState extends State<MainScreen> {
   dynamic selected = 0;
   Text screenTitle = const Text("app_name").tr();
   PageController controller = PageController();
-
 
   @override
   void dispose() {
@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
       body: SafeArea(
         child: PageView(
           controller: controller,
-          // physics: const NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: const [
             Center(child: HomeScreen()),
             Center(child: FavoriteMeetingsScreen()),
@@ -64,29 +64,26 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       bottomNavigationBar: StylishBottomBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
         option: AnimatedBarOptions(
-          // iconSize: 32,
           barAnimation: BarAnimation.fade,
           iconStyle: IconStyle.animated,
-          // opacity: 0.3,
         ),
         items: [
           BottomBarItem(
-            icon: const Icon(
-              Icons.house_outlined,
-            ),
+            icon: const Icon(Icons.house_outlined),
             selectedIcon: const Icon(Icons.house_rounded),
-            // selectedColor: Colors.teal,
-            unSelectedColor: Colors.blueAccent,
-            selectedColor: Colors.yellow,
-            backgroundColor: Colors.teal,
-            title: const Text('Home'),
+            unSelectedColor: Colors.grey.shade700,
+            selectedColor: Theme.of(context).colorScheme.onSurface,
+            title: const Text('home_bottom_bar').tr(),
           ),
           BottomBarItem(
             icon: const Icon(Icons.star_border_rounded),
             selectedIcon: const Icon(Icons.star_rounded),
-            selectedColor: Colors.deepPurple,
-            title: const Text('favorite'),
+            unSelectedColor: Colors.grey.shade700,
+            selectedColor: Theme.of(context).colorScheme.onSurface,
+            title: const Text('favorite_bottom_bar').tr(),
           ),
         ],
         hasNotch: true,
@@ -97,7 +94,6 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        // shape: const CircleBorder(),
         onPressed: () {
           setState(() {
             Navigator.push(
@@ -108,10 +104,10 @@ class _MainScreenState extends State<MainScreen> {
             );
           });
         },
-        backgroundColor: Colors.white,
-        child: const Icon(
+        backgroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        child: Icon(
           CupertinoIcons.qrcode_viewfinder,
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.onInverseSurface,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

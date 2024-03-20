@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:readthevoice/ui/component/PlaceholderComponent.dart';
 import 'package:readthevoice/ui/screen/AboutScreen.dart';
 import 'package:readthevoice/ui/screen/ArchivedMeetingsScreen.dart';
 import 'package:readthevoice/ui/screen/MainScreen.dart';
@@ -59,35 +61,56 @@ class _MasterScreenState extends State<MasterScreen> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
+              const SizedBox(height: 10.0),
+              SvgPicture.asset(
+                "assets/logos/rtv_drawer.svg",
+                placeholderBuilder: (BuildContext context) =>
+                    PlaceholderComponent(),
+              ),
+              const SizedBox(height: 10.0),
               ListTile(
-                  title: const Text("home_bottom_bar").tr(),
-                  leading: const Icon(Icons.house_rounded, color: Colors.white,),
+                  title: Text("home_bottom_bar", selectionColor: Theme.of(context).colorScheme.onBackground,).tr(),
+                  // subtitle: const Text("home_bottom_bar").tr(),
+                  leading: Icon(
+                    Icons.house_rounded,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                   onTap: () {
                     _onItemTapped(0);
                     Navigator.pop(context);
                   }),
               ListTile(
-                  title: const Text("archived_meetings_screen_title").tr(),
-                  leading: const Icon(Icons.archive_outlined, color: Colors.white,),
+                  title: Text("archived_meetings_screen_title", selectionColor: Theme.of(context).colorScheme.onBackground,).tr(),
+                  leading: Icon(
+                    Icons.archive_outlined,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                   // leading: const Icon(Icons.qr_code_scanner),
                   onTap: () {
                     _onItemTapped(1);
                     Navigator.pop(context);
                   }),
               ListTile(
-                  title: const Text("settings_screen_title").tr(),
-                  leading: const Icon(Icons.settings_rounded, color: Colors.white,),
+                  title: Text("settings_screen_title", selectionColor: Theme.of(context).colorScheme.onBackground,).tr(),
+                  leading: Icon(
+                    Icons.settings_rounded,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                   onTap: () {
                     _onItemTapped(2);
                     Navigator.pop(context);
                   }),
               ListTile(
-                  title: const Text("about_screen_title").tr(),
-                  leading: const Icon(Icons.info_outline, color: Colors.white,),
+                  title: Text("about_screen_title", selectionColor: Theme.of(context).colorScheme.onBackground,).tr(),
+                  leading: Icon(
+                    Icons.info_outline,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                   onTap: () {
                     _onItemTapped(3);
                     Navigator.pop(context);
-                  })
+                  }),
+              // const Text("Version 1.0.0")
             ],
           ),
         ),

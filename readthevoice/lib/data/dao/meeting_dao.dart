@@ -6,8 +6,8 @@ import 'package:readthevoice/data/model/meeting.dart';
 @dao
 abstract class MeetingDao {
   // @Query('SELECT * FROM meeting')
-  // @Query('SELECT * FROM todo order by id desc')
-  @Query('SELECT * FROM $MEETING_TABLE_NAME order by id desc')
+  // @Query('SELECT * FROM $MEETING_TABLE_NAME')
+  @Query('SELECT * FROM $MEETING_TABLE_NAME order by creationDateAtMillis desc')
   Future<List<Meeting>> findAllMeeting();
 
   // @Query('SELECT title FROM meeting')

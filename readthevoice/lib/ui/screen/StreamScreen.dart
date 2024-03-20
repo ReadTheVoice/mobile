@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:readthevoice/data/model/meeting.dart';
 
 class StreamScreen extends StatefulWidget {
   final String meetingId;
 
+  // final Meeting meeting;
+
+  // const StreamScreen({super.key, required this.meetingId, [this.meeting]});
   const StreamScreen({super.key, required this.meetingId});
 
   @override

@@ -89,6 +89,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - assets/images/svg/
 #    - assets/theme/
     - assets/icons/
     - assets/icons/shapes/
@@ -135,16 +136,12 @@ flutter:
 
 # Splash screen settings
 flutter_native_splash:
-  color: "#2C3B55"  # lighter #3D5277
-  color_dark: "#131925"
-  image: assets/logos/logo_new.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
-  image_dark: assets/logos/logo_new.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
+  color: "#D6E3FF"
+  color_dark: "#003063"
 
   android_12:
-    color: "#2C3B55"
-    color_dark: #131925
-    image: assets/logos/logo_new.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
-    image_dark: assets/logos/logo_new.png  # assets/icons/img_live-transcribe-svgrepo-com.jpg
+    color: "#D6E3FF"
+    color_dark: #003063"
 
   web: false
 
