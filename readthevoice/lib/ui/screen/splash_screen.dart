@@ -9,8 +9,12 @@ import 'package:readthevoice/ui/component/SplashComponents.dart';
 import 'package:readthevoice/ui/screen/MainScreen.dart';
 import 'package:readthevoice/ui/screen/MasterScreen.dart';
 
+import '../../data/db/rtv_database.dart';
+
 class NativeSplashScreen extends StatefulWidget {
-  const NativeSplashScreen({super.key});
+  final AppDatabase database;
+
+  const NativeSplashScreen({super.key, required this.database});
 
   @override
   State<NativeSplashScreen> createState() => _NativeSplashScreenState();
@@ -26,19 +30,9 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
 
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MasterScreen()));
-          // MaterialPageRoute(builder: (_) => const MainScreen()));
+          MaterialPageRoute(builder: (_) => MasterScreen(database: widget.database,)));
     });
   }
-
-  /*
-  Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const QrCodeScreen(),
-              ),
-            );
-   */
 
   @override
   void dispose() {
@@ -101,28 +95,3 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
     );
   }
 }
-
-// import 'package:animated_splash_screen/animated_splash_screen.dart';
-// import 'package:flutter/material.dart';
-// import 'package:lottie/lottie.dart';
-// import 'package:readthevoice/ui/screen/MainScreen.dart';
-//
-// class NativeSplashScreen extends StatelessWidget {
-//   const NativeSplashScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return AnimatedSplashScreen(
-//         splash: Column(
-//           children: [
-//             Center(
-//               child: LottieBuilder.asset("assets/lottie/moving_circle.json"),
-//             )
-//           ],
-//         ),
-//         splashIconSize: 400,
-//         backgroundColor: Colors.deepPurple,
-//         nextScreen: const MainScreen()
-//     );
-//   }
-// }

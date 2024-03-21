@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
+import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/firebase_options.dart';
 import 'package:readthevoice/ui/screen/splash_screen.dart';
 
@@ -19,11 +20,12 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final database = $FloorAppDatabase.databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db').build();
+  // final database = $FloorAppDatabase.databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db').build();
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en', 'US'), Locale('fr'), Locale('it')],
+      // supportedLocales: const [Locale('en', 'US'), Locale('fr'), Locale('it')],
+      supportedLocales: const [Locale('en'), Locale('fr'), Locale('it')],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       child: const MyApp(),
@@ -31,10 +33,38 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+// class MyApp extends StatelessWidget {
+  // const MyApp({super.key});
+
   static const String appFontFamily = "Madimi One";
+
+  late AppDatabase database;
+
+  Future<void> addMeetings(AppDatabase db) async {
+    Meeting firstMeeting = Meeting("id 1", "title", 1, 1, "transcription", "userEmail", "username");
+    Meeting secondMeeting = Meeting("id 2", "title", 1, 1, "transcription", "userEmail", "username");
+
+    await db.meetingDao.insertMultipleMeetings([firstMeeting, secondMeeting]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    $FloorAppDatabase.databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db').build().then((value) async {
+      database = value;
+      await addMeetings(database);
+      setState(() { });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +84,8 @@ class MyApp extends StatelessWidget {
         fontFamily: appFontFamily,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const NativeSplashScreen(),
-      // home: const SplashScreen(),
+      home: NativeSplashScreen(database: database,),
     );
   }
 }
+

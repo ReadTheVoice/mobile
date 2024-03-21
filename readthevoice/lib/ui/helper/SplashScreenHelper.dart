@@ -1,6 +1,5 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:readthevoice/ui/screen/MainScreen.dart';
 
 enum SplashScreenType {
   custom,
@@ -32,7 +31,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
           gifPath: 'assets/example.gif',
           gifWidth: 269,
           gifHeight: 474,
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
           duration: const Duration(milliseconds: 3515),
           onInit: () async {
             debugPrint("onInit 1");
@@ -59,7 +58,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
             child: Image.asset("assets/dart_bird.png"),
           ),
           onAnimationEnd: () => debugPrint("On Fade In End"),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
         );
       case SplashScreenType.scale:
         return FlutterSplashScreen.scale(
@@ -84,7 +83,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
           duration: const Duration(milliseconds: 1500),
           animationDuration: const Duration(milliseconds: 1000),
           onAnimationEnd: () => debugPrint("On Scale End"),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
         );
       case SplashScreenType.usingBackgroundImage:
         return FlutterSplashScreen.fadeIn(
@@ -94,7 +93,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
             width: 100,
             child: Image.asset("assets/twitter_logo_white.png"),
           ),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
         );
       case SplashScreenType.usingGradient:
         return FlutterSplashScreen.fadeIn(
@@ -108,7 +107,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
             width: 100,
             child: Image.asset("assets/tiktok.gif"),
           ),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
         );
       case SplashScreenType.dynamicNextScreenFadeIn:
         return FlutterSplashScreen.fadeIn(
@@ -119,7 +118,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
             child: Image.asset("assets/dart_bird.png"),
           ),
           onAnimationEnd: () => debugPrint("On Fade In End"),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
           asyncNavigationCallback: () async {
             print("object1");
             await Future.delayed(const Duration(milliseconds: 5000));
@@ -129,7 +128,7 @@ class _SplashScreenHelperState extends State<SplashScreenHelper> {
       case SplashScreenType.custom:
         return FlutterSplashScreen(
           duration: const Duration(milliseconds: 2000),
-          nextScreen: const MainScreen(),
+          // nextScreen: const MainScreen(),
           backgroundColor: Colors.white,
           splashScreenBody: Center(
             child: Column(

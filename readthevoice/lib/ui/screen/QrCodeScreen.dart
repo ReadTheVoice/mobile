@@ -11,7 +11,10 @@ import 'package:readthevoice/ui/screen/StreamScreen.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 
 class QrCodeScreen extends StatefulWidget {
-  const QrCodeScreen({super.key});
+  bool isFromDrawer;
+
+  // QrCodeScreen(super.key, [this.isFromDrawer = false]);
+  QrCodeScreen([this.isFromDrawer = false]) {super.key;}
 
   @override
   State<QrCodeScreen> createState() => _QrCodeScreenState();
@@ -130,9 +133,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: !widget.isFromDrawer ? AppBar(
         title: const Text("Qr code scan"),
-      ),
+      ) : null,
       body: Center(
         child: Column(
           children: [

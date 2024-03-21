@@ -156,7 +156,8 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<List<Meeting>> findAllMeeting() async {
-    return _queryAdapter.queryList('SELECT * FROM meeting order by id desc',
+    return _queryAdapter.queryList(
+        'SELECT * FROM meeting order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
             row['id'] as String,
             row['title'] as String,
@@ -212,6 +213,12 @@ class _$MeetingDao extends MeetingDao {
   @override
   Future<void> insertMeeting(Meeting meeting) async {
     await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertMultipleMeetings(List<Meeting> meetings) async {
+    await _meetingInsertionAdapter.insertList(
+        meetings, OnConflictStrategy.abort);
   }
 
   @override

@@ -15,11 +15,14 @@ abstract class MeetingDao {
   Stream<List<String>> findAllMeetingTitle();
 
   // @Query('SELECT * FROM meeting WHERE id = :id')
-  @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')
+  @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')  // 190262ff
   Stream<Meeting?> findMeetingById(String id);
 
   @insert
   Future<void> insertMeeting(Meeting meeting);
+
+  @insert
+  Future<void> insertMultipleMeetings(List<Meeting> meetings);
 
   // @Query("delete from meeting where id = :id")
   @Query("delete from $MEETING_TABLE_NAME where id = :id")
