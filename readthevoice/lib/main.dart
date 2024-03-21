@@ -13,8 +13,6 @@ import 'ui/color_scheme/color_schemes_material.dart';
 
 // void main() async {
 Future<void> main() async {
-  // TODO: Initialize Authentication
-
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
@@ -46,26 +44,6 @@ class _MyAppState extends State<MyApp> {
 
   static const String appFontFamily = "Madimi One";
 
-  late AppDatabase database;
-
-  Future<void> addMeetings(AppDatabase db) async {
-    Meeting firstMeeting = Meeting("id 1", "title", 1, 1, "transcription", "userEmail", "username");
-    Meeting secondMeeting = Meeting("id 2", "title", 1, 1, "transcription", "userEmail", "username");
-
-    await db.meetingDao.insertMultipleMeetings([firstMeeting, secondMeeting]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    $FloorAppDatabase.databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db').build().then((value) async {
-      database = value;
-      await addMeetings(database);
-      setState(() { });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -84,8 +62,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: appFontFamily,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: NativeSplashScreen(database: database,),
+      home: const NativeSplashScreen(),
     );
   }
 }
-

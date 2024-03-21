@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -25,17 +23,10 @@ class _BottomBarNavState extends State<BottomBarNav> {
   @override
   Widget build(BuildContext context) {
     return StylishBottomBar(
-//  option: AnimatedBarOptions(
-//    iconSize: 32,
-//    barAnimation: BarAnimation.liquid,
-//    iconStyle: IconStyle.animated,
-//    opacity: 0.3,
-//  ),
-      option: BubbleBarOptions(
-        barStyle: BubbleBarStyle.horizotnal,
-        // barStyle: BubbleBarStyle.vertical,
-        bubbleFillStyle: BubbleFillStyle.fill,
-        // bubbleFillStyle: BubbleFillStyle.outlined,
+      option: AnimatedBarOptions(
+        iconSize: 32,
+        barAnimation: BarAnimation.liquid,
+        iconStyle: IconStyle.animated,
         opacity: 0.3,
       ),
       items: [
@@ -114,5 +105,3 @@ bubbleFillStyle:
 iconStyle:
 selectedIcon:
  */
-
-

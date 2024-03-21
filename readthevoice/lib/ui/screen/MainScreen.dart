@@ -13,8 +13,8 @@ import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
-  final AppDatabase database;
-  const MainScreen({super.key, required this.database});
+  AppDatabase? database;
+  MainScreen({super.key, this.database});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

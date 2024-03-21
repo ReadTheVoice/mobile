@@ -7,8 +7,11 @@ import 'package:readthevoice/data/model/meeting.dart';
 abstract class MeetingDao {
   // @Query('SELECT * FROM meeting')
   // @Query('SELECT * FROM $MEETING_TABLE_NAME')
-  @Query('SELECT * FROM $MEETING_TABLE_NAME order by creationDateAtMillis desc')
+  @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE archived = false order by creationDateAtMillis desc')
   Future<List<Meeting>> findAllMeeting();
+
+  @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE archived = true order by creationDateAtMillis desc')
+  Future<List<Meeting>> findAllArchivedMeeting();
 
   // @Query('SELECT title FROM meeting')
   @Query('SELECT title FROM $MEETING_TABLE_NAME')
@@ -18,6 +21,10 @@ abstract class MeetingDao {
   @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')  // 190262ff
   Stream<Meeting?> findMeetingById(String id);
 
+  // @Query('SELECT * FROM meeting WHERE id = :id')
+  @Query('UPDATE $MEETING_TABLE_NAME SET archived = :archived WHERE id = :id')  // 190262ff
+  Future<void> archiveMeetingById(String id, bool archived);
+
   @insert
   Future<void> insertMeeting(Meeting meeting);
 
@@ -25,7 +32,7 @@ abstract class MeetingDao {
   Future<void> insertMultipleMeetings(List<Meeting> meetings);
 
   // @Query("delete from meeting where id = :id")
-  @Query("delete from $MEETING_TABLE_NAME where id = :id")
+  @Query("DELETE FROM $MEETING_TABLE_NAME WHERE id = :id")
   Future<void> deleteMeeting(String id);
 
   @delete

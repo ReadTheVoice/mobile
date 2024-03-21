@@ -2,19 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
 import 'package:readthevoice/ui/component/PlaceholderComponent.dart';
 import 'package:readthevoice/ui/component/SplashComponents.dart';
-import 'package:readthevoice/ui/screen/MainScreen.dart';
 import 'package:readthevoice/ui/screen/MasterScreen.dart';
 
-import '../../data/db/rtv_database.dart';
-
 class NativeSplashScreen extends StatefulWidget {
-  final AppDatabase database;
-
-  const NativeSplashScreen({super.key, required this.database});
+  const NativeSplashScreen({super.key});
 
   @override
   State<NativeSplashScreen> createState() => _NativeSplashScreenState();
@@ -30,7 +24,7 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
 
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => MasterScreen(database: widget.database,)));
+          MaterialPageRoute(builder: (_) => const MasterScreen()));
     });
   }
 

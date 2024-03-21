@@ -157,7 +157,27 @@ class _$MeetingDao extends MeetingDao {
   @override
   Future<List<Meeting>> findAllMeeting() async {
     return _queryAdapter.queryList(
-        'SELECT * FROM meeting order by creationDateAtMillis desc',
+        'SELECT * FROM meeting WHERE archived = false order by creationDateAtMillis desc',
+        mapper: (Map<String, Object?> row) => Meeting(
+            row['id'] as String,
+            row['title'] as String,
+            row['creationDateAtMillis'] as int,
+            row['autoDeletionDateAtMillis'] as int?,
+            row['transcription'] as String,
+            row['userEmail'] as String,
+            row['username'] as String?,
+            MeetingStatus.values[row['status'] as int],
+            row['autoDeletion'] == null
+                ? null
+                : (row['autoDeletion'] as int) != 0,
+            (row['favorite'] as int) != 0,
+            (row['archived'] as int) != 0));
+  }
+
+  @override
+  Future<List<Meeting>> findAllArchivedMeeting() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM meeting WHERE archived = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
             row['id'] as String,
             row['title'] as String,
@@ -205,9 +225,19 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
+  Future<void> archiveMeetingById(
+    String id,
+    bool archived,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE meeting SET archived = ?2 WHERE id = ?1',
+        arguments: [id, archived ? 1 : 0]);
+  }
+
+  @override
   Future<void> deleteMeeting(String id) async {
     await _queryAdapter
-        .queryNoReturn('delete from meeting where id = ?1', arguments: [id]);
+        .queryNoReturn('DELETE FROM meeting WHERE id = ?1', arguments: [id]);
   }
 
   @override

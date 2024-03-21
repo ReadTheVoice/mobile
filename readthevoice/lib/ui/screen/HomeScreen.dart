@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/ui/component/MeetingCard.dart';
 
 class HomeScreen extends StatefulWidget {
-  final AppDatabase database;
+  AppDatabase? database;
 
-  const HomeScreen({super.key, required this.database});
+  HomeScreen({super.key, this.database});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -15,10 +16,24 @@ class _HomeScreenState extends State<HomeScreen> {
 // class HomeScreen extends StatelessWidget {
 //   const HomeScreen({super.key});
 
-  late final AppDatabase database = widget.database;
+  AppDatabase? database;
+
+  @override
+  void initState() {
+    super.initState();
+
+    database = widget.database;
+  }
 
   Future<List<Meeting>> retrieveMeetings() async {
-    return await database.meetingDao.findAllMeeting();
+    // if(database != null) {
+    //   return await database!.meetingDao.findAllMeeting();
+    // } else {
+    //   return List.empty();
+    // }
+
+    // database = widget.database;
+    return await database!.meetingDao.findAllMeeting();
   }
 
   @override
@@ -34,8 +49,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Dismissible(
-                        direction: DismissDirection.endToStart,
+                        // direction: DismissDirection.endToStart,
+                        dismissThresholds: const {
+                          DismissDirection.startToEnd: 0.5,
+                          DismissDirection.endToStart: 0.5
+                          // DismissDirection.startToEnd: 1.0,
+                          // DismissDirection.endToStart: 1.0
+                        },
                         background: Container(
+                          color: Colors.green,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: const Icon(Icons.archive_outlined),
+                        ),
+                        secondaryBackground: Container(
                           color: Colors.red,
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -43,20 +70,39 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         key: ValueKey<String>(snapshot.data![index].id),
                         onDismissed: (DismissDirection direction) async {
-                          await database.meetingDao
-                              .deleteMeeting(snapshot.data![index].id);
-                          setState(() {
-                            snapshot.data!.remove(snapshot.data![index]);
-                          });
+                          if(direction == DismissDirection.startToEnd) {
+                            if(database != null) {
+                              // archiveMeetingById
+                              if(!snapshot.data![index].archived) {
+                                await database!.meetingDao
+                                    .archiveMeetingById(
+                                    snapshot.data![index].id,
+                                    true);
+                              }
+
+                              setState(() {
+                                snapshot.data!.remove(snapshot.data![index]);
+                                // await database!.meetingDao.findAllMeeting();
+                              });
+                            }
+                          }
+
+                          if(direction == DismissDirection.endToStart) {
+                            if(database != null) {
+                              await database!.meetingDao
+                                  .deleteMeeting(snapshot.data![index].id);
+                            }
+
+                            setState(() {
+                              snapshot.data!.remove(snapshot.data![index]);
+                            });
+                          }
                         },
-                        child: Card(
-                            color: Colors.teal,
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(8.0),
-                              title: Text(snapshot.data![index].title),
-                              subtitle: Text(snapshot.data![index].transcription
-                                  .toString()),
-                            )),
+                        child: MeetingCard(
+                          meeting: snapshot.data![index],
+                          title: snapshot.data![index].title,
+                          transcription: snapshot.data![index].transcription,
+                        ),
                       );
                     },
                   )
@@ -72,6 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
   }
 }
+
 
 /*
 Future<List<User>> retrieveUsers() async {
