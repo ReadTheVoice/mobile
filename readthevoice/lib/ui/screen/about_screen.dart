@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -12,7 +11,7 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Placeholder(
+        body: Placeholder(
       child: Text("About Read The Voice"),
     ));
   }

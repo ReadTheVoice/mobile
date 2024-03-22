@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
-import 'package:readthevoice/ui/component/PlaceholderComponent.dart';
-import 'package:readthevoice/ui/component/SplashComponents.dart';
-import 'package:readthevoice/ui/screen/MasterScreen.dart';
+import 'package:readthevoice/ui/component/placeholder_component.dart';
+import 'package:readthevoice/ui/component/splash_components.dart';
+import 'package:readthevoice/ui/screen/master_screen.dart';
 
 class NativeSplashScreen extends StatefulWidget {
   const NativeSplashScreen({super.key});

@@ -32,7 +32,16 @@ class MeetingCard extends StatelessWidget {
   final Color background = Colors.teal;
   final Color textColor = Colors.white;
 
-  const MeetingCard({super.key, required this.meeting, required this.title, required this.transcription});
+  final Function? setFavorite;
+  final Function? deleteMeeting;
+
+  const MeetingCard(
+      {super.key,
+      required this.meeting,
+      required this.title,
+      required this.transcription,
+      this.setFavorite,
+      this.deleteMeeting});
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +49,24 @@ class MeetingCard extends StatelessWidget {
         color: Colors.teal,
         child: ListTile(
           contentPadding: const EdgeInsets.all(10.0),
-          title: Text(title),
+          title: Row(
+            children: [const Icon(Icons.meeting_room_outlined), Text(title)],
+          ),
           subtitle: Text(transcription),
-          trailing: meeting.archived ? const Icon( Icons.unarchive_outlined ) : const Icon(Icons.archive_outlined),
+          trailing: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // meeting.favorite ? const Icon(Icons.favorite_rounded) : const Icon(Icons.favorite_border_rounded),
+
+              meeting.favorite
+                  ? IconButton(
+                      icon: const Icon(Icons.favorite_rounded),
+                      onPressed: setFavorite!(meeting.id),
+                    )
+                  : const Icon(Icons.favorite_border_rounded),
+              const Icon(Icons.delete_outline_rounded),
+            ],
+          ),
         ));
   }
 }
-
-
-

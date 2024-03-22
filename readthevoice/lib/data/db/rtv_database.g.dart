@@ -155,7 +155,27 @@ class _$MeetingDao extends MeetingDao {
   final DeletionAdapter<Meeting> _meetingDeletionAdapter;
 
   @override
-  Future<List<Meeting>> findAllMeeting() async {
+  Future<List<Meeting>> findAllMeetings() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM meeting order by creationDateAtMillis desc',
+        mapper: (Map<String, Object?> row) => Meeting(
+            row['id'] as String,
+            row['title'] as String,
+            row['creationDateAtMillis'] as int,
+            row['autoDeletionDateAtMillis'] as int?,
+            row['transcription'] as String,
+            row['userEmail'] as String,
+            row['username'] as String?,
+            MeetingStatus.values[row['status'] as int],
+            row['autoDeletion'] == null
+                ? null
+                : (row['autoDeletion'] as int) != 0,
+            (row['favorite'] as int) != 0,
+            (row['archived'] as int) != 0));
+  }
+
+  @override
+  Future<List<Meeting>> findUnarchivedMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = false order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -175,7 +195,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<List<Meeting>> findAllArchivedMeeting() async {
+  Future<List<Meeting>> findArchivedMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -195,7 +215,33 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Stream<List<String>> findAllMeetingTitle() {
+  Future<List<Meeting>> findFavoriteMeetings() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM meeting WHERE favorite = true order by creationDateAtMillis desc',
+        mapper: (Map<String, Object?> row) => Meeting(
+            row['id'] as String,
+            row['title'] as String,
+            row['creationDateAtMillis'] as int,
+            row['autoDeletionDateAtMillis'] as int?,
+            row['transcription'] as String,
+            row['userEmail'] as String,
+            row['username'] as String?,
+            MeetingStatus.values[row['status'] as int],
+            row['autoDeletion'] == null
+                ? null
+                : (row['autoDeletion'] as int) != 0,
+            (row['favorite'] as int) != 0,
+            (row['archived'] as int) != 0));
+  }
+
+  @override
+  Future<int?> countMeetings() async {
+    return _queryAdapter.query('SELECT COUNT(*) FROM meeting',
+        mapper: (Map<String, Object?> row) => row.values.first as int);
+  }
+
+  @override
+  Stream<List<String>> findMeetingTitles() {
     return _queryAdapter.queryListStream('SELECT title FROM meeting',
         mapper: (Map<String, Object?> row) => row.values.first as String,
         queryableName: 'meeting',
@@ -225,13 +271,23 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<void> archiveMeetingById(
+  Future<void> setArchiveMeetingById(
     String id,
     bool archived,
   ) async {
     await _queryAdapter.queryNoReturn(
         'UPDATE meeting SET archived = ?2 WHERE id = ?1',
         arguments: [id, archived ? 1 : 0]);
+  }
+
+  @override
+  Future<void> setFavoriteMeetingById(
+    String id,
+    bool favorite,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE meeting SET favorite = ?2 WHERE id = ?1',
+        arguments: [id, favorite ? 1 : 0]);
   }
 
   @override
@@ -252,7 +308,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<int> deleteAllMeeting(List<Meeting> list) {
-    return _meetingDeletionAdapter.deleteListAndReturnChangedRows(list);
+  Future<void> deleteAllMeeting(List<Meeting> list) async {
+    await _meetingDeletionAdapter.deleteList(list);
   }
 }

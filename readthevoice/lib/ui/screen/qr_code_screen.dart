@@ -7,7 +7,7 @@ help :
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:readthevoice/ui/screen/StreamScreen.dart';
+import 'package:readthevoice/ui/screen/stream_screen.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 
 class QrCodeScreen extends StatefulWidget {
@@ -78,19 +78,19 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           await _doSomeOperation();
           Navigator.pop(context); // Dismiss the dialog after operation
 
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => StreamScreen(meetingId: meetingId),
-          //   ),
-          // );
-
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ErrorScreen(),
+              builder: (context) => StreamScreen(meetingId: meetingId),
             ),
           );
+
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => const ErrorScreen(),
+          //   ),
+          // );
         }
       });
     });

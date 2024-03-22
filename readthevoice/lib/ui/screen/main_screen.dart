@@ -1,20 +1,14 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:readthevoice/data/db/rtv_database.dart';
-import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
-import 'package:readthevoice/ui/screen/FavoriteMeetingsScreen.dart';
-import 'package:readthevoice/ui/screen/HomeScreen.dart';
-import 'package:readthevoice/ui/screen/QrCodeScreen.dart';
-import 'package:readthevoice/ui/screen/StreamScreen.dart';
+import 'package:readthevoice/ui/screen/qr_code_screen.dart';
+import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
+import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
-  AppDatabase? database;
-  MainScreen({super.key, this.database});
+  const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -45,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
         screenTitle = const Text("app_name").tr();
         break;
       case 1:
-      // FavoriteMeetingsScreen
+        // FavoriteMeetingsScreen
         screenTitle = const Text("favorite_meetings_screen_title").tr();
         break;
       default:
@@ -59,9 +53,9 @@ class _MainScreenState extends State<MainScreen> {
         child: PageView(
           controller: controller,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            Center(child: HomeScreen(database: widget.database,)),
-            const Center(child: FavoriteMeetingsScreen()),
+          children: const [
+            Center(child: HomeScreen()),
+            Center(child: FavoriteMeetingsScreen()),
           ],
         ),
       ),
@@ -116,4 +110,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-

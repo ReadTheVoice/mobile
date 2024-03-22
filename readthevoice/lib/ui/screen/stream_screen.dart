@@ -15,30 +15,6 @@ class StreamScreen extends StatefulWidget {
 }
 
 /*
-class DetailScreen extends StatelessWidget {
-  // In the constructor, require a Todo.
-  const DetailScreen({super.key, required this.todo});
-
-  // Declare a field that holds the Todo.
-  final Todo todo;
-
-  @override
-  Widget build(BuildContext context) {
-    // Use the Todo to create the UI.
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(todo.title),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(todo.description),
-      ),
-    );
-  }
-}
- */
-
-/*
 //database referene.
 var recentJobsRef =  recentJobsRef = FirebaseDatabase.instance.reference().child('recent').orderByChild('created_at')  //order by creation time..limitToFirst(10);           //limited to get only 10 documents.//Now you can use stream builder to get the data.StreamBuilder(stream: recentJobsRef.onValue,builder: (context, snap) {if (snap.hasData && !snap.hasError && snap.data.snapshot.value!=null) {
 
@@ -54,8 +30,21 @@ item.add(f);
  */
 
 class _StreamScreenState extends State<StreamScreen> {
+  Meeting? firstMeeting;
 
-  // dispose();
+  @override
+  void initState() {
+    super.initState();
+
+    firstMeeting = Meeting(
+        widget.meetingId,
+        "title ${widget.meetingId}",
+        DateTime.now().millisecondsSinceEpoch,
+        0,
+        "transcription ${widget.meetingId}",
+        "userEmail ${widget.meetingId}",
+        "username ${widget.meetingId}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,17 +59,19 @@ class _StreamScreenState extends State<StreamScreen> {
           children: [
             Center(
               child: Text(
-                widget.meetingId,
-                style: const TextStyle(color: Colors.white, backgroundColor: Colors.black, fontWeight: FontWeight.bold),
+                firstMeeting!.id,
+                style: const TextStyle(
+                    color: Colors.white,
+                    backgroundColor: Colors.black,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Image.network(
-            // Image.asset(
+              // Image.asset(
               "https://cdn.pixabay.com/photo/2024/02/29/12/41/woman-8604350_960_720.jpg",
               height: 200,
               width: 200,
             ),
-
             SvgPicture.asset(
               "assets/images/svg/372-Beauty.svg",
               semanticsLabel: 'My SVG Image',
