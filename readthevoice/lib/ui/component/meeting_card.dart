@@ -79,10 +79,12 @@ class _MeetingCardState extends State<MeetingCard> {
                 Icons.meeting_room_outlined,
                 color: widget.textColor,
               ),
-              Text(widget.meeting.title,
-                  style: TextStyle(
-                    color: widget.textColor,
-                  )),
+              Flexible(
+                child: Text(widget.meeting.title,
+                    style: TextStyle(
+                      color: widget.textColor,
+                    )),
+              ),
               const SizedBox(width: 10.0),
               if (widget.isFavoriteList != null &&
                   widget.isFavoriteList == true &&
@@ -96,7 +98,7 @@ class _MeetingCardState extends State<MeetingCard> {
             ],
           ),
           subtitle: Text(
-            widget.meeting.transcription,
+            "${widget.meeting.transcription} \n ${widget.meeting.id}",
             style: TextStyle(
               color: widget.textColor,
             ),

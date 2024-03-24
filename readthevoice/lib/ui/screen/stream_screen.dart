@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/meeting_service.dart';
 
 class StreamScreen extends StatefulWidget {
   final String meetingId;
 
-  // final Meeting meeting;
+  final Meeting? meeting;
 
   // const StreamScreen({super.key, required this.meetingId, [this.meeting]});
-  const StreamScreen({super.key, required this.meetingId});
+  const StreamScreen(
+      {super.key, required this.meetingId, required this.meeting});
 
   @override
   State<StreamScreen> createState() => _StreamScreenState();
@@ -31,6 +33,8 @@ item.add(f);
 
 class _StreamScreenState extends State<StreamScreen> {
   Meeting? firstMeeting;
+
+  MeetingService meetingService = const MeetingService();
 
   @override
   void initState() {
@@ -78,6 +82,13 @@ class _StreamScreenState extends State<StreamScreen> {
               height: 200,
               width: 200,
               // allowDrawingOutsideViewBox: true,
+            ),
+            Text(
+              "ID: ${widget.meeting?.id}",
+              style: const TextStyle(
+                  color: Colors.white,
+                  backgroundColor: Colors.black,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),

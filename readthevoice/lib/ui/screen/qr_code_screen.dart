@@ -5,18 +5,18 @@ help :
     - https://pub.dev/packages/qr_code_scanner
 */
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/stream_screen.dart';
-import 'package:readthevoice/ui/screen/error_screen.dart';
 
 class QrCodeScreen extends StatefulWidget {
-  bool isFromDrawer;
+  bool? isFromDrawer = false;
 
-  // QrCodeScreen(super.key, [this.isFromDrawer = false]);
-  QrCodeScreen([this.isFromDrawer = false]) {super.key;}
+  QrCodeScreen({super.key, this.isFromDrawer});
 
   @override
   State<QrCodeScreen> createState() => _QrCodeScreenState();
@@ -30,6 +30,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   MeetingService meetingService = const MeetingService();
 
+  bool isFromDrawer = false;
+
   @override
   void dispose() {
     controller?.dispose();
@@ -41,16 +43,21 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     await Future.delayed(const Duration(seconds: 10));
   }
 
+  Future<Meeting?> retrieveMeeting(String meetingId) async {
+    Meeting? loopy = await meetingService.getMeeting(meetingId);
+    return loopy;
+  }
+
   void _showLoadingDialog() {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent user from tapping outside to dismiss
-      // builder: (context) => WillPopScope(
-      builder: (context) => const PopScope(
-        // onWillPop: () => Future.value(false), // Prevent dismissal during operation
-        // onPopInvoked: () => Future.value(false), // Prevent dismissal during operation
-        canPop: false, // Prevent dismissal during operation
-        child: Center(
+      builder: (context) => WillPopScope(
+        // builder: (context) => const PopScope(
+        onWillPop: () => Future.value(false),
+        // Prevent dismissal during operation
+        // canPop: false, // Prevent dismissal during operation
+        child: const Center(
           child: Column(
             children: [
               Center(
@@ -68,46 +75,83 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     );
   }
 
+  // void _onQRViewCreated(QRViewController controller, BuildContext context) {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() async {
-        // Navigate to meeting screen
-        String meetingId = scanData.code!;
+    controller.scannedDataStream.listen((scanData) async {
+      String meetingId = "";
 
-        if (meetingId.isNotEmpty && meetingId.trim() != "") {
-          controller.pauseCamera();
+      setState(() {
+        meetingId = scanData.code!;
 
-          // Add progress bar
-          // Then run with logic
-          // If ok, proceed to meetingScreen
-          // If not, display error saying "Either the meeting does not exist or has been deleted! Sorry for the inconvenience!"
-          // If not yet started, display pop-up saying "Meeting has not yet started! Wait for the host to launch the meeting. Time of meeting: 10:20 AM"
-
-          _showLoadingDialog();
-          await _doSomeOperation();
-          Navigator.pop(context); // Dismiss the dialog after operation
-
-          // readthevoice://<meeting_id>
-          if(meetingId.isNotEmpty) {
-            await meetingService.insertMeeting(Meeting(meetingId, "title fb $meetingId", DateTime.now().millisecondsSinceEpoch, 0, "transcription fb", "userEmail fb", "username fb"));
-          }
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => StreamScreen(meetingId: meetingId),
-            ),
-          );
-
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => const ErrorScreen(),
-          //   ),
-          // );
-        }
       });
+
+      if (meetingId.isNotEmpty && meetingId.trim() != "") {
+        controller.pauseCamera();
+
+        // Add progress bar
+        // Then run with logic
+        // If ok, proceed to meetingScreen
+        // If not, display error saying "Either the meeting does not exist or has been deleted! Sorry for the inconvenience!"
+        // If not yet started, display pop-up saying "Meeting has not yet started! Wait for the host to launch the meeting. Time of meeting: 10:20 AM"
+        // Maybe a real dialog
+
+        _showLoadingDialog();
+        await _doSomeOperation();
+        if(mounted) {
+          Navigator.pop(context); // Dismiss the dialog after operation
+        }
+
+        // readthevoice://<meeting_id>
+        if (meetingId.isNotEmpty) {
+          await meetingService.insertMeeting(Meeting(
+              meetingId,
+              "title fb",
+              DateTime.now().millisecondsSinceEpoch,
+              0,
+              "transcription fb",
+              "userEmail fb",
+              "username fb"));
+        }
+
+        Meeting? loopy = await meetingService.getMeeting(meetingId);
+
+        if(mounted) {
+          if (isFromDrawer) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      StreamScreen(
+                        meetingId: meetingId,
+                        meeting: loopy,
+                      ),
+                ));
+          } else {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      StreamScreen(
+                        meetingId: meetingId,
+                        meeting: loopy,
+                      ),
+                ),
+                result: Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MasterScreen()
+                    )));
+          }
+        }
+
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const ErrorScreen(),
+        //   ),
+        // );
+      }
     });
   }
 
@@ -127,10 +171,16 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isFromDrawer != null) {
+      isFromDrawer = widget.isFromDrawer!;
+    }
+
     return Scaffold(
-      appBar: !widget.isFromDrawer ? AppBar(
-        title: const Text("Qr code scan"),
-      ) : null,
+      appBar: !isFromDrawer
+          ? AppBar(
+              title: const Text("qr_code_scan_screen_title").tr(),
+            )
+          : null,
       body: Center(
         child: Column(
           children: [

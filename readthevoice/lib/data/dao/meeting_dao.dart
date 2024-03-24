@@ -21,7 +21,8 @@ abstract class MeetingDao {
   Stream<List<String>> findMeetingTitles();
 
   @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')
-  Stream<Meeting?> findMeetingById(String id);
+  Future<Meeting?> findMeetingById(String id);
+  // Stream<Meeting?> findMeetingById(String id);
 
   @Query('UPDATE $MEETING_TABLE_NAME SET archived = :archived WHERE id = :id')
   Future<void> setArchiveMeetingById(String id, bool archived);
@@ -29,7 +30,7 @@ abstract class MeetingDao {
   @Query('UPDATE $MEETING_TABLE_NAME SET favorite = :favorite WHERE id = :id')
   Future<void> setFavoriteMeetingById(String id, bool favorite);
 
-  @insert
+  @Insert(onConflict: OnConflictStrategy.rollback)
   Future<void> insertMeeting(Meeting meeting);
 
   @insert

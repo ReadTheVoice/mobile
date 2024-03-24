@@ -22,10 +22,6 @@ class _MasterScreenState extends State<MasterScreen> {
 
   Future<void> getVersionInfo() async {
     packageInfo = await PackageInfo.fromPlatform();
-    // String versionName = finalPackageInfo.version;
-    // String versionCode = finalPackageInfo.buildNumber;
-    // print('App Version Name: $versionName');
-    // print('App Version Code: $versionCode');
   }
 
   @override
@@ -50,7 +46,7 @@ class _MasterScreenState extends State<MasterScreen> {
         screenTitle = const Text("app_name").tr();
         break;
       case 1:
-        screen = QrCodeScreen(true);
+        screen = QrCodeScreen(isFromDrawer: true);
         screenTitle = const Text("qr_code_scan_screen_title").tr();
         break;
       case 2:

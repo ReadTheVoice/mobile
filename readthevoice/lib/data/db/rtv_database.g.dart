@@ -103,7 +103,7 @@ class _$MeetingDao extends MeetingDao {
   _$MeetingDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database, changeListener),
+  )   : _queryAdapter = QueryAdapter(database),
         _meetingInsertionAdapter = InsertionAdapter(
             database,
             'meeting',
@@ -121,8 +121,7 @@ class _$MeetingDao extends MeetingDao {
                   'username': item.username,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
-                },
-            changeListener),
+                }),
         _meetingDeletionAdapter = DeletionAdapter(
             database,
             'meeting',
@@ -141,8 +140,7 @@ class _$MeetingDao extends MeetingDao {
                   'username': item.username,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
-                },
-            changeListener);
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -235,12 +233,6 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<int?> countMeetings() async {
-    return _queryAdapter.query('SELECT COUNT(*) FROM meeting',
-        mapper: (Map<String, Object?> row) => row.values.first as int);
-  }
-
-  @override
   Stream<List<String>> findMeetingTitles() {
     return _queryAdapter.queryListStream('SELECT title FROM meeting',
         mapper: (Map<String, Object?> row) => row.values.first as String,
@@ -249,8 +241,8 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Stream<Meeting?> findMeetingById(String id) {
-    return _queryAdapter.queryStream('SELECT * FROM meeting WHERE id = ?1',
+  Future<Meeting?> findMeetingById(String id) async {
+    return _queryAdapter.query('SELECT * FROM meeting WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Meeting(
             row['id'] as String,
             row['title'] as String,
@@ -265,9 +257,7 @@ class _$MeetingDao extends MeetingDao {
                 : (row['autoDeletion'] as int) != 0,
             (row['favorite'] as int) != 0,
             (row['archived'] as int) != 0),
-        arguments: [id],
-        queryableName: 'meeting',
-        isView: false);
+        arguments: [id]);
   }
 
   @override
@@ -298,7 +288,7 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<void> insertMeeting(Meeting meeting) async {
-    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.abort);
+    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.rollback);
   }
 
   @override

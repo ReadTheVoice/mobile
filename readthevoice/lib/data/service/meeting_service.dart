@@ -61,12 +61,19 @@ class MeetingService {
   }
 
   Future<void> insertMeeting(Meeting meeting) async {
-    final database = await $FloorAppDatabase
-        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-        .build();
+    Meeting? lol = await getMeeting(meeting.id);
 
-    final meetingDao = database.meetingDao;
-    await meetingDao.insertMeeting(meeting);
+    print("lol");
+    print(lol);
+
+    if(lol != null) {
+      final database = await $FloorAppDatabase
+          .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+          .build();
+
+      final meetingDao = database.meetingDao;
+      await meetingDao.insertMeeting(meeting);
+    }
 
     // Meeting? lol = await getMeeting(meeting.id);
     //
@@ -111,6 +118,7 @@ class MeetingService {
   }
    */
 
+  // getMeetingById
   Future<Meeting?> getMeeting(String meetingId) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
@@ -118,37 +126,26 @@ class MeetingService {
 
     final meetingDao = database.meetingDao;
 
-    var meetingStream = await meetingDao.findMeetingById(meetingId);
-    var test = await meetingStream.single;
-
-    // var sum = 0;
-    // await for (final value in stream) {
-    //   sum += value;
-    // }
-    // return sum;
-    //
-    // return meetingDao.findMeetingById(meetingId);
-
-    return test;
+    return await meetingDao.findMeetingById(meetingId);
   }
 
-  Stream<Meeting?> getMeetingById(String meetingId) {
-    MeetingDao? meetingDao;
-
-    $FloorAppDatabase
-        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-        .build().then((value) => {
-          meetingDao = value.meetingDao
-    });
-
-    // final database = await $FloorAppDatabase
-    //     .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-    //     .build();
-    //
-    // final meetingDao = database.meetingDao;
-
-    return meetingDao!.findMeetingById(meetingId);
-  }
+  // Stream<Meeting?> getMeetingById(String meetingId) {
+  //   MeetingDao? meetingDao;
+  //
+  //   $FloorAppDatabase
+  //       .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+  //       .build().then((value) => {
+  //         meetingDao = value.meetingDao
+  //   });
+  //
+  //   // final database = await $FloorAppDatabase
+  //   //     .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+  //   //     .build();
+  //   //
+  //   // final meetingDao = database.meetingDao;
+  //
+  //   return meetingDao!.findMeetingById(meetingId);
+  // }
 
   Future<void> insertSampleData() async {
     final database = await $FloorAppDatabase
