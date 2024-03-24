@@ -1,5 +1,4 @@
 import 'package:readthevoice/data/constants.dart';
-import 'package:readthevoice/data/dao/meeting_dao.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 
@@ -61,12 +60,9 @@ class MeetingService {
   }
 
   Future<void> insertMeeting(Meeting meeting) async {
-    Meeting? lol = await getMeeting(meeting.id);
+    Meeting? meetingToAdd = await getMeetingById(meeting.id);
 
-    print("lol");
-    print(lol);
-
-    if(lol != null) {
+    if (meetingToAdd == null) {
       final database = await $FloorAppDatabase
           .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
           .build();
@@ -74,17 +70,6 @@ class MeetingService {
       final meetingDao = database.meetingDao;
       await meetingDao.insertMeeting(meeting);
     }
-
-    // Meeting? lol = await getMeeting(meeting.id);
-    //
-    // if(lol == null) {
-    //   final database = await $FloorAppDatabase
-    //       .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-    //       .build();
-    //
-    //   final meetingDao = database.meetingDao;
-    //   await meetingDao.insertMeeting(meeting);
-    // }
   }
 
   void deleteMeetingById(String meetingId) async {
@@ -96,30 +81,11 @@ class MeetingService {
     await meetingDao.deleteMeeting(meetingId);
   }
 
-  /*
-  Future<int> sumStream(Stream<int> stream) async {
-    var sum = 0;
-    await for (final value in stream) {
-      sum += value;
-    }
-    return sum;
-  }
-
-  Stream<int> countStream(int to) async* {
-    for (int i = 1; i <= to; i++) {
-      yield i;
-    }
-  }
-
-  void main() async {
-    var stream = countStream(10);
-    var sum = await sumStream(stream);
-    print(sum); // 55
-  }
-   */
-
-  // getMeetingById
-  Future<Meeting?> getMeeting(String meetingId) async {
+  /// Get a specific meeting using its id
+  ///
+  /// @param meetingId Specifies the id of the meeting
+  /// @return The meeting or null if not found
+  Future<Meeting?> getMeetingById(String meetingId) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -129,37 +95,16 @@ class MeetingService {
     return await meetingDao.findMeetingById(meetingId);
   }
 
-  // Stream<Meeting?> getMeetingById(String meetingId) {
-  //   MeetingDao? meetingDao;
-  //
-  //   $FloorAppDatabase
-  //       .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-  //       .build().then((value) => {
-  //         meetingDao = value.meetingDao
-  //   });
-  //
-  //   // final database = await $FloorAppDatabase
-  //   //     .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
-  //   //     .build();
-  //   //
-  //   // final meetingDao = database.meetingDao;
-  //
-  //   return meetingDao!.findMeetingById(meetingId);
-  // }
-
   Future<void> insertSampleData() async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
 
     final meetingDao = database.meetingDao;
-    // final int? countMeetings = await getMeetingCount();
 
-    // int countMeeting = await getAllMeetings()
     var meetings = await getAllMeetings();
     int countMeeting = meetings.length;
 
-    // if (countMeetings == 0) {
     if (countMeeting == 0) {
       Meeting firstMeeting = Meeting(
           "id 1", "title", 1, 1, "transcription", "userEmail", "username");

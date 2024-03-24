@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
   final Meeting meeting;
@@ -27,16 +28,6 @@ class _MeetingCardState extends State<MeetingCard> {
   final MeetingService meetingService = const MeetingService();
 
   void _showConfirmationDialog() {
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //     content: const Text('Are you sure you want to perform this action?'),
-    //     action: SnackBarAction(
-    //       label: 'Confirm',
-    //       onPressed: () => print('Action confirmed!'),
-    //     ),
-    //   ),
-    // );
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -61,9 +52,39 @@ class _MeetingCardState extends State<MeetingCard> {
           if (widget.deleteFunction != null) {
             widget.deleteFunction!();
           }
+
+          // _showSnackBar("Deletion complete !");
+
+          toastification.show(
+            context: context,
+            alignment: Alignment.bottomCenter,
+            type: ToastificationType.success,
+            // style: ToastificationStyle.flat,
+            style: ToastificationStyle.minimal,
+            autoCloseDuration: const Duration(seconds: 5),
+            title: const Text('Hello, world!'),
+            // you can also use RichText widget for title and description parameters
+            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
+            icon: const Icon(Icons.check),
+            primaryColor: Colors.green,
+            // backgroundColor: Colors.white,
+            // foregroundColor: Colors.black,
+          );
         });
       }
     });
+  }
+
+  void _showSnackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        // action: SnackBarAction(
+        //   label: 'Confirm',
+        //   onPressed: () => print('Action confirmed!'),
+        // ),
+      ),
+    );
   }
 
   @override

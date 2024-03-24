@@ -38,7 +38,6 @@ class _MeetingListState extends State<MeetingList> {
 
         if (widget.meetings != null) {
           currentMeeting = widget.meetings?[index];
-          // currentMeeting = widget.meetings![index];
         }
 
         return Dismissible(

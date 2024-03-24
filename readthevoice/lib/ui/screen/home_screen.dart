@@ -15,7 +15,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<List<Meeting>> retrieveMeetings() async {
     await meetingService.insertSampleData();
+
+    setState(() {
+      meetingService.getAllMeetings();
+    });
+
     return await meetingService.getUnarchivedMeetings();
+  }
+
+  void _showSnackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        // action: SnackBarAction(
+        //   label: 'Confirm',
+        //   onPressed: () => print('Action confirmed!'),
+        // ),
+      ),
+    );
   }
 
   @override
@@ -25,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: FutureBuilder(
         future: retrieveMeetings(),
         builder: (BuildContext context, AsyncSnapshot<List<Meeting>> snapshot) {
-          if (snapshot.hasData && snapshot.connectionState != ConnectionState.none) {
+          if (snapshot.hasData &&
+              snapshot.connectionState != ConnectionState.none) {
             return (snapshot.data!.isNotEmpty)
                 ? MeetingList(
                     meetings: snapshot.data,
@@ -40,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     rightFunction: (String meetingId) {
                       meetingService.deleteMeetingById(meetingId);
+
+                      _showSnackBar("Deletion complete !");
                     },
                   )
                 : const Text("No Data");

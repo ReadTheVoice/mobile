@@ -44,7 +44,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   }
 
   Future<Meeting?> retrieveMeeting(String meetingId) async {
-    Meeting? loopy = await meetingService.getMeeting(meetingId);
+    Meeting? loopy = await meetingService.getMeetingById(meetingId);
     return loopy;
   }
 
@@ -52,12 +52,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent user from tapping outside to dismiss
-      builder: (context) => WillPopScope(
-        // builder: (context) => const PopScope(
-        onWillPop: () => Future.value(false),
-        // Prevent dismissal during operation
-        // canPop: false, // Prevent dismissal during operation
-        child: const Center(
+      builder: (context) => const PopScope(
+        canPop: false, // Prevent dismissal during operation
+        child: Center(
           child: Column(
             children: [
               Center(
@@ -83,7 +80,6 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
       setState(() {
         meetingId = scanData.code!;
-
       });
 
       if (meetingId.isNotEmpty && meetingId.trim() != "") {
@@ -98,7 +94,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
         _showLoadingDialog();
         await _doSomeOperation();
-        if(mounted) {
+        if (mounted) {
           Navigator.pop(context); // Dismiss the dialog after operation
         }
 
@@ -114,34 +110,31 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
               "username fb"));
         }
 
-        Meeting? loopy = await meetingService.getMeeting(meetingId);
+        Meeting? loopy = await meetingService.getMeetingById(meetingId);
 
-        if(mounted) {
+        if (mounted) {
           if (isFromDrawer) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      StreamScreen(
-                        meetingId: meetingId,
-                        meeting: loopy,
-                      ),
+                  builder: (context) => StreamScreen(
+                    meetingId: meetingId,
+                    meeting: loopy,
+                  ),
                 ));
           } else {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      StreamScreen(
-                        meetingId: meetingId,
-                        meeting: loopy,
-                      ),
+                  builder: (context) => StreamScreen(
+                    meetingId: meetingId,
+                    meeting: loopy,
+                  ),
                 ),
                 result: Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const MasterScreen()
-                    )));
+                        builder: (context) => const MasterScreen())));
           }
         }
 
