@@ -1,4 +1,5 @@
 import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/dao/meeting_dao.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 
@@ -59,13 +60,24 @@ class MeetingService {
     await meetingDao.setFavoriteMeetingById(meetingId, favoriteMeeting);
   }
 
-  void insertMeeting(Meeting meeting) async {
+  Future<void> insertMeeting(Meeting meeting) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
 
     final meetingDao = database.meetingDao;
     await meetingDao.insertMeeting(meeting);
+
+    // Meeting? lol = await getMeeting(meeting.id);
+    //
+    // if(lol == null) {
+    //   final database = await $FloorAppDatabase
+    //       .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+    //       .build();
+    //
+    //   final meetingDao = database.meetingDao;
+    //   await meetingDao.insertMeeting(meeting);
+    // }
   }
 
   void deleteMeetingById(String meetingId) async {
@@ -77,13 +89,65 @@ class MeetingService {
     await meetingDao.deleteMeeting(meetingId);
   }
 
-  Future<int?> getMeetingCount() async {
+  /*
+  Future<int> sumStream(Stream<int> stream) async {
+    var sum = 0;
+    await for (final value in stream) {
+      sum += value;
+    }
+    return sum;
+  }
+
+  Stream<int> countStream(int to) async* {
+    for (int i = 1; i <= to; i++) {
+      yield i;
+    }
+  }
+
+  void main() async {
+    var stream = countStream(10);
+    var sum = await sumStream(stream);
+    print(sum); // 55
+  }
+   */
+
+  Future<Meeting?> getMeeting(String meetingId) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
 
     final meetingDao = database.meetingDao;
-    return await meetingDao.countMeetings();
+
+    var meetingStream = await meetingDao.findMeetingById(meetingId);
+    var test = await meetingStream.single;
+
+    // var sum = 0;
+    // await for (final value in stream) {
+    //   sum += value;
+    // }
+    // return sum;
+    //
+    // return meetingDao.findMeetingById(meetingId);
+
+    return test;
+  }
+
+  Stream<Meeting?> getMeetingById(String meetingId) {
+    MeetingDao? meetingDao;
+
+    $FloorAppDatabase
+        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+        .build().then((value) => {
+          meetingDao = value.meetingDao
+    });
+
+    // final database = await $FloorAppDatabase
+    //     .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+    //     .build();
+    //
+    // final meetingDao = database.meetingDao;
+
+    return meetingDao!.findMeetingById(meetingId);
   }
 
   Future<void> insertSampleData() async {

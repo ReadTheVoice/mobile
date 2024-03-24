@@ -52,6 +52,7 @@ dependencies:
   stylish_bottom_bar: ^1.0.3
   sqflite: ^2.3.2
   floor: ^1.4.2
+  package_info: ^2.0.0+2
 
 dev_dependencies:
   flutter_test:
@@ -134,13 +135,13 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 # Splash screen settings
-#flutter_native_splash:
-#  color: "#D6E3FF"
-#  color_dark: "#003063"
-#
-#  android_12:
-#    color: "#D6E3FF"
-#    color_dark: #003063"
-#
-#  web: false
+flutter_native_splash:
+  color: "#D6E3FF"
+  color_dark: "#003063"
+
+  android_12:
+    color: "#D6E3FF"
+    color_dark: #003063"
+
+  web: false
 

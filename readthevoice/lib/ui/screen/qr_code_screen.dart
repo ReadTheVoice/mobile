@@ -7,6 +7,8 @@ help :
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/screen/stream_screen.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 
@@ -25,6 +27,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   QRViewController? controller;
 
   bool _isLoading = false;
+
+  MeetingService meetingService = const MeetingService();
 
   @override
   void dispose() {
@@ -49,8 +53,14 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         child: Center(
           child: Column(
             children: [
-              Text("Loading..."),
-              CircularProgressIndicator(),
+              Center(
+                child: Column(
+                  children: [
+                    Text("Loading..."),
+                    CircularProgressIndicator(),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -78,6 +88,11 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           await _doSomeOperation();
           Navigator.pop(context); // Dismiss the dialog after operation
 
+          // readthevoice://<meeting_id>
+          if(meetingId.isNotEmpty) {
+            await meetingService.insertMeeting(Meeting(meetingId, "title fb $meetingId", DateTime.now().millisecondsSinceEpoch, 0, "transcription fb", "userEmail fb", "username fb"));
+          }
+
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -95,26 +110,6 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       });
     });
   }
-
-  /*
-  // Isolate function for the background operation
-  void _doSomeOperationInIsolate() async {
-    // ... your background operation logic
-  }
-
-  // Function to run the operation in an isolate
-  Future<void> _runOperationInIsolate() async {
-    final isolate = await Isolate.spawn(_doSomeOperationInIsolate, null);
-    await isolate.whenComplete(() => isolate.terminate());
-  }
-   */
-
-  // Gets the url like: "readthevoice/<meetingId>"
-  // Gotta return to the stream screen ! based on the meetingId => pass the meetingId to the screen.
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
 
   @override
   void didChangeDependencies() {

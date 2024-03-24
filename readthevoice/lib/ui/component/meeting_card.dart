@@ -1,70 +1,136 @@
-// class ReusableButton extends StatelessWidget {
-//   final String text; // Button text (property)
-//   final Function onPressed; // Callback function (property)
-//
-//   const ReusableButton({
-//     super.key,
-//     required this.text,
-//     required this.onPressed,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextButton(
-//       onPressed: onPressed,
-//       child: Text(text),
-//     );
-//   }
-// }
-//
-// ElevatedButton(
-// onPressed: () => print('Clicked!'),
-// child: ReusableButton(text: 'Click Me', onPressed: () => print('Clicked!')),
-// ),
-
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/meeting_service.dart';
 
-class MeetingCard extends StatelessWidget {
+class MeetingCard extends StatefulWidget {
   final Meeting meeting;
-  final String title;
-  final String transcription;
   final Color background = Colors.teal;
   final Color textColor = Colors.white;
 
-  final Function? setFavorite;
-  final Function? deleteMeeting;
+  final bool? isFavoriteList;
+
+  final Function? favoriteFunction;
+  final Function? deleteFunction;
 
   const MeetingCard(
       {super.key,
       required this.meeting,
-      required this.title,
-      required this.transcription,
-      this.setFavorite,
-      this.deleteMeeting});
+      this.isFavoriteList,
+      this.favoriteFunction,
+      this.deleteFunction});
+
+  @override
+  State<MeetingCard> createState() => _MeetingCardState();
+}
+
+class _MeetingCardState extends State<MeetingCard> {
+  final MeetingService meetingService = const MeetingService();
+
+  void _showConfirmationDialog() {
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: const Text('Are you sure you want to perform this action?'),
+    //     action: SnackBarAction(
+    //       label: 'Confirm',
+    //       onPressed: () => print('Action confirmed!'),
+    //     ),
+    //   ),
+    // );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Are you sure you want to perform this action ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed ?? false) {
+        setState(() {
+          meetingService.deleteMeetingById(widget.meeting.id);
+
+          if (widget.deleteFunction != null) {
+            widget.deleteFunction!();
+          }
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: Colors.teal,
+        color: widget.background,
         child: ListTile(
           contentPadding: const EdgeInsets.all(10.0),
           title: Row(
-            children: [const Icon(Icons.meeting_room_outlined), Text(title)],
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.meeting_room_outlined,
+                color: widget.textColor,
+              ),
+              Text(widget.meeting.title,
+                  style: TextStyle(
+                    color: widget.textColor,
+                  )),
+              const SizedBox(width: 10.0),
+              if (widget.isFavoriteList != null &&
+                  widget.isFavoriteList == true &&
+                  widget.meeting.archived)
+                Icon(
+                  Icons.ac_unit_rounded,
+                  color: widget.textColor,
+                )
+              else
+                const Text(""),
+            ],
           ),
-          subtitle: Text(transcription),
+          subtitle: Text(
+            widget.meeting.transcription,
+            style: TextStyle(
+              color: widget.textColor,
+            ),
+          ),
           trailing: Row(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // meeting.favorite ? const Icon(Icons.favorite_rounded) : const Icon(Icons.favorite_border_rounded),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      bool fav = !widget.meeting.favorite;
 
-              meeting.favorite
-                  ? IconButton(
-                      icon: const Icon(Icons.favorite_rounded),
-                      onPressed: setFavorite!(meeting.id),
-                    )
-                  : const Icon(Icons.favorite_border_rounded),
-              const Icon(Icons.delete_outline_rounded),
+                      widget.meeting.favorite = fav;
+                      meetingService.setFavoriteMeetingById(
+                          widget.meeting.id, fav);
+
+                      if (widget.favoriteFunction != null) {
+                        widget.favoriteFunction!();
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    widget.meeting.favorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    color: widget.textColor,
+                  )),
+              IconButton(
+                  onPressed: _showConfirmationDialog,
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    color: widget.textColor,
+                  ))
             ],
           ),
         ));

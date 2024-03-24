@@ -39,8 +39,8 @@ class Meeting {
   final String transcription;
   final String userEmail;
   final String? username;
-  final bool favorite;
-  final bool archived;
+  bool favorite;
+  bool archived;
 
   // Meeting();
   /*

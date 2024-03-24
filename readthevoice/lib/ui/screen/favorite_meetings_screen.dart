@@ -30,13 +30,27 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                     itemCount: snapshot.data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       Meeting currentMeeting = snapshot.data![index];
+                      // Meeting? currentMeeting = snapshot.data![index];
+
+                      // Meeting? currentMeeting;
+                      //
+                      // if(snapshot.data != null) {
+                      //   currentMeeting = snapshot.data?[index];
+                      //   // currentMeeting = widget.meetings![index];
+                      // }
 
                       return MeetingCard(
                         meeting: currentMeeting,
-                        title: currentMeeting.title,
-                        transcription: currentMeeting.transcription,
-                        setFavorite: (String meetingId) {
-                          meetingService.setFavoriteMeetingById(meetingId, currentMeeting.favorite);
+                        isFavoriteList: true,
+                        favoriteFunction: () {
+                          setState(() {
+                            snapshot.data!.remove(currentMeeting);
+                          });
+                        },
+                        deleteFunction: () {
+                          setState(() {
+                            snapshot.data!.remove(currentMeeting);
+                          });
                         },
                       );
                     },

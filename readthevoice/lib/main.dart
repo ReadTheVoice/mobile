@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/firebase_options.dart';
+import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/splash_screen.dart';
 
 import 'ui/color_scheme/color_schemes_material.dart';
+import 'package:flutter/material.dart';
 
-// void main() async {
-Future<void> main() async {
+void main() async {
+// Future<void> main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
@@ -49,7 +54,10 @@ class MyApp extends StatelessWidget {
         fontFamily: appFontFamily,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const NativeSplashScreen(),
+      home: const MasterScreen(),
+      // home: const NativeSplashScreen(),
     );
   }
 }
+
+

@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: FutureBuilder(
         future: retrieveMeetings(),
         builder: (BuildContext context, AsyncSnapshot<List<Meeting>> snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.connectionState != ConnectionState.none) {
             return (snapshot.data!.isNotEmpty)
                 ? MeetingList(
                     meetings: snapshot.data,

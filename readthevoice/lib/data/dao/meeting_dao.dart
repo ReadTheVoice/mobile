@@ -17,9 +17,6 @@ abstract class MeetingDao {
   @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true} order by creationDateAtMillis desc")
   Future<List<Meeting>> findFavoriteMeetings();
 
-  @Query('SELECT COUNT(*) FROM $MEETING_TABLE_NAME')
-  Future<int?> countMeetings();
-
   @Query('SELECT title FROM $MEETING_TABLE_NAME')
   Stream<List<String>> findMeetingTitles();
 

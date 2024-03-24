@@ -34,10 +34,11 @@ class _MeetingListState extends State<MeetingList> {
     return ListView.builder(
       itemCount: widget.meetings?.length,
       itemBuilder: (BuildContext context, int index) {
-        Meeting currentMeeting = Meeting("idd", "title", 1, 1, "transcription", "userEmail", "username");
-        
-        if(widget.meetings != null) {
-          currentMeeting = widget.meetings![index];
+        Meeting? currentMeeting;
+
+        if (widget.meetings != null) {
+          currentMeeting = widget.meetings?[index];
+          // currentMeeting = widget.meetings![index];
         }
 
         return Dismissible(
@@ -57,32 +58,36 @@ class _MeetingListState extends State<MeetingList> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: widget.rightIcon,
           ),
-          key: ValueKey<String>(currentMeeting.id),
+          key: ValueKey<String>(currentMeeting?.id ?? ""),
           onDismissed: (DismissDirection direction) async {
             if (direction == DismissDirection.startToEnd) {
-              widget.leftFunction(currentMeeting.id, currentMeeting.archived);
+              widget.leftFunction(
+                  currentMeeting?.id ?? "", currentMeeting?.archived ?? false);
 
               setState(() {
-                if(widget.meetings != null) {
-                  widget.meetings!.remove(currentMeeting);
+                if (widget.meetings != null) {
+                  widget.meetings?.remove(currentMeeting);
                 }
               });
             }
 
             if (direction == DismissDirection.endToStart) {
-              widget.rightFunction(currentMeeting.id);
+              widget.rightFunction(currentMeeting?.id ?? "");
 
               setState(() {
-                if(widget.meetings != null) {
-                  widget.meetings!.remove(currentMeeting);
+                if (widget.meetings != null) {
+                  widget.meetings?.remove(currentMeeting);
                 }
               });
             }
           },
           child: MeetingCard(
-            meeting: currentMeeting,
-            title: currentMeeting.title,
-            transcription: currentMeeting.transcription,
+            meeting: currentMeeting!,
+            deleteFunction: () {
+              setState(() {
+                widget.meetings!.remove(currentMeeting);
+              });
+            },
           ),
         );
       },
