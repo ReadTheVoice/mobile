@@ -33,7 +33,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                     leftColor: Colors.green,
                     rightColor: Colors.red,
                     leftFunction: (String meetingId, bool archived) {
-                      if (!archived) {
+                      if (archived) {
                         meetingService.setArchiveMeetingById(meetingId, false);
                       }
                     },
