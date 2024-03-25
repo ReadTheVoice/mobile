@@ -14,6 +14,8 @@ class MeetingList extends StatefulWidget {
   final Function leftFunction;
   final Function rightFunction;
 
+  final bool? unarchiving;
+
   const MeetingList(
       {super.key,
       this.meetings,
@@ -22,13 +24,59 @@ class MeetingList extends StatefulWidget {
       required this.leftColor,
       required this.rightColor,
       required this.leftFunction,
-      required this.rightFunction});
+      required this.rightFunction, this.unarchiving});
 
   @override
   State<MeetingList> createState() => _MeetingListState();
 }
 
 class _MeetingListState extends State<MeetingList> {
+  void _showSnackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        // action: SnackBarAction(
+        //   label: 'Confirm',
+        //   onPressed: () => print('Action confirmed!'),
+        // ),
+      ),
+    );
+  }
+
+
+  void _showConfirmationDialog(Meeting? currentMeeting) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.warning_amber_rounded),
+        title: const Text('Confirmation'),
+        content: const Text('Are you sure you want to perform this action ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed ?? false) {
+        widget.rightFunction(currentMeeting?.id ?? "");
+
+        setState(() {
+          if (widget.meetings != null) {
+            widget.meetings?.remove(currentMeeting);
+          }
+
+          _showSnackBar("Deletion complete !");
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -67,17 +115,18 @@ class _MeetingListState extends State<MeetingList> {
                 if (widget.meetings != null) {
                   widget.meetings?.remove(currentMeeting);
                 }
+
+                String snackBarText = "Archiving complete";
+                if(widget.unarchiving != null && widget.unarchiving == true) {
+                  snackBarText = "Unarchiving complete";
+                }
+
+                _showSnackBar(snackBarText);
               });
             }
 
             if (direction == DismissDirection.endToStart) {
-              widget.rightFunction(currentMeeting?.id ?? "");
-
-              setState(() {
-                if (widget.meetings != null) {
-                  widget.meetings?.remove(currentMeeting);
-                }
-              });
+              _showConfirmationDialog(currentMeeting);
             }
           },
           child: MeetingCard(

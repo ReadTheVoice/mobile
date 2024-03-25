@@ -40,6 +40,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                     rightFunction: (String meetingId) {
                       meetingService.deleteMeetingById(meetingId);
                     },
+                    unarchiving: true,
                   )
                 : const Text("No Data");
           } else {

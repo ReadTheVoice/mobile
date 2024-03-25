@@ -53,8 +53,6 @@ class _MeetingCardState extends State<MeetingCard> {
             widget.deleteFunction!();
           }
 
-          // _showSnackBar("Deletion complete !");
-
           toastification.show(
             context: context,
             alignment: Alignment.bottomCenter,
@@ -73,18 +71,6 @@ class _MeetingCardState extends State<MeetingCard> {
         });
       }
     });
-  }
-
-  void _showSnackBar(String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text),
-        // action: SnackBarAction(
-        //   label: 'Confirm',
-        //   onPressed: () => print('Action confirmed!'),
-        // ),
-      ),
-    );
   }
 
   @override
