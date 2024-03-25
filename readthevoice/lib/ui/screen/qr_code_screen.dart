@@ -39,6 +39,20 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   }
 
   Future<void> _doSomeOperation() async {
+    // Get the qrCode data and check whether it contains 'readthevoice://' or not
+    // if yes - proceed with the following
+      // split and get ID
+      // get firebase entity
+      // - created and not started => display dialog stating not yet started & add messenger
+    // insert if not inserted !
+      // - created and started but no transcription OR ended => go to meeting_screen
+      // - ongoing transcription => go to stream_screen
+
+    // if no - display dialog saying qr code not recognized / not managed by Read the voice, plus possibility to copy
+    // if (mounted) {
+    //   Navigator.pop(context); // Dismiss the dialog after operation
+    // }
+
     // Simulate some background operation (replace with your actual logic)
     await Future.delayed(const Duration(seconds: 10));
   }
