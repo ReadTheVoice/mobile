@@ -9,8 +9,7 @@ class FirebaseDatabaseService {
 
   // https://github.com/firebase/flutterfire/blob/master/packages/cloud_firestore/cloud_firestore/example/lib/main.dart
   void getMeetingById(String meetingId) async {
-    // var mt = firestore.collection("meetings").get();
-    var mt = firestore.collection("meetings").doc(meetingId);
+    // var mt = firestore.collection("meetings").doc(meetingId);
 
     final docRef = firestore.collection('users').doc('user_id');
     final documentSnapshot = await docRef.get();
@@ -176,5 +175,3 @@ Here's how you can retrieve nodes using filters in Firebase Realtime Database fo
 - Firebase Realtime Database is optimized for real-time updates, not complex filtering.
 - For extensive filtering, explore alternative solutions like Cloud Functions or Firestore.
  */
-
-
