@@ -186,6 +186,19 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         }
 
         if(isOk) {
+          //   // if yes - proceed with the following
+          //   // split and get ID
+          //   // get firebase entity
+          //   // - created and not started => display dialog stating not yet started & add messenger
+          //   // insert if not inserted !
+          //   // - created and started but no transcription OR ended => go to meeting_screen
+          //   // - ongoing transcription => go to stream_screen
+
+          String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
+
+          print("meetingId");
+          print(meetingId);
+
           // readthevoice://<meeting_id>
           if (result.isNotEmpty) {
             await meetingService.insertMeeting(Meeting(

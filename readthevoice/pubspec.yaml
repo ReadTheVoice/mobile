@@ -54,6 +54,7 @@ dependencies:
   floor: ^1.4.2
   package_info: ^2.0.0+2
   toastification: ^1.2.1
+  cloud_firestore: ^4.15.10
 
 dev_dependencies:
   flutter_test:

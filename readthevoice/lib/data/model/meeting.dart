@@ -20,6 +20,35 @@ enum MeetingStatus {
   }
 }
 
+/*
+
+createdAt 12 March 2024 at 17:31:13 UTC+1
+(timestamp)
+
+creator "cxXhggjFnBgROGkVrlq0JidhxI52"
+(string)
+
+deletionDate 20 April 2024 at 13:11:00 UTC+2
+(timestamp)
+
+description "Ma belle description"
+(string)
+
+endDate null
+(null)
+
+isFinished false
+(Boolean)
+
+isTranscriptAccessibleAfter true
+(Boolean)
+
+name "Sharonn"
+(string)
+
+scheduledDate 12 March 2024 at 17:30:00 UTC+1
+ */
+
 @Entity(tableName: MEETING_TABLE_NAME)
 class Meeting {
   @PrimaryKey()
