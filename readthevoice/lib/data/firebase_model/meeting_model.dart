@@ -1,4 +1,4 @@
-class FirebaseMeeting {
+class MeetingModel {
   /// A reference to the list of movies.
   /// We are using `withConverter` to ensure that interactions with the collection
   /// are type-safe.

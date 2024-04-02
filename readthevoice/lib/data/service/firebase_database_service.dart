@@ -1,17 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/firebase_model/user_model.dart';
 
 class FirebaseDatabaseService {
-  static FirebaseFirestore firestore = FirebaseFirestore.instance;
-  static FirebaseDatabase realtimeDb = FirebaseDatabase.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseDatabase realtimeDb = FirebaseDatabase.instance;
 
-  const FirebaseDatabaseService();
+  late CollectionReference meetingCollectionReference;
+  late CollectionReference userCollectionReference;
+  late DatabaseReference transcriptDatabaseReference;
+
+  FirebaseDatabaseService() {
+    meetingCollectionReference = firestore.collection(MEETING_COLLECTION);
+    userCollectionReference = firestore.collection(USER_COLLECTION);
+    transcriptDatabaseReference = realtimeDb.ref(TRANSCRIPT_COLLECTION);
+  }
+
+  Future<UserModel> getMeetingCreator(String userId) async {
+    var docSnapshot = await userCollectionReference.doc(userId).get();
+
+    if(docSnapshot.exists) {
+      final data = docSnapshot.data();
+      return const UserModel(id: "", firstName: "", lastName: "");
+    }
+
+    return UserModel.example();
+  }
 
   // https://github.com/firebase/flutterfire/blob/master/packages/cloud_firestore/cloud_firestore/example/lib/main.dart
   void getMeetingById(String meetingId) async {
     // var mt = firestore.collection("meetings").doc(meetingId);
 
-    final docRef = firestore.collection('users').doc('user_id');
+    final docRef = meetingCollectionReference.doc(meetingId);
     final documentSnapshot = await docRef.get();
 
     if (documentSnapshot.exists) {
@@ -20,8 +41,11 @@ class FirebaseDatabaseService {
     } else {
       print('Document does not exist!');
     }
+  }
+}
 
-    /*
+
+/*
     // Realtime database
 
     // - Reading Data Once:
@@ -42,10 +66,6 @@ class FirebaseDatabaseService {
       print(data['name']); // Access updated data
     });
      */
-
-    // here
-  }
-}
 
 /*
 // Stream transcript
