@@ -30,11 +30,14 @@ abstract class MeetingDao {
   @Query('UPDATE $MEETING_TABLE_NAME SET favorite = :favorite WHERE id = :id')
   Future<void> setFavoriteMeetingById(String id, bool favorite);
 
-  @Insert(onConflict: OnConflictStrategy.rollback)
+  @Insert(onConflict: OnConflictStrategy.abort)
   Future<void> insertMeeting(Meeting meeting);
 
   @insert
   Future<void> insertMultipleMeetings(List<Meeting> meetings);
+
+  @update
+  Future<void> updateMeeting(Meeting meeting);
 
   @Query("DELETE FROM $MEETING_TABLE_NAME WHERE id = :id")
   Future<void> deleteMeeting(String id);

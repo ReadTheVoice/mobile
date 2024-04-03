@@ -41,7 +41,7 @@ class MeetingService {
     return await meetingDao.findFavoriteMeetings();
   }
 
-  void setArchiveMeetingById(String meetingId, bool archiveMeeting) async {
+  Future<void> setArchiveMeetingById(String meetingId, bool archiveMeeting) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -50,7 +50,7 @@ class MeetingService {
     await meetingDao.setArchiveMeetingById(meetingId, archiveMeeting);
   }
 
-  void setFavoriteMeetingById(String meetingId, bool favoriteMeeting) async {
+  Future<void> setFavoriteMeetingById(String meetingId, bool favoriteMeeting) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -72,7 +72,7 @@ class MeetingService {
     }
   }
 
-  void deleteMeetingById(String meetingId) async {
+  Future<void> deleteMeetingById(String meetingId) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -107,6 +107,7 @@ class MeetingService {
 
     if(countMeeting == 0) {
       await meetingDao.insertMultipleMeetings([
+        Meeting.example("night"),
         Meeting.example("id 1"),
         Meeting.example("id 2"),
         Meeting.example("id 3"),
@@ -114,5 +115,14 @@ class MeetingService {
         Meeting.example("id 5"),
       ]);
     }
+  }
+
+  Future<void> updateMeeting(Meeting meeting) async {
+    final database = await $FloorAppDatabase
+        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+        .build();
+
+    final meetingDao = database.meetingDao;
+    await meetingDao.updateMeeting(meeting);
   }
 }

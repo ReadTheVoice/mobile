@@ -125,6 +125,28 @@ class _$MeetingDao extends MeetingDao {
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 }),
+        _meetingUpdateAdapter = UpdateAdapter(
+            database,
+            'meeting',
+            ['id'],
+            (Meeting item) => <String, Object?>{
+                  'id': item.id,
+                  'creationDateAtMillis': item.creationDateAtMillis,
+                  'title': item.title,
+                  'userId': item.userId,
+                  'userName': item.userName,
+                  'description': item.description,
+                  'autoDeletion': item.autoDeletion == null
+                      ? null
+                      : (item.autoDeletion! ? 1 : 0),
+                  'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
+                  'scheduledDateAtMillis': item.scheduledDateAtMillis,
+                  'transcriptionId': item.transcriptionId,
+                  'status': item.status.index,
+                  'transcription': item.transcription,
+                  'favorite': item.favorite ? 1 : 0,
+                  'archived': item.archived ? 1 : 0
+                }),
         _meetingDeletionAdapter = DeletionAdapter(
             database,
             'meeting',
@@ -155,6 +177,8 @@ class _$MeetingDao extends MeetingDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Meeting> _meetingInsertionAdapter;
+
+  final UpdateAdapter<Meeting> _meetingUpdateAdapter;
 
   final DeletionAdapter<Meeting> _meetingDeletionAdapter;
 
@@ -304,13 +328,18 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<void> insertMeeting(Meeting meeting) async {
-    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.rollback);
+    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.abort);
   }
 
   @override
   Future<void> insertMultipleMeetings(List<Meeting> meetings) async {
     await _meetingInsertionAdapter.insertList(
         meetings, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateMeeting(Meeting meeting) async {
+    await _meetingUpdateAdapter.update(meeting, OnConflictStrategy.abort);
   }
 
   @override
