@@ -4,13 +4,10 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 
 class StreamScreen extends StatefulWidget {
-  final String meetingId;
-
-  final Meeting? meeting;
+  final Meeting meeting;
 
   // const StreamScreen({super.key, required this.meetingId, [this.meeting]});
-  const StreamScreen(
-      {super.key, required this.meetingId, required this.meeting});
+  const StreamScreen({super.key, required this.meeting});
 
   @override
   State<StreamScreen> createState() => _StreamScreenState();
@@ -32,22 +29,11 @@ item.add(f);
  */
 
 class _StreamScreenState extends State<StreamScreen> {
-  Meeting? firstMeeting;
-
   MeetingService meetingService = const MeetingService();
 
   @override
   void initState() {
     super.initState();
-
-    firstMeeting = Meeting(
-        id: widget.meetingId,
-        title: "title ${widget.meetingId}",
-        creationDateAtMillis: DateTime.now().millisecondsSinceEpoch,
-        userId: "",
-        autoDeletionDateAtMillis: 0,
-        transcription: "transcription ${widget.meetingId}",
-        userName: "username ${widget.meetingId}");
   }
 
   @override
@@ -63,7 +49,7 @@ class _StreamScreenState extends State<StreamScreen> {
           children: [
             Center(
               child: Text(
-                firstMeeting!.id,
+                widget.meeting.id,
                 style: const TextStyle(
                     color: Colors.white,
                     backgroundColor: Colors.black,
@@ -84,7 +70,7 @@ class _StreamScreenState extends State<StreamScreen> {
               // allowDrawingOutsideViewBox: true,
             ),
             Text(
-              "ID: ${widget.meeting?.id}",
+              "ID: ${widget.meeting.id}",
               style: const TextStyle(
                   color: Colors.white,
                   backgroundColor: Colors.black,

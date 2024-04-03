@@ -14,6 +14,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
+import 'package:readthevoice/ui/screen/meeting_screen.dart';
 import 'package:readthevoice/ui/screen/stream_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
@@ -233,8 +234,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => StreamScreen(
-              meetingId: meeting.id,
+            builder: (context) => MeetingScreen(
               meeting: meeting,
             ),
           ),

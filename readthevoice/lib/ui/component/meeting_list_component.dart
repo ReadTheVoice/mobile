@@ -89,22 +89,23 @@ class _MeetingListState extends State<MeetingList> {
         }
 
         return Dismissible(
-          dismissThresholds: const {
-            DismissDirection.startToEnd: 0.5,
-            DismissDirection.endToStart: 0.5
-          },
+          // dismissThresholds: const {
+          //   DismissDirection.startToEnd: 0.5,
+          //   DismissDirection.endToStart: 0.5
+          // },
+          direction: DismissDirection.startToEnd,
           background: Container(
             color: widget.leftColor,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: widget.leftIcon,
           ),
-          secondaryBackground: Container(
-            color: widget.rightColor,
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: widget.rightIcon,
-          ),
+          // secondaryBackground: Container(
+          //   color: widget.rightColor,
+          //   alignment: Alignment.centerRight,
+          //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          //   child: widget.rightIcon,
+          // ),
           key: ValueKey<String>(currentMeeting?.id ?? ""),
           onDismissed: (DismissDirection direction) async {
             if (direction == DismissDirection.startToEnd) {
@@ -125,9 +126,9 @@ class _MeetingListState extends State<MeetingList> {
               });
             }
 
-            if (direction == DismissDirection.endToStart) {
-              _showConfirmationDialog(currentMeeting);
-            }
+            // if (direction == DismissDirection.endToStart) {
+            //   _showConfirmationDialog(currentMeeting);
+            // }
           },
           child: MeetingCard(
             meeting: currentMeeting!,
