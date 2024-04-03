@@ -39,7 +39,6 @@ class _MainScreenState extends State<MainScreen> {
         screenTitle = const Text("app_name").tr();
         break;
       case 1:
-        // FavoriteMeetingsScreen
         screenTitle = const Text("favorite_meetings_screen_title").tr();
         break;
       default:
@@ -95,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => QrCodeScreen(),
+                builder: (context) => const QrCodeScreen(),
               ),
             );
           });

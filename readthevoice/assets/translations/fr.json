@@ -15,5 +15,7 @@
     "about_screen_title": "À propos de 'Read The Voice'",
 
     "home_bottom_bar": "Accueil",
-    "favorite_bottom_bar": "Favoris"
+    "favorite_bottom_bar": "Favoris",
+
+    "unknown_qr_code": "Qr Code inconnu"
 }

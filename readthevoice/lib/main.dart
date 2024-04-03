@@ -15,10 +15,6 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // FirebaseFirestore.instance.settings = const Settings(
-  //   persistenceEnabled: true,
-  // );
-
   runApp(
     EasyLocalization(
       // supportedLocales: const [Locale('en', 'US'), Locale('fr'), Locale('it')],

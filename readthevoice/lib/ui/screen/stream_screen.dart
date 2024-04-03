@@ -41,13 +41,13 @@ class _StreamScreenState extends State<StreamScreen> {
     super.initState();
 
     firstMeeting = Meeting(
-        widget.meetingId,
-        "title ${widget.meetingId}",
-        DateTime.now().millisecondsSinceEpoch,
-        0,
-        "transcription ${widget.meetingId}",
-        "userEmail ${widget.meetingId}",
-        "username ${widget.meetingId}");
+        id: widget.meetingId,
+        title: "title ${widget.meetingId}",
+        creationDateAtMillis: DateTime.now().millisecondsSinceEpoch,
+        userId: "",
+        autoDeletionDateAtMillis: 0,
+        transcription: "transcription ${widget.meetingId}",
+        userName: "username ${widget.meetingId}");
   }
 
   @override

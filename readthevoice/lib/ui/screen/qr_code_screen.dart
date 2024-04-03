@@ -11,14 +11,16 @@ import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/stream_screen.dart';
+import 'package:readthevoice/utils/utils.dart';
+
+import '../../data/firebase_model/user_model.dart';
 
 class QrCodeScreen extends StatefulWidget {
-  bool? isFromDrawer = false;
-
-  QrCodeScreen({super.key, this.isFromDrawer});
+  const QrCodeScreen({super.key});
 
   @override
   State<QrCodeScreen> createState() => _QrCodeScreenState();
@@ -28,11 +30,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
   QRViewController? controller;
 
-  bool _isLoading = false;
-
   MeetingService meetingService = const MeetingService();
-
-  bool isFromDrawer = false;
+  FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
 
   @override
   void dispose() {
@@ -45,33 +44,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     return meeting;
   }
 
-  // Future<void> _doSomeOperation(String result) async {
-  Future<bool> _doSomeOperation(String result) async {
-    return result.isNotEmpty && result.contains(QR_CODE_DATA_PREFIX);
-    // if (result.isNotEmpty && result.contains(QR_CODE_DATA_PREFIX)) {
-    //   await Future.delayed(const Duration(seconds: 1));
-    //
-    //   // Get the qrCode data and check whether it contains 'readthevoice://' or not
-    //   // if yes - proceed with the following
-    //   // split and get ID
-    //   // get firebase entity
-    //   // - created and not started => display dialog stating not yet started & add messenger
-    //   // insert if not inserted !
-    //   // - created and started but no transcription OR ended => go to meeting_screen
-    //   // - ongoing transcription => go to stream_screen
-    // } else {
-    //   // if no - display dialog saying qr code not recognized / not managed by Read the voice, plus possibility to copy
-    //   // if (mounted) {
-    //   //   Navigator.pop(context); // Dismiss the dialog after operation
-    //   // }
-    //
-    //   // Navigator.pop(context);
-    //
-    //   _showNotRecognizedDialog(result, context);
-    // }
-  }
-
-  void _showNotRecognizedDialog(String qrcodeData, BuildContext context) {
+  void _showNotRecognizedDialog(String qrcodeData) {
+    // , BuildContext context
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -95,8 +69,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                             onPressed: () async {
                               await Clipboard.setData(
                                   ClipboardData(text: qrcodeData));
-                              //
-                              // Navigator.pop(context);
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
                             },
                           )),
                     ),
@@ -107,50 +82,37 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           ),
         ),
         actions: [
-          // TextButton(
-          //   onPressed: () => Navigator.pop(context, false),
-          //   child: const Text('Cancel'),
-          // ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Ok'),
           ),
         ],
       ),
-    ).then((confirmed) {
-      if (confirmed ?? false) {
-        // setState(() {
-        //   Navigator.pop(context);
-        // });
-      }
-    });
+    );
   }
 
-  void _showLoadingDialog() {
+  void _showNotYetStartedDialog(Meeting meeting) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent user from tapping outside to dismiss
-      builder: (context) => const PopScope(
-        canPop: false, // Prevent dismissal during operation
-        child: Center(
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.timer_outlined),
+        title: Text('${meeting.title} - Not yet started'),
+        content: Center(
           child: Column(
             children: [
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      "Loading...",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    CircularProgressIndicator(
-                      color: Colors.blueAccent,
-                    ),
-                  ],
-                ),
-              )
+              Text('The meeting created by: ${meeting.userName}'),
+              Text(
+                  'The meeting is scheduled for: ${fromMillisToDateTime(meeting.scheduledDateAtMillis!)} !'),
+              const Text('Please wait some time for the meeting to start.'),
             ],
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Ok'),
+          ),
+        ],
       ),
     );
   }
@@ -168,65 +130,94 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       if (result.isNotEmpty && result.trim() != "") {
         controller.pauseCamera();
 
-        // Add progress bar
-        // Then run with logic
-        // If ok, proceed to meetingScreen
-        // If not, display error saying "Either the meeting does not exist or has been deleted! Sorry for the inconvenience!"
-        // If not yet started, display pop-up saying "Meeting has not yet started! Wait for the host to launch the meeting. Time of meeting: 10:20 AM"
-        // Maybe a real dialog
-
-        // _showLoadingDialog();
-        bool isOk = await _doSomeOperation(result);
+        bool isOk = result.isNotEmpty && result.contains(QR_CODE_DATA_PREFIX);
         if (mounted) {
           Navigator.pop(context); // Dismiss the dialog after operation
-        }
 
-        if (mounted && !isOk) {
-          _showNotRecognizedDialog(result, context);
-        }
+          if (!isOk) {
+            _showNotRecognizedDialog(result);
+            // _showNotRecognizedDialog(result, context);
+          } else {
+            //   // if yes - proceed with the following
+            //   // split and get ID
+            //   // get firebase entity
+            //   // - created and not started => display dialog stating not yet started & add messenger
+            //   // insert if not inserted !
+            //   // - created and started but no transcription OR ended => go to meeting_screen
+            //   // - ongoing transcription => go to stream_screen
 
-        if(isOk) {
-          //   // if yes - proceed with the following
-          //   // split and get ID
-          //   // get firebase entity
-          //   // - created and not started => display dialog stating not yet started & add messenger
-          //   // insert if not inserted !
-          //   // - created and started but no transcription OR ended => go to meeting_screen
-          //   // - ongoing transcription => go to stream_screen
+            // split and get ID
+            String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
 
-          String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
+            print("meetingId");
+            print(meetingId);
 
-          print("meetingId");
-          print(meetingId);
+            UserModel test = await firebaseService.getMeetingCreator("cxXhggjFnBgROGkVrlq0JidhxI52");
+            print("test userModel");
+            print(test);
 
-          // readthevoice://<meeting_id>
-          if (result.isNotEmpty) {
-            await meetingService.insertMeeting(Meeting(
-                result,
-                "title fb",
-                DateTime
-                    .now()
-                    .millisecondsSinceEpoch,
-                0,
-                "transcription fb",
-                "userEmail fb",
-                "username fb"));
-          }
+            // get local entity
+            Meeting? existing = await meetingService.getMeetingById(meetingId);
 
-          Meeting? loopy = await meetingService.getMeetingById(result);
+            if (existing != null) {
+              // Check whether it started or not
+              bool isShowingDialog = false;
+              if (existing.scheduledDateAtMillis != null) {
+                DateTime scheduledDate =
+                    fromMillisToDateTime(existing.scheduledDateAtMillis!);
 
-          if (mounted) {
-            if (isFromDrawer) {
-              Navigator.push(
+                if (DateTime.now().isBefore(scheduledDate)) {
+                  isShowingDialog = true;
+                  _showNotYetStartedDialog(existing);
+                }
+              }
+
+              // Go to meeting screen
+              if (!isShowingDialog) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StreamScreen(
+                        meetingId: existing.id,
+                        meeting: existing,
+                      ),
+                    ),
+                    result: Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MasterScreen())));
+              }
+            } else {
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        StreamScreen(
-                          meetingId: result,
-                          meeting: loopy,
-                        ),
-                  ));
-            } else {
+                      builder: (context) => const MasterScreen()));
+
+              // readthevoice://<meeting_id>
+              // get fb entity
+
+              // insert it locally
+
+              // check whether it started or not
+
+              // go to meeting screen
+              /*
+              if (result.isNotEmpty) {
+              await meetingService.insertMeeting(Meeting(
+                  result,
+                  "title fb",
+                  DateTime
+                      .now()
+                      .millisecondsSinceEpoch,
+                  0,
+                  "transcription fb",
+                  "userEmail fb",
+                  "username fb"));
+            }
+
+            Meeting? loopy = await meetingService.getMeetingById(result);
+
+            if (mounted) {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -241,16 +232,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       MaterialPageRoute(
                           builder: (context) => const MasterScreen())));
             }
+               */
+            }
           }
         }
-
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const ErrorScreen(),
-        //   ),
-        // );
       }
     });
   }
@@ -271,16 +256,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isFromDrawer != null) {
-      isFromDrawer = widget.isFromDrawer!;
-    }
-
     return Scaffold(
-      appBar: !isFromDrawer
-          ? AppBar(
-              title: const Text("qr_code_scan_screen_title").tr(),
-            )
-          : null,
+      appBar: AppBar(
+        title: const Text("qr_code_scan_screen_title").tr(),
+      ),
       body: Center(
         child: Column(
           children: [

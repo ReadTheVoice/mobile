@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `transcription` TEXT NOT NULL, `userEmail` TEXT NOT NULL, `username` TEXT, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `description` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `status` INTEGER NOT NULL, `transcription` TEXT NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -109,16 +109,18 @@ class _$MeetingDao extends MeetingDao {
             'meeting',
             (Meeting item) => <String, Object?>{
                   'id': item.id,
-                  'title': item.title,
-                  'status': item.status.index,
                   'creationDateAtMillis': item.creationDateAtMillis,
+                  'title': item.title,
+                  'userId': item.userId,
+                  'userName': item.userName,
+                  'description': item.description,
                   'autoDeletion': item.autoDeletion == null
                       ? null
                       : (item.autoDeletion! ? 1 : 0),
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
+                  'scheduledDateAtMillis': item.scheduledDateAtMillis,
+                  'status': item.status.index,
                   'transcription': item.transcription,
-                  'userEmail': item.userEmail,
-                  'username': item.username,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 }),
@@ -128,16 +130,18 @@ class _$MeetingDao extends MeetingDao {
             ['id'],
             (Meeting item) => <String, Object?>{
                   'id': item.id,
-                  'title': item.title,
-                  'status': item.status.index,
                   'creationDateAtMillis': item.creationDateAtMillis,
+                  'title': item.title,
+                  'userId': item.userId,
+                  'userName': item.userName,
+                  'description': item.description,
                   'autoDeletion': item.autoDeletion == null
                       ? null
                       : (item.autoDeletion! ? 1 : 0),
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
+                  'scheduledDateAtMillis': item.scheduledDateAtMillis,
+                  'status': item.status.index,
                   'transcription': item.transcription,
-                  'userEmail': item.userEmail,
-                  'username': item.username,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 });
@@ -157,19 +161,20 @@ class _$MeetingDao extends MeetingDao {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
-            row['id'] as String,
-            row['title'] as String,
-            row['creationDateAtMillis'] as int,
-            row['autoDeletionDateAtMillis'] as int?,
-            row['transcription'] as String,
-            row['userEmail'] as String,
-            row['username'] as String?,
-            MeetingStatus.values[row['status'] as int],
-            row['autoDeletion'] == null
+            id: row['id'] as String,
+            title: row['title'] as String,
+            creationDateAtMillis: row['creationDateAtMillis'] as int,
+            userId: row['userId'] as String,
+            autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
+            scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            transcription: row['transcription'] as String,
+            userName: row['userName'] as String?,
+            status: MeetingStatus.values[row['status'] as int],
+            autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
-            (row['favorite'] as int) != 0,
-            (row['archived'] as int) != 0));
+            favorite: (row['favorite'] as int) != 0,
+            archived: (row['archived'] as int) != 0));
   }
 
   @override
@@ -177,19 +182,20 @@ class _$MeetingDao extends MeetingDao {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = false order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
-            row['id'] as String,
-            row['title'] as String,
-            row['creationDateAtMillis'] as int,
-            row['autoDeletionDateAtMillis'] as int?,
-            row['transcription'] as String,
-            row['userEmail'] as String,
-            row['username'] as String?,
-            MeetingStatus.values[row['status'] as int],
-            row['autoDeletion'] == null
+            id: row['id'] as String,
+            title: row['title'] as String,
+            creationDateAtMillis: row['creationDateAtMillis'] as int,
+            userId: row['userId'] as String,
+            autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
+            scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            transcription: row['transcription'] as String,
+            userName: row['userName'] as String?,
+            status: MeetingStatus.values[row['status'] as int],
+            autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
-            (row['favorite'] as int) != 0,
-            (row['archived'] as int) != 0));
+            favorite: (row['favorite'] as int) != 0,
+            archived: (row['archived'] as int) != 0));
   }
 
   @override
@@ -197,19 +203,20 @@ class _$MeetingDao extends MeetingDao {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
-            row['id'] as String,
-            row['title'] as String,
-            row['creationDateAtMillis'] as int,
-            row['autoDeletionDateAtMillis'] as int?,
-            row['transcription'] as String,
-            row['userEmail'] as String,
-            row['username'] as String?,
-            MeetingStatus.values[row['status'] as int],
-            row['autoDeletion'] == null
+            id: row['id'] as String,
+            title: row['title'] as String,
+            creationDateAtMillis: row['creationDateAtMillis'] as int,
+            userId: row['userId'] as String,
+            autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
+            scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            transcription: row['transcription'] as String,
+            userName: row['userName'] as String?,
+            status: MeetingStatus.values[row['status'] as int],
+            autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
-            (row['favorite'] as int) != 0,
-            (row['archived'] as int) != 0));
+            favorite: (row['favorite'] as int) != 0,
+            archived: (row['archived'] as int) != 0));
   }
 
   @override
@@ -217,19 +224,20 @@ class _$MeetingDao extends MeetingDao {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE favorite = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
-            row['id'] as String,
-            row['title'] as String,
-            row['creationDateAtMillis'] as int,
-            row['autoDeletionDateAtMillis'] as int?,
-            row['transcription'] as String,
-            row['userEmail'] as String,
-            row['username'] as String?,
-            MeetingStatus.values[row['status'] as int],
-            row['autoDeletion'] == null
+            id: row['id'] as String,
+            title: row['title'] as String,
+            creationDateAtMillis: row['creationDateAtMillis'] as int,
+            userId: row['userId'] as String,
+            autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
+            scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            transcription: row['transcription'] as String,
+            userName: row['userName'] as String?,
+            status: MeetingStatus.values[row['status'] as int],
+            autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
-            (row['favorite'] as int) != 0,
-            (row['archived'] as int) != 0));
+            favorite: (row['favorite'] as int) != 0,
+            archived: (row['archived'] as int) != 0));
   }
 
   @override
@@ -244,19 +252,20 @@ class _$MeetingDao extends MeetingDao {
   Future<Meeting?> findMeetingById(String id) async {
     return _queryAdapter.query('SELECT * FROM meeting WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Meeting(
-            row['id'] as String,
-            row['title'] as String,
-            row['creationDateAtMillis'] as int,
-            row['autoDeletionDateAtMillis'] as int?,
-            row['transcription'] as String,
-            row['userEmail'] as String,
-            row['username'] as String?,
-            MeetingStatus.values[row['status'] as int],
-            row['autoDeletion'] == null
+            id: row['id'] as String,
+            title: row['title'] as String,
+            creationDateAtMillis: row['creationDateAtMillis'] as int,
+            userId: row['userId'] as String,
+            autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
+            scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            transcription: row['transcription'] as String,
+            userName: row['userName'] as String?,
+            status: MeetingStatus.values[row['status'] as int],
+            autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
-            (row['favorite'] as int) != 0,
-            (row['archived'] as int) != 0),
+            favorite: (row['favorite'] as int) != 0,
+            archived: (row['archived'] as int) != 0),
         arguments: [id]);
   }
 

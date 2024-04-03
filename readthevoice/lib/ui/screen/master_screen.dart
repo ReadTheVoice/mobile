@@ -4,8 +4,8 @@ import 'package:package_info/package_info.dart';
 import 'package:readthevoice/ui/screen/about_screen.dart';
 import 'package:readthevoice/ui/screen/archived_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/main_screen.dart';
-import 'package:readthevoice/ui/screen/qr_code_screen.dart';
 import 'package:readthevoice/ui/screen/settings_screen.dart';
+import 'package:readthevoice/utils/utils.dart';
 
 class MasterScreen extends StatefulWidget {
   const MasterScreen({super.key});
@@ -15,54 +15,50 @@ class MasterScreen extends StatefulWidget {
 }
 
 class _MasterScreenState extends State<MasterScreen> {
-  int selectedIndex = 0;
   Text screenTitle = const Text("app_name").tr();
 
   PackageInfo? packageInfo;
 
-  Future<void> getVersionInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
-  }
+  AvailableScreens selectedScreen = AvailableScreens.main;
 
   @override
   void initState() {
     super.initState();
 
-    getVersionInfo();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      this.packageInfo = packageInfo;
+    });
   }
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(AvailableScreens chosenScreen) {
     setState(() {
-      selectedIndex = index;
+      selectedScreen = chosenScreen;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget screen;
-    switch (selectedIndex) {
-      case 0:
+
+    switch (selectedScreen) {
+      case AvailableScreens.main:
         screen = const MainScreen();
         screenTitle = const Text("app_name").tr();
         break;
-      case 1:
-        screen = QrCodeScreen(isFromDrawer: true);
-        screenTitle = const Text("qr_code_scan_screen_title").tr();
-        break;
-      case 2:
+      case AvailableScreens.archivedMeetings:
         screen = const ArchivedMeetingsScreen();
         screenTitle = const Text("archived_meetings_screen_title").tr();
         break;
-      case 3:
+      case AvailableScreens.settings:
         screen = const SettingsScreen();
         screenTitle = const Text("settings_screen_title").tr();
         break;
-      case 4:
+      case AvailableScreens.aboutUs:
         screen = const AboutScreen();
         screenTitle = const Text("about_screen_title").tr();
         break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError('no widget for $selectedScreen');
     }
 
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -105,21 +101,7 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(0);
-                        Navigator.pop(context);
-                      }),
-                  ListTile(
-                      title: Text(
-                        "qr_code_scan_screen_title",
-                        selectionColor:
-                            Theme.of(context).colorScheme.onBackground,
-                      ).tr(),
-                      leading: Icon(
-                        Icons.qr_code_scanner,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                      onTap: () {
-                        _onItemTapped(1);
+                        _onItemTapped(AvailableScreens.main);
                         Navigator.pop(context);
                       }),
                   ListTile(
@@ -133,21 +115,9 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(2);
+                        _onItemTapped(AvailableScreens.archivedMeetings);
                         Navigator.pop(context);
                       }),
-                  // ListTile(
-                  //     title: Text(
-                  //       "Light/Dark Theme",
-                  //       selectionColor: Theme.of(context).colorScheme.onBackground,
-                  //     ).tr(),
-                  //     leading: Icon(
-                  //       Icons.nights_stay_outlined,
-                  //       color: Theme.of(context).colorScheme.onBackground,
-                  //     ),
-                  //     subtitle: const Text("Not yet implemented"),
-                  //     onTap: () {},
-                  //     enabled: false),
                   ListTile(
                       title: Text(
                         "settings_screen_title",
@@ -159,7 +129,7 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(3);
+                        _onItemTapped(AvailableScreens.settings);
                         Navigator.pop(context);
                       }),
                   ListTile(
@@ -173,7 +143,7 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(4);
+                        _onItemTapped(AvailableScreens.aboutUs);
                         Navigator.pop(context);
                       }),
                 ],
@@ -183,20 +153,19 @@ class _MasterScreenState extends State<MasterScreen> {
                 left: 0.0,
                 right: 0.0,
                 child: Container(
-                  padding: const EdgeInsets.all(8.0), // Add some padding
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Version ${packageInfo?.version}",
-                        ),
-                        Text(
-                          "Build number: ${packageInfo?.buildNumber}",
-                        ),
-                      ],
-                    ),
-                  )
-                ),
+                    padding: const EdgeInsets.all(8.0), // Add some padding
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Version ${packageInfo?.version}",
+                          ),
+                          Text(
+                            "Build number: ${packageInfo?.buildNumber}",
+                          ),
+                        ],
+                      ),
+                    )),
               ),
             ],
           ),

@@ -22,6 +22,8 @@ class FirebaseDatabaseService {
 
     if(docSnapshot.exists) {
       final data = docSnapshot.data();
+      print("USER DATA");
+      print(data);
       return const UserModel(id: "", firstName: "", lastName: "");
     }
 
