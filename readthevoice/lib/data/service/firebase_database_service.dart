@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/firebase_model/user_model.dart';
+import 'package:readthevoice/utils/utils.dart';
+
+import '../model/meeting.dart';
 
 class FirebaseDatabaseService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -17,35 +21,67 @@ class FirebaseDatabaseService {
     transcriptDatabaseReference = realtimeDb.ref(TRANSCRIPT_COLLECTION);
   }
 
+  // https://github.com/firebase/flutterfire/blob/master/packages/cloud_firestore/cloud_firestore/example/lib/main.dart
   Future<UserModel> getMeetingCreator(String userId) async {
     var docSnapshot = await userCollectionReference.doc(userId).get();
 
-    if(docSnapshot.exists) {
-      final data = docSnapshot.data();
-      print("USER DATA");
-      print(data);
-      return const UserModel(id: "", firstName: "", lastName: "");
+    if (docSnapshot.exists) {
+      final dynamic data = docSnapshot.data();
+
+      if (data != null) {
+        // {lastName: LE HEURT-FINOT, firstName: Gaëtan, email: gaetan.glh@orange.fr}
+        return UserModel(
+            id: userId,
+            firstName: "${data["firstName"]}",
+            lastName: "${data["lastName"]}");
+      }
     }
 
     return UserModel.example();
   }
 
-  // https://github.com/firebase/flutterfire/blob/master/packages/cloud_firestore/cloud_firestore/example/lib/main.dart
-  void getMeetingById(String meetingId) async {
-    // var mt = firestore.collection("meetings").doc(meetingId);
+  Future<Meeting?> getMeeting(String meetingId) async {
+    var docSnapshot = await meetingCollectionReference.doc(meetingId).get();
+    if (docSnapshot.exists) {
+      final dynamic data = docSnapshot.data();
 
-    final docRef = meetingCollectionReference.doc(meetingId);
-    final documentSnapshot = await docRef.get();
+      if (data != null) {
+        // {createdAt: Timestamp(seconds=1710342183, nanoseconds=275000000), creator: 0AZouh2I45hyDPNvwXPy81mSDPp2, endDate: null, deletionDate: null, isTranscriptAccessibleAfter: true, name: bonjour, description: Je n'ai pas d'idée, scheduledDate: Timestamp(seconds=1710342060, nanoseconds=0), isFinished: false}
+        MeetingModel fbMeeting = MeetingModel(
+            id: meetingId,
+            createdAt: fromMillisToDateTime(
+                (data['createdAt'] as Timestamp).millisecondsSinceEpoch),
+            creator: data['creator'],
+            name: data['name'],
+            deletionDate: data['deletionDate'] != null
+                ? fromMillisToDateTime(
+                    (data['deletionDate'] as Timestamp).millisecondsSinceEpoch)
+                : null,
+            description: data['description'],
+            endDate: data['endDate'] != null
+                ? fromMillisToDateTime(
+                    (data['endDate'] as Timestamp).millisecondsSinceEpoch)
+                : null,
+            isFinished: data['isFinished'],
+            isTranscriptAccessibleAfter: data['isTranscriptAccessibleAfter'],
+            scheduledDate: data['scheduledDate'] != null
+                ? fromMillisToDateTime(
+                    (data['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
+                : null);
 
-    if (documentSnapshot.exists) {
-      final data = documentSnapshot.data();
-      print(data); // Access data using field names
-    } else {
-      print('Document does not exist!');
+        UserModel creator = await getMeetingCreator(fbMeeting.creator);
+        return fbMeeting.toMeeting(creator);
+      }
     }
+
+    return null;
+  }
+
+  // Stream meeting transcription
+  void streamMeetingTranscription(String meetingId, String? transcriptionId) {
+
   }
 }
-
 
 /*
     // Realtime database

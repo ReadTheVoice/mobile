@@ -32,28 +32,28 @@ class MeetingModel {
   }
 }
 
-extension on MeetingModel {
-  Meeting toMeeting(MeetingModel fbMeeting, UserModel? creator) {
-    bool autoDelete = fbMeeting.deletionDate != null;
+extension MeetingModelConversion on MeetingModel {
+  Meeting toMeeting(UserModel? creator) {
+    bool autoDelete = deletionDate != null;
     String username = "${creator?.firstName} ${creator?.lastName}";
     MeetingStatus status = MeetingStatus.createdNotStarted;
 
-    if (fbMeeting.isFinished) {
+    if (isFinished) {
       status = MeetingStatus.ended;
-    } else if (fbMeeting.scheduledDate != null &&
-        (DateTime.now().isAfter(fbMeeting.scheduledDate!))) {
+    } else if (scheduledDate != null &&
+        (DateTime.now().isAfter(scheduledDate!))) {
       status = MeetingStatus.started;
     }
 
     return Meeting(
-        id: fbMeeting.id,
-        title: fbMeeting.name,
-        creationDateAtMillis: fromDateTimeToMillis(fbMeeting.createdAt),
-        userId: fbMeeting.creator,
+        id: id,
+        title: name,
+        creationDateAtMillis: fromDateTimeToMillis(createdAt),
+        userId: this.creator,
         autoDeletion: autoDelete,
-        scheduledDateAtMillis: (fbMeeting.scheduledDate != null) ? fromDateTimeToMillis(fbMeeting.scheduledDate!) : null,
+        scheduledDateAtMillis: (scheduledDate != null) ? fromDateTimeToMillis(scheduledDate!) : null,
         autoDeletionDateAtMillis:
-            autoDelete ? fromDateTimeToMillis(fbMeeting.deletionDate!) : null,
+            autoDelete ? fromDateTimeToMillis(deletionDate!) : null,
         userName: username,
         status: status);
   }

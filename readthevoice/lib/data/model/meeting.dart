@@ -36,6 +36,7 @@ class Meeting {
   bool? autoDeletion;
   int? autoDeletionDateAtMillis;
   int? scheduledDateAtMillis;
+  String? transcriptionId;
 
   MeetingStatus status;
   String transcription;
@@ -50,6 +51,7 @@ class Meeting {
       this.autoDeletionDateAtMillis,
       this.scheduledDateAtMillis,
       this.transcription = "",
+      this.transcriptionId,
       this.userName,
       this.status = MeetingStatus.createdNotStarted,
       this.autoDeletion = false,

@@ -117,6 +117,30 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     );
   }
 
+  void _showMeetingNotExistingDialog(String meetingId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.error_outline_rounded),
+        title: Text('Meeting $meetingId not found!'),
+        content: Center(
+          child: Column(
+            children: [
+              Text('The meeting with id: $meetingId has not been found!\n It might have been deleted or there might be an error in its id!'),
+              const Text('Please contact the meeting creator for more information.'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
+  }
+
   // void _onQRViewCreated(QRViewController controller, BuildContext context) {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
@@ -149,45 +173,41 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             // split and get ID
             String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
 
-            print("meetingId");
-            print(meetingId);
-
-            UserModel test = await firebaseService.getMeetingCreator("cxXhggjFnBgROGkVrlq0JidhxI52");
-            print("test userModel");
-            print(test);
-
             // get local entity
             Meeting? existing = await meetingService.getMeetingById(meetingId);
 
             if (existing != null) {
-              // Check whether it started or not
-              bool isShowingDialog = false;
-              if (existing.scheduledDateAtMillis != null) {
-                DateTime scheduledDate =
-                    fromMillisToDateTime(existing.scheduledDateAtMillis!);
+              manageMeeting(existing);
 
-                if (DateTime.now().isBefore(scheduledDate)) {
-                  isShowingDialog = true;
-                  _showNotYetStartedDialog(existing);
-                }
-              }
-
-              // Go to meeting screen
-              if (!isShowingDialog) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => StreamScreen(
-                        meetingId: existing.id,
-                        meeting: existing,
-                      ),
-                    ),
-                    result: Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MasterScreen())));
-              }
+              // // Check whether it started or not
+              // bool isShowingDialog = false;
+              // if (existing.scheduledDateAtMillis != null) {
+              //   DateTime scheduledDate =
+              //       fromMillisToDateTime(existing.scheduledDateAtMillis!);
+              //
+              //   if (DateTime.now().isBefore(scheduledDate)) {
+              //     isShowingDialog = true;
+              //     _showNotYetStartedDialog(existing);
+              //   }
+              // }
+              //
+              // // Go to meeting screen
+              // if (!isShowingDialog) {
+              //   Navigator.pushReplacement(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => StreamScreen(
+              //           meetingId: existing.id,
+              //           meeting: existing,
+              //         ),
+              //       ),
+              //       result: Navigator.pushReplacement(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => const MasterScreen())));
+              // }
             } else {
+              // here
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -195,49 +215,71 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
               // readthevoice://<meeting_id>
               // get fb entity
+              Meeting? meeting = await firebaseService.getMeeting(meetingId);
 
-              // insert it locally
+              if(meeting != null) {
+                // insert it locally
+                await meetingService.insertMeeting(meeting);
+                manageMeeting(meeting);
 
-              // check whether it started or not
-
-              // go to meeting screen
-              /*
-              if (result.isNotEmpty) {
-              await meetingService.insertMeeting(Meeting(
-                  result,
-                  "title fb",
-                  DateTime
-                      .now()
-                      .millisecondsSinceEpoch,
-                  0,
-                  "transcription fb",
-                  "userEmail fb",
-                  "username fb"));
-            }
-
-            Meeting? loopy = await meetingService.getMeetingById(result);
-
-            if (mounted) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        StreamScreen(
-                          meetingId: result,
-                          meeting: loopy,
-                        ),
-                  ),
-                  result: Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MasterScreen())));
-            }
-               */
+                // // check whether it started or not
+                // bool hasNotStarted = meeting.scheduledDateAtMillis != null ? fromMillisToDateTime(meeting.scheduledDateAtMillis!).isAfter(DateTime.now()) : false;
+                // bool isShowingDialog = false;
+                // if(meeting.status == MeetingStatus.createdNotStarted || hasNotStarted) {
+                //   isShowingDialog = true;
+                //   _showNotYetStartedDialog(meeting);
+                // }
+                //
+                // if(!isShowingDialog) {
+                //   // go to meeting screen
+                //   Navigator.pushReplacement(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => StreamScreen(
+                //           meetingId: meeting.id,
+                //           meeting: meeting,
+                //         ),
+                //       ),
+                //       result: Navigator.pushReplacement(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => const MasterScreen())));
+                // }
+              } else {
+                _showMeetingNotExistingDialog(meetingId);
+              }
             }
           }
         }
       }
     });
+  }
+
+  void manageMeeting(Meeting meeting) {
+    bool hasNotStarted = meeting.scheduledDateAtMillis != null ? fromMillisToDateTime(meeting.scheduledDateAtMillis!).isAfter(DateTime.now()) : false;
+    bool isShowingDialog = false;
+
+    // check whether it started or not
+    if(meeting.status == MeetingStatus.createdNotStarted || hasNotStarted) {
+      isShowingDialog = true;
+      _showNotYetStartedDialog(meeting);
+    }
+
+    if(!isShowingDialog) {
+      // go to meeting screen
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StreamScreen(
+              meetingId: meeting.id,
+              meeting: meeting,
+            ),
+          ),
+          result: Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MasterScreen())));
+    }
   }
 
   @override
