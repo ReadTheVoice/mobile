@@ -49,23 +49,23 @@ class FirebaseDatabaseService {
         // {createdAt: Timestamp(seconds=1710342183, nanoseconds=275000000), creator: 0AZouh2I45hyDPNvwXPy81mSDPp2, endDate: null, deletionDate: null, isTranscriptAccessibleAfter: true, name: bonjour, description: Je n'ai pas d'idée, scheduledDate: Timestamp(seconds=1710342060, nanoseconds=0), isFinished: false}
         MeetingModel fbMeeting = MeetingModel(
             id: meetingId,
-            createdAt: fromMillisToDateTime(
+            createdAt: DateTime.fromMillisecondsSinceEpoch(
                 (data['createdAt'] as Timestamp).millisecondsSinceEpoch),
             creator: data['creator'],
             name: data['name'],
             deletionDate: data['deletionDate'] != null
-                ? fromMillisToDateTime(
+                ? DateTime.fromMillisecondsSinceEpoch(
                     (data['deletionDate'] as Timestamp).millisecondsSinceEpoch)
                 : null,
             description: data['description'],
             endDate: data['endDate'] != null
-                ? fromMillisToDateTime(
+                ? DateTime.fromMillisecondsSinceEpoch(
                     (data['endDate'] as Timestamp).millisecondsSinceEpoch)
                 : null,
             isFinished: data['isFinished'],
             isTranscriptAccessibleAfter: data['isTranscriptAccessibleAfter'],
             scheduledDate: data['scheduledDate'] != null
-                ? fromMillisToDateTime(
+                ? DateTime.fromMillisecondsSinceEpoch(
                     (data['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
                 : null);
 

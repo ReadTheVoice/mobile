@@ -1,6 +1,5 @@
 import 'package:readthevoice/data/firebase_model/user_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
-import 'package:readthevoice/utils/utils.dart';
 
 class MeetingModel {
   final String id;
@@ -48,13 +47,16 @@ extension MeetingModelConversion on MeetingModel {
     return Meeting(
         id: id,
         title: name,
-        creationDateAtMillis: fromDateTimeToMillis(createdAt),
+        creationDateAtMillis: createdAt.millisecondsSinceEpoch,
         userId: this.creator,
         autoDeletion: autoDelete,
-        scheduledDateAtMillis: (scheduledDate != null) ? fromDateTimeToMillis(scheduledDate!) : null,
-        endDateAtMillis: (endDate != null) ? fromDateTimeToMillis(endDate!) : null,
+        scheduledDateAtMillis: (scheduledDate != null)
+            ? scheduledDate?.millisecondsSinceEpoch
+            : null,
+        endDateAtMillis:
+            (endDate != null) ? endDate?.millisecondsSinceEpoch : null,
         autoDeletionDateAtMillis:
-            autoDelete ? fromDateTimeToMillis(deletionDate!) : null,
+            autoDelete ? deletionDate?.millisecondsSinceEpoch : null,
         userName: username,
         status: status);
   }

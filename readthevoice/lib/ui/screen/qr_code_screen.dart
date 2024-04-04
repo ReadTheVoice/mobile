@@ -15,7 +15,6 @@ import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
-import 'package:readthevoice/ui/screen/stream_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
 class QrCodeScreen extends StatefulWidget {
@@ -103,7 +102,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             children: [
               Text('The meeting created by: ${meeting.userName}'),
               Text(
-                  'The meeting is scheduled for: ${fromMillisToDateTime(meeting.scheduledDateAtMillis!)} !'),
+                  'The meeting is scheduled for: ${meeting.scheduledDateAtMillis?.toDateTimeString()} !'),
               const Text('Please wait some time for the meeting to start.'),
             ],
           ),
@@ -189,9 +188,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 meeting.transcription = existing.transcription;
                 meeting.favorite = existing.favorite;
                 meeting.archived = existing.archived;
-                meeting.transcriptionId = meeting.transcriptionId ?? existing.transcriptionId;
+                meeting.transcriptionId =
+                    meeting.transcriptionId ?? existing.transcriptionId;
 
-                if(meeting.endDateAtMillis != null) {
+                if (meeting.endDateAtMillis != null) {
                   meeting.status = MeetingStatus.ended;
                 }
 
@@ -219,7 +219,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   void manageMeeting(Meeting meeting) {
     bool hasNotStarted = meeting.scheduledDateAtMillis != null
-        ? fromMillisToDateTime(meeting.scheduledDateAtMillis!)
+        ? DateTime.fromMillisecondsSinceEpoch(meeting.scheduledDateAtMillis!)
             .isAfter(DateTime.now())
         : false;
     bool isShowingDialog = false;

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -8,21 +9,22 @@ import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
   final Meeting meeting;
-  Color background = Colors.blueAccent.shade100;
-  final Color textColor = Colors.white;
+  final Color? background;
+  final Color? textColor;
 
   final bool? isFavoriteList;
 
   final Function? favoriteFunction;
   final Function? deleteFunction;
 
-  MeetingCard({
-    super.key,
-    required this.meeting,
-    this.isFavoriteList,
-    this.favoriteFunction,
-    this.deleteFunction,
-  });
+  const MeetingCard(
+      {super.key,
+      required this.meeting,
+      this.isFavoriteList,
+      this.favoriteFunction,
+      this.deleteFunction,
+      this.background,
+      this.textColor = Colors.white});
 
   @override
   State<MeetingCard> createState() => _MeetingCardState();
@@ -88,7 +90,8 @@ class _MeetingCardState extends State<MeetingCard> {
         );
       },
       child: Card(
-          color: widget.background,
+          color: widget.background ??
+              Theme.of(context).colorScheme.primaryContainer,
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
             title: Row(
@@ -109,10 +112,7 @@ class _MeetingCardState extends State<MeetingCard> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(
-                  height: 2,
-                  thickness: 1,
-                ),
+                const MeetingCardDivider(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -171,15 +171,12 @@ class _MeetingCardState extends State<MeetingCard> {
                     ),
                   ],
                 ),
-                const Divider(
-                  height: 2,
-                  thickness: 1,
-                ),
+                const MeetingCardDivider(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    "Created on: ${fromMillisToDateTime(widget.meeting.creationDateAtMillis).toString()}",
-                    style: const TextStyle(color: Colors.white),
+                    "${tr("meeting_creation_date")}: ${widget.meeting.creationDateAtMillis.toDateTimeString()}",
+                    style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
                   ),
                 ),
               ],

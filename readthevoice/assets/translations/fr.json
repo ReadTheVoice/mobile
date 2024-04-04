@@ -22,5 +22,14 @@
     "download_transcript": "Télécharger la transcription",
     "meeting_status_created": "Créé",
     "meeting_status_started": "Commencé",
-    "meeting_status_ended": "Terminé"
+    "meeting_status_ended": "Terminé",
+    "meeting_description": "Description",
+    "meeting_title": "Titre",
+    "meeting_status": "Status",
+    "meeting_schedule_date": "Programmé à",
+    "meeting_creation_date": "Créé le",
+    "meeting_creator": "Créé par",
+    "meeting_end_date": "Terminé le",
+    "meeting_auto_delete_date": "Suppression automatique le",
+    "meeting_transcription": "Transcription"
 }

@@ -1,7 +1,20 @@
 enum AppThemeMode { light, dark }
 
-enum AvailableScreens { main, home, favoriteMeetings, archivedMeetings, settings, aboutUs, meeting, transcriptionStream }
+enum AvailableScreens {
+  main,
+  home,
+  favoriteMeetings,
+  archivedMeetings,
+  settings,
+  aboutUs,
+  meeting,
+  transcriptionStream
+}
 
-int fromDateTimeToMillis(DateTime date) => date.millisecondsSinceEpoch;
-DateTime fromMillisToDateTime(int millis) => DateTime.fromMillisecondsSinceEpoch(millis);
-
+extension DateTimeStringConversion on int {
+  String toDateTimeString() {
+    // TODO Proceed with correct manipulations
+    return DateTime.fromMillisecondsSinceEpoch(this)
+        .toString();
+  }
+}

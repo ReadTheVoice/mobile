@@ -59,7 +59,7 @@ class MeetingAttributeCard extends StatelessWidget {
     return SizedBox(
       width: 170,
       child: Card(
-        color: Colors.blueAccent.shade100,
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -89,6 +89,21 @@ class MeetingAttributeCard extends StatelessWidget {
               ],
             )),
       ),
+    );
+  }
+}
+
+class MeetingCardDivider extends StatelessWidget {
+  final Color? color;
+
+  const MeetingCardDivider({super.key, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 2,
+      thickness: 1,
+      color: color ?? Theme.of(context).colorScheme.onPrimaryContainer,
     );
   }
 }

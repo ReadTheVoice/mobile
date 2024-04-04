@@ -4,6 +4,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/utils/utils.dart';
 
 class MeetingScreen extends StatefulWidget {
   final Meeting meeting;
@@ -25,8 +26,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String attributeName = "meeting_description";
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -90,11 +89,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   firstName: "meeting_status",
                   firstValue: widget.meeting.status.title,
                   secondName: "meeting_schedule_date",
+                  secondValue: ((widget.meeting.scheduledDateAtMillis != null)
+                      ? widget.meeting.scheduledDateAtMillis!.toDateTimeString()
+                      : ""),
                 ),
                 MeetingAttributeCard(
                   firstName: "meeting_creator",
                   firstValue: widget.meeting.userName,
                   secondName: "meeting_creation_date",
+                  secondValue:
+                      widget.meeting.creationDateAtMillis.toDateTimeString(),
                 ),
               ],
             ),
@@ -104,17 +108,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
             MeetingField(
                 name: "meeting_end_date",
                 value: ((widget.meeting.endDateAtMillis != null)
-                    ? DateTime.fromMillisecondsSinceEpoch(
-                            widget.meeting.endDateAtMillis!)
-                        .toString()
+                    ? widget.meeting.endDateAtMillis!.toDateTimeString()
                     : "")),
             MeetingField(
                 name: "meeting_auto_delete_date",
                 value: ((widget.meeting.autoDeletion == true &&
                         widget.meeting.autoDeletionDateAtMillis != null)
-                    ? DateTime.fromMillisecondsSinceEpoch(
-                            widget.meeting.autoDeletionDateAtMillis!)
-                        .toString()
+                    ? widget.meeting.autoDeletionDateAtMillis!
+                        .toDateTimeString()
                     : "")),
             MeetingField(
                 name: "meeting_transcription",
