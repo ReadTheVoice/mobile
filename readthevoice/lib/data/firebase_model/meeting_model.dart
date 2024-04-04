@@ -38,7 +38,7 @@ extension MeetingModelConversion on MeetingModel {
     String username = "${creator?.firstName} ${creator?.lastName}";
     MeetingStatus status = MeetingStatus.createdNotStarted;
 
-    if (isFinished) {
+    if (isFinished || endDate != null) {
       status = MeetingStatus.ended;
     } else if (scheduledDate != null &&
         (DateTime.now().isAfter(scheduledDate!))) {
@@ -52,6 +52,7 @@ extension MeetingModelConversion on MeetingModel {
         userId: this.creator,
         autoDeletion: autoDelete,
         scheduledDateAtMillis: (scheduledDate != null) ? fromDateTimeToMillis(scheduledDate!) : null,
+        endDateAtMillis: (endDate != null) ? fromDateTimeToMillis(endDate!) : null,
         autoDeletionDateAtMillis:
             autoDelete ? fromDateTimeToMillis(deletionDate!) : null,
         userName: username,

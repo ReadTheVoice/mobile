@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:floor/floor.dart';
+import 'package:flutter/material.dart';
 import 'package:readthevoice/data/constants.dart';
 
 // flutter packages pub run build_runner build
@@ -8,16 +10,42 @@ enum MeetingStatus {
   started,
   ended;
 
-  String get getStatusTitle {
+  String get title {
     switch (this) {
       case MeetingStatus.createdNotStarted:
-        return "Created"; // Has not yet started
+        return tr("meeting_status_created"); // Has not yet started
       case MeetingStatus.started:
-        return "Started";
+        return tr("meeting_status_started");
       case MeetingStatus.ended:
-        return "Ended";
+        return tr("meeting_status_ended");
       default:
         return "None";
+    }
+  }
+  
+  Color get backgroundColor {
+    switch (this) {
+      case MeetingStatus.createdNotStarted:
+        return Colors.grey; // Has not yet started
+      case MeetingStatus.started:
+        return Colors.deepPurpleAccent;
+      case MeetingStatus.ended:
+        return Colors.redAccent;
+      default:
+        return Colors.transparent;
+    }
+  }
+
+  Color get textColor {
+    switch (this) {
+      case MeetingStatus.createdNotStarted:
+        return Colors.black; // Has not yet started
+      case MeetingStatus.started:
+        return Colors.white;
+      case MeetingStatus.ended:
+        return Colors.white;
+      default:
+        return Colors.white;
     }
   }
 }
@@ -37,6 +65,7 @@ class Meeting {
   int? autoDeletionDateAtMillis;
   int? scheduledDateAtMillis;
   String? transcriptionId;
+  int? endDateAtMillis;
 
   MeetingStatus status;
   String transcription;
@@ -50,6 +79,7 @@ class Meeting {
       required this.userId,
       this.autoDeletionDateAtMillis,
       this.scheduledDateAtMillis,
+      this.endDateAtMillis,
       this.transcription = "",
       this.transcriptionId,
       this.userName,

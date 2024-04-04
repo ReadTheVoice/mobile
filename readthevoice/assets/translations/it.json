@@ -17,5 +17,10 @@
     "home_bottom_bar": "Iniziale",
     "favorite_bottom_bar": "Preferiti",
 
-    "unknown_qr_code": "Codice Qr sconosciuto"
+    "unknown_qr_code": "Codice Qr sconosciuto",
+
+    "download_transcript": "Download transcription",
+    "meeting_status_created": "Created",
+    "meeting_status_started": "Started",
+    "meeting_status_ended": "Ended"
 }

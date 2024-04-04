@@ -82,3 +82,54 @@ class _StreamScreenState extends State<StreamScreen> {
     );
   }
 }
+
+/*
+// Display the list of streams
+  body: RefreshIndicator(
+    onRefresh: () => _getStreams(),
+    child: !_isRetrieving && _streams != null
+        ? _streams!.isEmpty
+            ? const Center(
+                child: Text('Empty'),
+              )
+            : ListView.separated(
+                physics: const BouncingScrollPhysics(),
+                itemCount: _streams!.length,
+                itemBuilder: (context, index) {
+                  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+                    int.parse(_streams![index].createdAt) * 1000,
+                  );
+                  DateFormat formatter =
+                      DateFormat.yMMMMd().addPattern('|').add_jm();
+                  String dateTimeString = formatter.format(dateTime);
+
+                  String currentStatus = _streams![index].status;
+                  bool isReady = currentStatus == 'active';
+
+                  String? playbackId =
+                      isReady ? _streams![index].playbackIds[0].id : null;
+
+                  String? thumbnailURL = isReady
+                      ? '$muxImageBaseUrl/$playbackId/$imageTypeSize'
+                      : null;
+
+                  return VideoTile(
+                    streamData: _streams![index],
+                    thumbnailUrl: thumbnailURL,
+                    isReady: isReady,
+                    dateTimeString: dateTimeString,
+                    onTap: (id) async {
+                      await _muxClient.deleteLiveStream(liveStreamId: id);
+                      _getStreams();
+                    },
+                  );
+                },
+                separatorBuilder: (_, __) => const SizedBox(
+                  height: 16.0,
+                ),
+              )
+        : const Center(
+            child: CircularProgressIndicator(),
+          ),
+  ),
+ */

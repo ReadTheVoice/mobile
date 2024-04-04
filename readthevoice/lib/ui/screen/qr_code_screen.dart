@@ -191,6 +191,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 meeting.archived = existing.archived;
                 meeting.transcriptionId = meeting.transcriptionId ?? existing.transcriptionId;
 
+                if(meeting.endDateAtMillis != null) {
+                  meeting.status = MeetingStatus.ended;
+                }
+
                 await meetingService.updateMeeting(meeting);
                 manageMeeting(meeting);
               } else {

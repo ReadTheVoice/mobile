@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/meeting_card.dart';
+import 'package:readthevoice/ui/component/meeting_card_component.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
   const FavoriteMeetingsScreen({super.key});

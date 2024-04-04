@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `description` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `transcriptionId` TEXT, `status` INTEGER NOT NULL, `transcription` TEXT NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `description` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `transcriptionId` TEXT, `endDateAtMillis` INTEGER, `status` INTEGER NOT NULL, `transcription` TEXT NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,6 +120,7 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'transcriptionId': item.transcriptionId,
+                  'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
                   'transcription': item.transcription,
                   'favorite': item.favorite ? 1 : 0,
@@ -142,6 +143,7 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'transcriptionId': item.transcriptionId,
+                  'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
                   'transcription': item.transcription,
                   'favorite': item.favorite ? 1 : 0,
@@ -164,6 +166,7 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'transcriptionId': item.transcriptionId,
+                  'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
                   'transcription': item.transcription,
                   'favorite': item.favorite ? 1 : 0,
@@ -193,6 +196,7 @@ class _$MeetingDao extends MeetingDao {
             userId: row['userId'] as String,
             autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
             transcriptionId: row['transcriptionId'] as String?,
             userName: row['userName'] as String?,
@@ -215,6 +219,7 @@ class _$MeetingDao extends MeetingDao {
             userId: row['userId'] as String,
             autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
             transcriptionId: row['transcriptionId'] as String?,
             userName: row['userName'] as String?,
@@ -237,6 +242,7 @@ class _$MeetingDao extends MeetingDao {
             userId: row['userId'] as String,
             autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
             transcriptionId: row['transcriptionId'] as String?,
             userName: row['userName'] as String?,
@@ -259,6 +265,7 @@ class _$MeetingDao extends MeetingDao {
             userId: row['userId'] as String,
             autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
             transcriptionId: row['transcriptionId'] as String?,
             userName: row['userName'] as String?,
@@ -288,6 +295,7 @@ class _$MeetingDao extends MeetingDao {
             userId: row['userId'] as String,
             autoDeletionDateAtMillis: row['autoDeletionDateAtMillis'] as int?,
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
+            endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
             transcriptionId: row['transcriptionId'] as String?,
             userName: row['userName'] as String?,

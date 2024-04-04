@@ -1,0 +1,190 @@
+import 'package:flutter/material.dart';
+import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/screen/meeting_screen.dart';
+import 'package:readthevoice/utils/utils.dart';
+import 'package:toastification/toastification.dart';
+
+class MeetingCard extends StatefulWidget {
+  final Meeting meeting;
+  Color background = Colors.blueAccent.shade100;
+  final Color textColor = Colors.white;
+
+  final bool? isFavoriteList;
+
+  final Function? favoriteFunction;
+  final Function? deleteFunction;
+
+  MeetingCard({
+    super.key,
+    required this.meeting,
+    this.isFavoriteList,
+    this.favoriteFunction,
+    this.deleteFunction,
+  });
+
+  @override
+  State<MeetingCard> createState() => _MeetingCardState();
+}
+
+class _MeetingCardState extends State<MeetingCard> {
+  final MeetingService meetingService = const MeetingService();
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Are you sure you want to perform this action ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    ).then((confirmed) {
+      if (confirmed ?? false) {
+        setState(() {
+          meetingService.deleteMeetingById(widget.meeting.id);
+
+          if (widget.deleteFunction != null) {
+            widget.deleteFunction!();
+          }
+
+          toastification.show(
+            context: context,
+            alignment: Alignment.bottomCenter,
+            type: ToastificationType.success,
+            style: ToastificationStyle.minimal,
+            autoCloseDuration: const Duration(seconds: 5),
+            title: const Text('Hello, world!'),
+            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
+            icon: const Icon(Icons.check),
+            primaryColor: Colors.green,
+            // backgroundColor: Colors.white,
+            // foregroundColor: Colors.black,
+          );
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => MeetingScreen(
+              meeting: widget.meeting,
+            ),
+          ),
+        );
+      },
+      child: Card(
+          color: widget.background,
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.meeting.title.trim() != ""
+                      ? widget.meeting.title
+                      : "title...",
+                  style: TextStyle(color: widget.textColor, fontSize: 20),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Spacer(),
+                MeetingStatusChip(meetingStatus: widget.meeting.status),
+              ],
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(
+                  height: 2,
+                  thickness: 1,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.isFavoriteList != null &&
+                              widget.isFavoriteList == true &&
+                              widget.meeting.archived)
+                            const Text("Archived")
+                          else
+                            const SizedBox(width: 0.0),
+                          Text(
+                            widget.meeting.description ?? "description...",
+                            style: TextStyle(
+                                color: widget.textColor, fontSize: 16),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                bool fav = !widget.meeting.favorite;
+
+                                widget.meeting.favorite = fav;
+                                meetingService.setFavoriteMeetingById(
+                                    widget.meeting.id, fav);
+
+                                if (widget.favoriteFunction != null) {
+                                  widget.favoriteFunction!();
+                                }
+                              });
+                            },
+                            icon: Icon(
+                              widget.meeting.favorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              color: widget.textColor,
+                            )),
+                        IconButton(
+                            onPressed: _showConfirmationDialog,
+                            icon: Icon(
+                              Icons.delete_outline_rounded,
+                              color: widget.textColor,
+                            ))
+                      ],
+                    ),
+                  ],
+                ),
+                const Divider(
+                  height: 2,
+                  thickness: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  child: Text(
+                    "Created on: ${fromMillisToDateTime(widget.meeting.creationDateAtMillis).toString()}",
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}
