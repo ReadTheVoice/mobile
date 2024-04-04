@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_list_component.dart';
 
 class ArchivedMeetingsScreen extends StatefulWidget {
@@ -44,10 +45,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                   )
                 : const Text("No Data");
           } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Colors.teal,
-            ));
+            return const AppProgressIndicator();
           }
         },
       ),

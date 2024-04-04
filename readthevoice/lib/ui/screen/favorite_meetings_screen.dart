@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
@@ -30,15 +31,6 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                     itemCount: snapshot.data?.length,
                     itemBuilder: (BuildContext context, int index) {
                       Meeting currentMeeting = snapshot.data![index];
-                      // Meeting? currentMeeting = snapshot.data![index];
-
-                      // Meeting? currentMeeting;
-                      //
-                      // if(snapshot.data != null) {
-                      //   currentMeeting = snapshot.data?[index];
-                      //   // currentMeeting = widget.meetings![index];
-                      // }
-
                       return MeetingCard(
                         meeting: currentMeeting,
                         isFavoriteList: true,
@@ -57,10 +49,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                   )
                 : const Text("No Data");
           } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Colors.teal,
-            ));
+            return const AppProgressIndicator();
           }
         },
       ),

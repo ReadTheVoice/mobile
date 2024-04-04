@@ -20,6 +20,8 @@
     "unknown_qr_code": "Unknown Qr Code",
 
     "download_transcript": "Download transcription",
+    "meeting_is_archived": "Archived",
+    "meeting_is_favorite": "Favorite",
     "meeting_status_created": "Created",
     "meeting_status_started": "Started",
     "meeting_status_ended": "Ended",

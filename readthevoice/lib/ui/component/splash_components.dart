@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:readthevoice/ui/component/placeholder_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 
 class SplashIcons extends StatelessWidget {
   final String svgPath;
@@ -39,7 +39,7 @@ class SplashIcons extends StatelessWidget {
             height: 100,
             width: 100,
             placeholderBuilder: (BuildContext context) =>
-                PlaceholderComponent(),
+                const AppPlaceholder(),
           ),
         ),
       ],

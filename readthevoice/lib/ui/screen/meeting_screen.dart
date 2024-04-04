@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/utils/utils.dart';
 
@@ -18,10 +20,17 @@ class MeetingScreen extends StatefulWidget {
 class _MeetingScreenState extends State<MeetingScreen> {
   MeetingService meetingService = const MeetingService();
   FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
+  late Stream<DatabaseEvent> stream;
+
+  Future<void> _getStream() async {
+    stream = await firebaseService.streamMeetingTranscription(
+        widget.meeting.id, widget.meeting.transcriptionId);
+  }
 
   @override
   void initState() {
     super.initState();
+    _getStream();
   }
 
   @override
@@ -79,6 +88,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
         padding: const EdgeInsets.all(15),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MeetingField(name: "meeting_title", value: widget.meeting.title),
             Row(
@@ -117,9 +127,49 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     ? widget.meeting.autoDeletionDateAtMillis!
                         .toDateTimeString()
                     : "")),
-            MeetingField(
-                name: "meeting_transcription",
-                value: widget.meeting.transcription),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "meeting_transcription",
+                    style: TextStyle(
+                        fontSize: 18, decoration: TextDecoration.underline),
+                  ).tr(),
+                  Text(widget.meeting.transcription),
+                  StreamBuilder(
+                      stream: stream,
+                      builder: (BuildContext context, snapshot) {
+                        if (snapshot.hasData) {
+                          return const Text("Has Data");
+                        } else if (snapshot.hasError) {
+                          return const Text("Error");
+                        } else {
+                          return const AppPlaceholder();
+                        }
+                      })
+
+                  /*
+                  //first make a reference to your firebase database
+                    var recentJobsRef = FirebaseDatabase.instance
+                    .reference()
+                    .child('recent')
+                    .orderByChild('created_at')
+                    .limitToFirst(10);
+
+                    //then use StreamBuilders like this
+
+                    StreamBuilder(
+                    stream: recentJobsRef.onValue,
+                    builder: (BuildContext context, snapshot) {
+                    if(snapshot.hasData) => return "Has Data";
+                    else if(snapshot.hasError) => return "Error";
+                    }
+                   */
+                ],
+              ),
+            ),
             const Spacer(),
             Center(
               child: Text(

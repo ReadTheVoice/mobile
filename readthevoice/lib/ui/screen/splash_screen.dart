@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
-import 'package:readthevoice/ui/component/placeholder_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/splash_components.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 
@@ -63,7 +63,7 @@ class _NativeSplashScreenState extends State<NativeSplashScreen>
                 child: SvgPicture.asset(
                   "assets/logos/logo_new.svg",
                   placeholderBuilder: (BuildContext context) =>
-                      PlaceholderComponent(),
+                      const AppPlaceholder(),
                 ),
               ),
               const SizedBox(height: 10.0),

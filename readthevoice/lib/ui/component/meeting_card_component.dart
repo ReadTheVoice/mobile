@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
@@ -124,7 +125,27 @@ class _MeetingCardState extends State<MeetingCard> {
                           if (widget.isFavoriteList != null &&
                               widget.isFavoriteList == true &&
                               widget.meeting.archived)
-                            const Text("Archived")
+                            Row(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.snowflake,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
+                                  size: 15,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "meeting_is_archived",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer),
+                                ).tr()
+                              ],
+                            )
                           else
                             const SizedBox(width: 0.0),
                           Text(
@@ -176,7 +197,9 @@ class _MeetingCardState extends State<MeetingCard> {
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
                     "${tr("meeting_creation_date")}: ${widget.meeting.creationDateAtMillis.toDateTimeString()}",
-                    style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                    style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onPrimaryContainer),
                   ),
                 ),
               ],
