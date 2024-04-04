@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 
 class MeetingField extends StatelessWidget {
@@ -16,6 +17,12 @@ class MeetingField extends StatelessWidget {
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             labelText: tr(name),
+            // icon: const FaIcon(FontAwesomeIcons.f),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primaryContainer
+                )
+            )
           ),
           controller: TextEditingController(text: value),
           readOnly: true,
@@ -71,7 +78,7 @@ class MeetingAttributeCard extends StatelessWidget {
                       fontSize: 15, decoration: TextDecoration.underline),
                 ).tr(),
                 Text(
-                  firstValue!,
+                  firstValue ?? "",
                   style: const TextStyle(fontWeight: FontWeight.normal),
                 ),
                 const SizedBox(
@@ -83,7 +90,7 @@ class MeetingAttributeCard extends StatelessWidget {
                       fontSize: 15, decoration: TextDecoration.underline),
                 ).tr(),
                 Text(
-                  secondValue!,
+                  secondValue ?? "",
                   style: const TextStyle(fontWeight: FontWeight.normal),
                 ),
               ],

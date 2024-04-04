@@ -3,7 +3,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/firebase_model/user_model.dart';
-import 'package:readthevoice/utils/utils.dart';
 
 import '../model/meeting.dart';
 
@@ -78,10 +77,12 @@ class FirebaseDatabaseService {
   }
 
   // Stream meeting transcription
-  Future<Stream<DatabaseEvent>> streamMeetingTranscription(String meetingId, String? transcriptionId) async {
-    if(transcriptionId != null && transcriptionId.trim().isNotEmpty) {
-      final test = await transcriptDatabaseReference.child(transcriptionId).get();
-      if(test.exists) {
+  Future<Stream<DatabaseEvent>> streamMeetingTranscription(
+      String meetingId, String? transcriptionId) async {
+    if (transcriptionId != null && transcriptionId.trim().isNotEmpty) {
+      final test =
+          await transcriptDatabaseReference.child(transcriptionId).get();
+      if (test.exists) {
         return transcriptDatabaseReference.child(transcriptionId).onValue;
       }
     }
@@ -90,7 +91,9 @@ class FirebaseDatabaseService {
     //   final data = event.snapshot.value;
     //   print(data['name']); // Access updated data
     // });
-    return transcriptDatabaseReference.equalTo(meetingId, key: "meeting_id").onValue;
+    return transcriptDatabaseReference
+        .equalTo(meetingId, key: "meeting_id")
+        .onValue;
   }
 }
 
@@ -179,68 +182,4 @@ StreamBuilder<DatabaseEvent>(
 - Adjust the data extraction and display logic based on your specific data structure.
 
 By following these steps and incorporating best practices, you can effectively stream data from Firebase Realtime Database and dynamically update your Flutter application's UI.
- */
-
-/*
-// Retrieving child node based on filters
-
-Here's how you can retrieve nodes using filters in Firebase Realtime Database for Flutter:
-
-**1. Filtering by Key:**
-
-   - Firebase Realtime Database doesn't directly support filtering by key or value in the way Firestore does. However, you can achieve a similar effect by leveraging queries that start or end at specific key values.
-
-   ```dart
-   final databaseReference = FirebaseDatabase.instance.reference()
-       .child('users')
-       .orderByKey() // Order by key for efficient filtering
-       .startAt('user_b') // Start at key 'user_b' (inclusive)
-       .endAt('user_d'); // End at key 'user_d' (inclusive)
-
-   // Listen for data or use once() for a one-time retrieval
-   ```
-
-   **Explanation:**
-
-   - `orderByKey()` ensures efficient filtering based on key values.
-   - `startAt` and `endAt` define the key range to retrieve.
-   - This retrieves data for nodes with keys between (or including) 'user_b' and 'user_d'.
-
-**2. Filtering by Value (Limited Approach):**
-
-   - While not strictly filtering by value, you can iterate through child nodes and check their values:
-
-   ```dart
-   final databaseReference = FirebaseDatabase.instance.reference().child('users');
-
-   databaseReference.once().then((snapshot) {
-     if (snapshot.hasData) {
-       final data = snapshot.value as Map<String, dynamic>;
-       data.forEach((key, value) {
-         if (value['age'] > 25) {
-           // Process nodes where 'age' is greater than 25
-         }
-       });
-     }
-   });
-   ```
-
-   **Explanation:**
-
-   - We retrieve all data from the `users` node using `once()`.
-   - We iterate through each child node (`key`, `value`) pair.
-   - We check if the `value` (which is a map) has an 'age' field greater than 25.
-
-   **Note:** This approach iterates through all child nodes, making it less efficient for large datasets. Consider alternative solutions for complex value-based filtering.
-
-**3. Alternative Solutions (for Complex Filtering):**
-
-   - Firebase Cloud Functions: Write serverless functions to query and filter data on the server-side, reducing client-side overhead.
-   - Firebase Cloud Firestore: If your project requirements demand complex queries and filtering, consider using Firestore, which offers more advanced capabilities compared to Realtime Database in this regard.
-
-**Remember:**
-
-- Choose the filtering approach that best suits your data size and complexity.
-- Firebase Realtime Database is optimized for real-time updates, not complex filtering.
-- For extensive filtering, explore alternative solutions like Cloud Functions or Firestore.
  */

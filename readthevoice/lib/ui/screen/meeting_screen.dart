@@ -20,11 +20,20 @@ class MeetingScreen extends StatefulWidget {
 class _MeetingScreenState extends State<MeetingScreen> {
   MeetingService meetingService = const MeetingService();
   FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
-  late Stream<DatabaseEvent> stream;
+  Stream<DatabaseEvent>? stream;
 
   Future<void> _getStream() async {
+    // /transcripts/-Nudk2kSHYQa05lHkfWj
     stream = await firebaseService.streamMeetingTranscription(
         widget.meeting.id, widget.meeting.transcriptionId);
+    // "8DXYXPDUTnPKXiWl2FtH", null);
+    // widget.meeting.id, widget.meeting.transcriptionId ?? "-Nudk2kSHYQa05lHkfWj");
+  }
+
+  Future<void> _updateTranscription(
+      dynamic data, String? transcriptionId) async {
+    await meetingService.updateMeetingTranscription(
+        widget.meeting.id, data, transcriptionId);
   }
 
   @override
@@ -99,7 +108,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   firstName: "meeting_status",
                   firstValue: widget.meeting.status.title,
                   secondName: "meeting_schedule_date",
-                  secondValue: ((widget.meeting.scheduledDateAtMillis != null)
+                  secondValue: (widget.meeting.scheduledDateAtMillis != null
                       ? widget.meeting.scheduledDateAtMillis!.toDateTimeString()
                       : ""),
                 ),
@@ -137,36 +146,51 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     style: TextStyle(
                         fontSize: 18, decoration: TextDecoration.underline),
                   ).tr(),
+                  // If meeting ended ? Text else StreamBuilder
                   Text(widget.meeting.transcription),
                   StreamBuilder(
                       stream: stream,
                       builder: (BuildContext context, snapshot) {
-                        if (snapshot.hasData) {
-                          return const Text("Has Data");
+                        if (snapshot.hasData && !snapshot.hasError) {
+                          if (snapshot.data != null &&
+                              snapshot.data!.snapshot.exists &&
+                              snapshot.data?.snapshot.value != null) {
+                            // {data: . Bonjour.. . . Un. . deux. . . , email_user: gaetan.glh@orange.fr, meeting_id: 8DXYXPDUTnPKXiWl2FtH, start: 18.65}
+                            dynamic data = snapshot.data?.snapshot.value;
+
+                            // print("SNAPSHOT DATA");
+                            // print(snapshot.data?.snapshot.value);
+                            // print(snapshot.data?.snapshot.key);
+
+                            // set transcriptionId
+                            _updateTranscription(
+                                data["data"], snapshot.data?.snapshot.key);
+                            return Text("${data["data"] ?? "No Data"}");
+                          }
+
+                          return const Center(
+                            child: Text("No Data"),
+                          );
                         } else if (snapshot.hasError) {
-                          return const Text("Error");
+                          print("SNAPSHOT ERROR");
+                          print(snapshot.error);
+
+                          return Text("Error: \n${snapshot.error}");
                         } else {
-                          return const AppPlaceholder();
+                          if (widget.meeting.status == MeetingStatus.ended) {
+                            return const Center(
+                              child: Text("No Data"),
+                            );
+                          }
+                          // return const Center(
+                          //   child: AppPlaceholder(),
+                          // );
+
+                          return const Center(
+                            child: Text("No Data"),
+                          );
                         }
                       })
-
-                  /*
-                  //first make a reference to your firebase database
-                    var recentJobsRef = FirebaseDatabase.instance
-                    .reference()
-                    .child('recent')
-                    .orderByChild('created_at')
-                    .limitToFirst(10);
-
-                    //then use StreamBuilders like this
-
-                    StreamBuilder(
-                    stream: recentJobsRef.onValue,
-                    builder: (BuildContext context, snapshot) {
-                    if(snapshot.hasData) => return "Has Data";
-                    else if(snapshot.hasError) => return "Error";
-                    }
-                   */
                 ],
               ),
             ),

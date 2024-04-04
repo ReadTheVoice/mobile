@@ -329,6 +329,26 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
+  Future<void> updateTranscriptionMeetingById(
+    String id,
+    String transcription,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE meeting SET transcription = ?2 WHERE id = ?1',
+        arguments: [id, transcription]);
+  }
+
+  @override
+  Future<void> updateTranscriptionIdMeetingById(
+    String id,
+    String transcriptionId,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE meeting SET transcriptionId = ?2 WHERE id = ?1',
+        arguments: [id, transcriptionId]);
+  }
+
+  @override
   Future<void> deleteMeeting(String id) async {
     await _queryAdapter
         .queryNoReturn('DELETE FROM meeting WHERE id = ?1', arguments: [id]);
