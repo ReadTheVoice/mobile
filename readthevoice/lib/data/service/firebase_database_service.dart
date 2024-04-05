@@ -78,22 +78,8 @@ class FirebaseDatabaseService {
 
   // Stream meeting transcription
   Future<Stream<DatabaseEvent>> streamMeetingTranscription(
-      String meetingId, String? transcriptionId) async {
-    if (transcriptionId != null && transcriptionId.trim().isNotEmpty) {
-      final test =
-          await transcriptDatabaseReference.child(transcriptionId).get();
-      if (test.exists) {
-        return transcriptDatabaseReference.child(transcriptionId).onValue;
-      }
-    }
-
-    // databaseReference.onValue.listen((event) {
-    //   final data = event.snapshot.value;
-    //   print(data['name']); // Access updated data
-    // });
-    return transcriptDatabaseReference
-        .equalTo(meetingId, key: "meeting_id")
-        .onValue;
+      String meetingId) async {
+    return transcriptDatabaseReference.child(meetingId).onValue;
   }
 }
 

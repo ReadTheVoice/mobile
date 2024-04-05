@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `description` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `transcriptionId` TEXT, `endDateAtMillis` INTEGER, `status` INTEGER NOT NULL, `transcription` TEXT NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `endDateAtMillis` INTEGER, `status` INTEGER NOT NULL, `description` TEXT NOT NULL, `transcription` TEXT NOT NULL, `isTranscriptAccessibleAfter` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -113,16 +113,17 @@ class _$MeetingDao extends MeetingDao {
                   'title': item.title,
                   'userId': item.userId,
                   'userName': item.userName,
-                  'description': item.description,
                   'autoDeletion': item.autoDeletion == null
                       ? null
                       : (item.autoDeletion! ? 1 : 0),
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
-                  'transcriptionId': item.transcriptionId,
                   'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
+                  'description': item.description,
                   'transcription': item.transcription,
+                  'isTranscriptAccessibleAfter':
+                      item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 }),
@@ -136,16 +137,17 @@ class _$MeetingDao extends MeetingDao {
                   'title': item.title,
                   'userId': item.userId,
                   'userName': item.userName,
-                  'description': item.description,
                   'autoDeletion': item.autoDeletion == null
                       ? null
                       : (item.autoDeletion! ? 1 : 0),
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
-                  'transcriptionId': item.transcriptionId,
                   'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
+                  'description': item.description,
                   'transcription': item.transcription,
+                  'isTranscriptAccessibleAfter':
+                      item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 }),
@@ -159,16 +161,17 @@ class _$MeetingDao extends MeetingDao {
                   'title': item.title,
                   'userId': item.userId,
                   'userName': item.userName,
-                  'description': item.description,
                   'autoDeletion': item.autoDeletion == null
                       ? null
                       : (item.autoDeletion! ? 1 : 0),
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
-                  'transcriptionId': item.transcriptionId,
                   'endDateAtMillis': item.endDateAtMillis,
                   'status': item.status.index,
+                  'description': item.description,
                   'transcription': item.transcription,
+                  'isTranscriptAccessibleAfter':
+                      item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
                   'archived': item.archived ? 1 : 0
                 });
@@ -198,12 +201,14 @@ class _$MeetingDao extends MeetingDao {
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
             endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
-            transcriptionId: row['transcriptionId'] as String?,
+            description: row['description'] as String,
             userName: row['userName'] as String?,
             status: MeetingStatus.values[row['status'] as int],
             autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
+            isTranscriptAccessibleAfter:
+                (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
             archived: (row['archived'] as int) != 0));
   }
@@ -221,12 +226,14 @@ class _$MeetingDao extends MeetingDao {
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
             endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
-            transcriptionId: row['transcriptionId'] as String?,
+            description: row['description'] as String,
             userName: row['userName'] as String?,
             status: MeetingStatus.values[row['status'] as int],
             autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
+            isTranscriptAccessibleAfter:
+                (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
             archived: (row['archived'] as int) != 0));
   }
@@ -244,12 +251,14 @@ class _$MeetingDao extends MeetingDao {
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
             endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
-            transcriptionId: row['transcriptionId'] as String?,
+            description: row['description'] as String,
             userName: row['userName'] as String?,
             status: MeetingStatus.values[row['status'] as int],
             autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
+            isTranscriptAccessibleAfter:
+                (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
             archived: (row['archived'] as int) != 0));
   }
@@ -267,12 +276,14 @@ class _$MeetingDao extends MeetingDao {
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
             endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
-            transcriptionId: row['transcriptionId'] as String?,
+            description: row['description'] as String,
             userName: row['userName'] as String?,
             status: MeetingStatus.values[row['status'] as int],
             autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
+            isTranscriptAccessibleAfter:
+                (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
             archived: (row['archived'] as int) != 0));
   }
@@ -297,12 +308,14 @@ class _$MeetingDao extends MeetingDao {
             scheduledDateAtMillis: row['scheduledDateAtMillis'] as int?,
             endDateAtMillis: row['endDateAtMillis'] as int?,
             transcription: row['transcription'] as String,
-            transcriptionId: row['transcriptionId'] as String?,
+            description: row['description'] as String,
             userName: row['userName'] as String?,
             status: MeetingStatus.values[row['status'] as int],
             autoDeletion: row['autoDeletion'] == null
                 ? null
                 : (row['autoDeletion'] as int) != 0,
+            isTranscriptAccessibleAfter:
+                (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
             archived: (row['archived'] as int) != 0),
         arguments: [id]);
@@ -336,16 +349,6 @@ class _$MeetingDao extends MeetingDao {
     await _queryAdapter.queryNoReturn(
         'UPDATE meeting SET transcription = ?2 WHERE id = ?1',
         arguments: [id, transcription]);
-  }
-
-  @override
-  Future<void> updateTranscriptionIdMeetingById(
-    String id,
-    String transcriptionId,
-  ) async {
-    await _queryAdapter.queryNoReturn(
-        'UPDATE meeting SET transcriptionId = ?2 WHERE id = ?1',
-        arguments: [id, transcriptionId]);
   }
 
   @override

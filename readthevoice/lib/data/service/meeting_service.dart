@@ -126,7 +126,7 @@ class MeetingService {
     await meetingDao.updateMeeting(meeting);
   }
 
-  Future<void> updateMeetingTranscription(String meetingId, String? transcription, String? transcriptionId) async {
+  Future<void> updateMeetingTranscription(String meetingId, String? transcription) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -134,9 +134,6 @@ class MeetingService {
     final meetingDao = database.meetingDao;
     if(transcription != null && transcription.isNotEmpty) {
       await meetingDao.updateTranscriptionMeetingById(meetingId, transcription);
-    }
-    if(transcriptionId != null && transcriptionId.isNotEmpty) {
-      await meetingDao.updateTranscriptionIdMeetingById(meetingId, transcriptionId);
     }
   }
 }

@@ -22,7 +22,7 @@ enum MeetingStatus {
         return "None";
     }
   }
-  
+
   Color get backgroundColor {
     switch (this) {
       case MeetingStatus.createdNotStarted:
@@ -60,15 +60,15 @@ class Meeting {
   final String userId;
   final String? userName;
 
-  String? description;
   bool? autoDeletion;
   int? autoDeletionDateAtMillis;
   int? scheduledDateAtMillis;
-  String? transcriptionId;
   int? endDateAtMillis;
 
   MeetingStatus status;
+  String description;
   String transcription;
+  bool isTranscriptAccessibleAfter;
   bool favorite;
   bool archived;
 
@@ -81,14 +81,19 @@ class Meeting {
       this.scheduledDateAtMillis,
       this.endDateAtMillis,
       this.transcription = "",
-      this.transcriptionId,
+      this.description = "",
       this.userName,
       this.status = MeetingStatus.createdNotStarted,
       this.autoDeletion = false,
+      this.isTranscriptAccessibleAfter = true,
       this.favorite = false,
       this.archived = false});
 
   static Meeting example(String id) {
-    return Meeting(id: id, title: "", creationDateAtMillis: DateTime.now().millisecondsSinceEpoch, userId: "");
+    return Meeting(
+        id: id,
+        title: "",
+        creationDateAtMillis: DateTime.now().millisecondsSinceEpoch,
+        userId: "");
   }
 }

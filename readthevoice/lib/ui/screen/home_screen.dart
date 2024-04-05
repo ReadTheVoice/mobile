@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Meeting> currentMeetings =
         await meetingService.getUnarchivedMeetings();
 
-    if (filterText.trim() != "") {
+    if (filterText.trim().isNotEmpty) {
       return currentMeetings
           .where((meeting) =>
               meeting.title.contains(filterText) ||
@@ -69,6 +69,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /*
+    title: TextField(
+          autofocus: true,
+          textAlignVertical: TextAlignVertical.center,
+          textInputAction: TextInputAction.search,
+          controller: _textEditingController,
+          onChanged: setSearchInput,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Where are you going?',
+            suffixIcon: IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Theme.of(context).primaryColor,
+              ),
+              onPressed: () {
+                _textEditingController.clear();
+                setSearchInput('');
+              },
+            ),
+          ),
+        ),
+     */
+
     return Scaffold(
         body: Center(
             child: FutureBuilder(

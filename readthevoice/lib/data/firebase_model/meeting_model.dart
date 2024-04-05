@@ -50,6 +50,8 @@ extension MeetingModelConversion on MeetingModel {
         creationDateAtMillis: createdAt.millisecondsSinceEpoch,
         userId: this.creator,
         autoDeletion: autoDelete,
+        description: description ?? "",
+        isTranscriptAccessibleAfter: isTranscriptAccessibleAfter,
         scheduledDateAtMillis: (scheduledDate != null)
             ? scheduledDate?.millisecondsSinceEpoch
             : null,
