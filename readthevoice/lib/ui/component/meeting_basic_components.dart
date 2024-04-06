@@ -26,6 +26,7 @@ class MeetingField extends StatelessWidget {
           ),
           controller: TextEditingController(text: value),
           readOnly: true,
+          maxLines: null,
           autofocus: true),
     );
   }

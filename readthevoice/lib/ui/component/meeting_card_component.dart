@@ -101,7 +101,7 @@ class _MeetingCardState extends State<MeetingCard> {
                 Text(
                   widget.meeting.title.trim() != ""
                       ? widget.meeting.title
-                      : "title...",
+                      : "Title: ...",
                   style: TextStyle(color: widget.textColor, fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -117,45 +117,47 @@ class _MeetingCardState extends State<MeetingCard> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (widget.isFavoriteList != null &&
-                              widget.isFavoriteList == true &&
-                              widget.meeting.archived)
-                            Row(
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.snowflake,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimaryContainer,
-                                  size: 15,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "meeting_is_archived",
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimaryContainer),
-                                ).tr()
-                              ],
-                            )
-                          else
-                            const SizedBox(width: 0.0),
-                          Text(
-                            widget.meeting.description ?? "description...",
-                            style: TextStyle(
-                                color: widget.textColor, fontSize: 16),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                    SizedBox(
+                      width: 250,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.isFavoriteList != null &&
+                                widget.isFavoriteList == true &&
+                                widget.meeting.archived)
+                              Row(
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.snowflake,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "meeting_is_archived",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer),
+                                  ).tr()
+                                ],
+                              ),
+                            Text(
+                              widget.meeting.description,
+                              style: TextStyle(
+                                  color: widget.textColor, fontSize: 16),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const Spacer(),
