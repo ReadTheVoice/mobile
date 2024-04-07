@@ -55,6 +55,11 @@ dependencies:
   package_info: ^2.0.0+2
   toastification: ^1.2.1
   cloud_firestore: ^4.15.10
+  permission_handler: ^11.3.1
+  path_provider: any
+  share_plus: ^8.0.2
+  file_picker: ^8.0.0+1
+  device_info_plus: ^10.0.1
 
 dev_dependencies:
   flutter_test:

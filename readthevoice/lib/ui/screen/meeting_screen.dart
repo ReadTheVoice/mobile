@@ -1,12 +1,18 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/utils/utils.dart';
+import 'package:toastification/toastification.dart';
 
 class MeetingScreen extends StatefulWidget {
   final Meeting meeting;
@@ -21,12 +27,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
   MeetingService meetingService = const MeetingService();
   FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
   Stream<DatabaseEvent>? stream;
+  OverlayEntry? detailsOverlayEntry; // Variable to hold the OverlayEntry
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> _getStream() async {
-    // /transcripts/-Nudk2kSHYQa05lHkfWj
     stream =
         await firebaseService.streamMeetingTranscription(widget.meeting.id);
-    // "8DXYXPDUTnPKXiWl2FtH");
   }
 
   Future<void> _updateTranscription(
@@ -38,9 +44,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
   void initState() {
     super.initState();
     _getStream();
+    WidgetsBinding.instance.addPostFrameCallback(_scrollToBottom);
   }
 
-  OverlayEntry? detailsOverlayEntry; // Variable to hold the OverlayEntry
+  void _scrollToBottom(_) {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+  }
 
   void removeDetailsOverlay(BuildContext context) {
     detailsOverlayEntry?.remove();
@@ -60,6 +73,21 @@ class _MeetingScreenState extends State<MeetingScreen> {
     }
   }
 
+  static Future<bool> _permissionRequest() async {
+    PermissionStatus result;
+    result = await Permission.storage.request();
+
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    final androidInfo = await deviceInfoPlugin.androidInfo;
+
+    // On Android 13 (API 33) and above
+    if (Platform.isAndroid && androidInfo.version.sdkInt >= 33) {
+      result = await Permission.manageExternalStorage.request();
+    }
+
+    return result.isGranted;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,32 +102,124 @@ class _MeetingScreenState extends State<MeetingScreen> {
               itemBuilder: (context) => [
                     PopupMenuItem(
                       child: TextButton(
-                        onPressed: () {},
-                        child: Row(
+                        onPressed: () {
+                          toastification.show(
+                            context: context,
+                            alignment: Alignment.bottomCenter,
+                            style: ToastificationStyle.minimal,
+                            type: ToastificationType.warning,
+                            autoCloseDuration: const Duration(seconds: 2),
+                            title: const Text('Not yet implemented.'),
+                            icon: const FaIcon(
+                                FontAwesomeIcons.triangleExclamation),
+                          );
+
+                          Navigator.pop(context);
+                          // If they wanna share it
+                        },
+                        child: const Row(
                           children: [
-                            const Icon(
-                              Icons.download_rounded,
-                              color: Colors.white,
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(
+                                Icons.info_outline_rounded,
+                                color: Colors.white,
+                              ),
                             ),
-                            const Text("download_transcript",
+                            Text("Show qr code",
                                 style: TextStyle(
                                   color: Colors.white,
-                                )).tr()
+                                ))
                           ],
                         ),
                       ),
                     ),
                     PopupMenuItem(
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (widget.meeting.transcription.trim().isNotEmpty) {
+                            bool result = await _permissionRequest();
+                            if (result) {
+                              downloadTextFile(widget.meeting.title,
+                                  widget.meeting.transcription,
+                                  onSuccess: (filePath) {
+                                toastification.show(
+                                  context: context,
+                                  alignment: Alignment.bottomCenter,
+                                  type: ToastificationType.success,
+                                  style: ToastificationStyle.minimal,
+                                  autoCloseDuration: const Duration(seconds: 5),
+                                  title: Text("File saved to: $filePath"),
+                                  icon: const Icon(Icons.download_done_rounded),
+                                );
+                              });
+                            }
+                          } else {
+                            toastification.show(
+                              context: context,
+                              alignment: Alignment.bottomCenter,
+                              type: ToastificationType.error,
+                              style: ToastificationStyle.minimal,
+                              autoCloseDuration: const Duration(seconds: 2),
+                              title: const Text("The transcription is empty."),
+                              icon: const FaIcon(
+                                  FontAwesomeIcons.triangleExclamation),
+                            );
+                          }
+
+                          Navigator.pop(context);
+                        },
                         child: Row(
                           children: [
-                            const Icon(
-                              Icons.download_rounded,
-                              color: Colors.white,
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(
+                                Icons.file_download_outlined,
+                                color: Colors.white,
+                              ),
                             ),
                             const Text(
                               "download_transcript",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ).tr()
+                          ],
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      child: TextButton(
+                        onPressed: () async {
+                          if (widget.meeting.transcription.trim().isNotEmpty) {
+                            shareTextFile(widget.meeting.title,
+                                widget.meeting.transcription);
+                          } else {
+                            toastification.show(
+                              context: context,
+                              alignment: Alignment.bottomCenter,
+                              type: ToastificationType.error,
+                              style: ToastificationStyle.minimal,
+                              autoCloseDuration: const Duration(seconds: 2),
+                              title: const Text("The transcription is empty."),
+                              icon: const FaIcon(
+                                  FontAwesomeIcons.triangleExclamation),
+                            );
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(
+                                Icons.share_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const Text(
+                              "share_transcript",
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -137,11 +257,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
             const MeetingCardDivider(),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SingleChildScrollView(
-                    child: (widget.meeting.endDateAtMillis == null ||
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 650.0),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: (widget.meeting.endDateAtMillis != null ||
                             widget.meeting.status == MeetingStatus.ended)
                         ? Text(widget.meeting.transcription)
                         : StreamBuilder(
@@ -153,15 +273,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     snapshot.data?.snapshot.value != null) {
                                   // {data: . Bonjour.. . . Un. . deux. . . }
                                   dynamic data = snapshot.data?.snapshot.value;
-
-                                  print("SNAPSHOT DATA");
-                                  print(snapshot.data?.snapshot.value);
-                                  // print(snapshot.data?.snapshot.key);
-
-                                  // set transcriptionId
+                                  // set transcription
                                   _updateTranscription(data["data"],
                                       snapshot.data?.snapshot.key);
-                                  return Text("${data["data"] ?? "No Data"}");
+                                  return Text(
+                                      "${data["data"] ?? "No Transcription"}");
                                 }
 
                                 if (snapshot.hasError) {
@@ -173,29 +289,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   child: Text("No Transcription"),
                                 );
                               } else if (snapshot.hasError) {
-                                print("SNAPSHOT ERROR");
-                                print(snapshot.error);
-
                                 return Text("Error: \n${snapshot.error}");
                               } else {
-                                if (widget.meeting.status ==
-                                    MeetingStatus.ended) {
-                                  return const Center(
-                                    child: Text("No Transcription"),
-                                  );
-                                }
-                                // return const Center(
-                                //   child: AppPlaceholder(),
-                                // );
-
                                 return const Center(
                                   child: Text("No Transcription"),
                                 );
                               }
                             }),
-                  ),
-                ],
-              ),
+                  )),
             ),
             const Spacer(),
             Center(

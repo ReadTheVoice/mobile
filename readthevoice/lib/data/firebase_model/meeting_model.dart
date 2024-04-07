@@ -12,6 +12,8 @@ class MeetingModel {
   bool isFinished;
   bool isTranscriptAccessibleAfter;
   DateTime? scheduledDate;
+  bool allowDownload;
+  // language
 
   MeetingModel(
       {required this.id,
@@ -23,7 +25,8 @@ class MeetingModel {
       this.endDate,
       this.isFinished = false,
       this.isTranscriptAccessibleAfter = true,
-      this.scheduledDate});
+      this.scheduledDate,
+      this.allowDownload = false});
 
   static MeetingModel example() {
     return MeetingModel(
