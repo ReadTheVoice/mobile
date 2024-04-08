@@ -12,6 +12,7 @@ import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/utils/utils.dart';
+import 'package:scrollable_text_indicator/scrollable_text_indicator.dart';
 import 'package:toastification/toastification.dart';
 
 class MeetingScreen extends StatefulWidget {
@@ -30,7 +31,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
   OverlayEntry? detailsOverlayEntry; // Variable to hold the OverlayEntry
   final ScrollController _scrollController = ScrollController();
 
+  String trying =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut fringilla dolor. Integer dignissim id ipsum id rutrum. Fusce facilisis arcu aliquam gravida pretium. In vulputate, mauris non rhoncus laoreet, orci dolor venenatis nulla, vitae dignissim metus diam ac turpis. Vivamus ut odio vitae arcu lacinia sagittis eget in sapien. Fusce quis accumsan magna. Proin consectetur gravida sapien vel malesuada. Phasellus vel luctus arcu. Quisque consequat placerat nisl non tincidunt. Integer dui massa, venenatis et molestie eget, porttitor eget ligula. Sed ac pulvinar elit. \nCurabitur dictum tortor non neque sagittis placerat. Integer dolor augue, faucibus vel mi ac, ultricies malesuada risus. Donec ut vulputate nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mollis dui nec porta euismod. Sed consectetur ac enim in imperdiet. Mauris leo tellus, dictum sit amet turpis ut, ultrices consectetur sapien. Fusce rhoncus, ex a vehicula elementum, lorem turpis sollicitudin dui, ut suscipit sem nisi in mi. Vivamus finibus ornare lorem a tristique. Mauris a euismod nisl. Maecenas sodales consectetur sapien, ac malesuada dolor cursus et. In lobortis nisl eu consequat porttitor. Aenean id nibh ornare, mollis erat eget, cursus quam. In hac habitasse platea dictumst. Phasellus consectetur orci at aliquet consequat. \nNam turpis tortor, finibus et interdum sed, semper a nulla. Nulla faucibus, turpis a consectetur ultrices, arcu ante dignissim ante, nec ultrices massa lacus et justo. Nulla rhoncus arcu vel tellus tristique, in placerat est lobortis. Donec quam velit, finibus ac faucibus eu, facilisis quis purus. Suspendisse laoreet aliquam risus, sed viverra orci. Vestibulum eget velit in tortor semper pellentesque et non est. Nam in mollis sem, iaculis scelerisque ipsum. Nunc dictum nulla ut felis gravida, non dictum elit aliquet. Phasellus sodales lacus nunc, vel tincidunt dui commodo vel. Morbi nec quam faucibus, pulvinar turpis nec, maximus metus. Nunc pulvinar nisi non nunc pulvinar elementum.";
+
   Future<void> _getStream() async {
+    var transcript = await firebaseService
+        .updateLocalMeetingTranscription(widget.meeting.id);
+    await meetingService.updateMeetingTranscription(
+        widget.meeting.id, transcript);
+
     stream =
         await firebaseService.streamMeetingTranscription(widget.meeting.id);
   }
@@ -42,17 +51,37 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   void initState() {
-    super.initState();
+    addStreamData2();
     _getStream();
-    WidgetsBinding.instance.addPostFrameCallback(_scrollToBottom);
+
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback(_initScrollToBottom);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    detailsOverlayEntry?.dispose();
+    super.dispose();
+  }
+
+  void _initScrollToBottom(_) {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 20),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _scrollToBottom(_) {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-    );
+    print(
+        "IN _scrollToBottom 2 + i == ${_scrollController.position.maxScrollExtent}");
+    print("IN _scrollToBottom 2 + i == ${_scrollController.offset}");
+
+    //if(((_scrollController.position.maxScrollExtent - _scrollController.offset) <= 10)) {
+    _initScrollToBottom(_);
+    //}
   }
 
   void removeDetailsOverlay(BuildContext context) {
@@ -88,8 +117,18 @@ class _MeetingScreenState extends State<MeetingScreen> {
     return result.isGranted;
   }
 
+  Stream<String> addStreamData2() async* {
+    for (int i = 0; i <= 10; i++) {
+      print("IN ADD STREAM 2 + i == $i");
+
+      await Future.delayed(const Duration(seconds: 2));
+      yield "In vulputate, mauris non rhoncus laoreet, orci dolor venenatis nulla, vitae dignissim metus diam ac turpis. \nCurabitur dictum tortor non neque sagittis placerat. Integer dolor augue, faucibus vel mi ac, ultricies malesuada risus. Donec ut vulputate nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    var tt = "";
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -260,43 +299,95 @@ class _MeetingScreenState extends State<MeetingScreen> {
               child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 650.0),
                   child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: (widget.meeting.endDateAtMillis != null ||
-                            widget.meeting.status == MeetingStatus.ended)
-                        ? Text(widget.meeting.transcription)
-                        : StreamBuilder(
-                            stream: stream,
-                            builder: (BuildContext context, snapshot) {
-                              if (snapshot.hasData) {
-                                if (snapshot.data != null &&
-                                    snapshot.data!.snapshot.exists &&
-                                    snapshot.data?.snapshot.value != null) {
-                                  // {data: . Bonjour.. . . Un. . deux. . . }
-                                  dynamic data = snapshot.data?.snapshot.value;
-                                  // set transcription
-                                  _updateTranscription(data["data"],
-                                      snapshot.data?.snapshot.key);
-                                  return Text(
-                                      "${data["data"] ?? "No Transcription"}");
-                                }
+                      controller: _scrollController,
+                      child: StreamBuilder(
+                          stream: addStreamData2(),
+                          builder: (BuildContext context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Text("Error");
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator.adaptive();
+                            }
 
-                                if (snapshot.hasError) {
-                                  print("SNAPSHOT ERROR");
-                                  print(snapshot.error);
-                                }
+                            tt += "\n\n${snapshot.data}";
+                            WidgetsBinding.instance
+                                .addPostFrameCallback(_scrollToBottom);
 
-                                return const Center(
-                                  child: Text("No Transcription"),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text("Error: \n${snapshot.error}");
-                              } else {
-                                return const Center(
-                                  child: Text("No Transcription"),
-                                );
-                              }
-                            }),
-                  )),
+                            return Text(trying + tt);
+                          }))
+                  /*
+                (widget.meeting.endDateAtMillis != null ||
+                        widget.meeting.status == MeetingStatus.ended)
+                    ? ScrollableTextIndicator(
+                        text: Text(widget.meeting.transcription),
+                        indicatorBarColor:
+                            Theme.of(context).colorScheme.onBackground,
+                        indicatorThumbColor:
+                            Theme.of(context).colorScheme.onBackground,
+                      )
+                    :
+
+
+                     */
+
+                  // SingleChildScrollView(
+                  //         // controller: _scrollController,
+                  //         child: StreamBuilder(
+                  //             stream: stream,
+                  //             builder: (BuildContext context, snapshot) {
+                  //               if (snapshot.connectionState ==
+                  //                   ConnectionState.waiting) {
+                  //                 return const CircularProgressIndicator
+                  //                     .adaptive(); // adaptive make iOS or android circular progress accordingly
+                  //               }
+                  //
+                  //               if (snapshot.hasData) {
+                  //                 if (snapshot.data != null &&
+                  //                     snapshot.data!.snapshot.exists &&
+                  //                     snapshot.data?.snapshot.value != null) {
+                  //                   // {data: . Bonjour.. . . Un. . deux. . . }
+                  //                   dynamic data =
+                  //                       snapshot.data?.snapshot.value;
+                  //                   // set transcription
+                  //                   _updateTranscription(
+                  //                       data["data"], widget.meeting.id);
+                  //                   // snapshot.data?.snapshot.key);
+                  //
+                  //                   /*
+                  //                     TextScroll(
+                  //                       'This is the sample text for Flutter TextScroll widget. ',
+                  //                       mode: TextScrollMode.bouncing,
+                  //                       velocity: Velocity(pixelsPerSecond: Offset(150, 0)),
+                  //                       delayBefore: Duration(milliseconds: 500),
+                  //                       numberOfReps: 5,
+                  //                       pauseBetween: Duration(milliseconds: 50),
+                  //                       style: TextStyle(color: Colors.green),
+                  //                       textAlign: TextAlign.right,
+                  //                       selectable: true,
+                  //                       )
+                  //                      */
+                  //
+                  //                   return Text(
+                  //                       "${data["data"] ?? "No Transcription"}");
+                  //                 }
+                  //
+                  //                 if (snapshot.hasError) {
+                  //                   print("SNAPSHOT ERROR");
+                  //                   print(snapshot.error);
+                  //                 }
+                  //
+                  //                 return const Center(
+                  //                   child: Text("No Transcription"),
+                  //                 );
+                  //               } else if (snapshot.hasError) {
+                  //                 return Text("Error: \n${snapshot.error}");
+                  //               } else {
+                  //                 return const AppPlaceholder();
+                  //               }
+                  //             }),
+                  //       )
+                  ),
             ),
             const Spacer(),
             Center(

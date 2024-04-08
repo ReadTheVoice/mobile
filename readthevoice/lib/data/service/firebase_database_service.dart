@@ -81,6 +81,18 @@ class FirebaseDatabaseService {
       String meetingId) async {
     return transcriptDatabaseReference.child(meetingId).onValue;
   }
+
+  // Stream meeting transcription
+  Future<String?> updateLocalMeetingTranscription(
+      String meetingId) async {
+     final transcript = await transcriptDatabaseReference.child(meetingId).once();
+     if(transcript.snapshot.exists) {
+       dynamic data = transcript.snapshot.value;
+       return data["data"];
+     }
+
+     return null;
+  }
 }
 
 /*
