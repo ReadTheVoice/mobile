@@ -12,7 +12,6 @@ import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/utils/utils.dart';
-import 'package:scrollable_text_indicator/scrollable_text_indicator.dart';
 import 'package:toastification/toastification.dart';
 
 class MeetingScreen extends StatefulWidget {
@@ -30,6 +29,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
   Stream<DatabaseEvent>? stream;
   OverlayEntry? detailsOverlayEntry; // Variable to hold the OverlayEntry
   final ScrollController _scrollController = ScrollController();
+
+  bool hasScroll = false;
 
   String trying =
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut fringilla dolor. Integer dignissim id ipsum id rutrum. Fusce facilisis arcu aliquam gravida pretium. In vulputate, mauris non rhoncus laoreet, orci dolor venenatis nulla, vitae dignissim metus diam ac turpis. Vivamus ut odio vitae arcu lacinia sagittis eget in sapien. Fusce quis accumsan magna. Proin consectetur gravida sapien vel malesuada. Phasellus vel luctus arcu. Quisque consequat placerat nisl non tincidunt. Integer dui massa, venenatis et molestie eget, porttitor eget ligula. Sed ac pulvinar elit. \nCurabitur dictum tortor non neque sagittis placerat. Integer dolor augue, faucibus vel mi ac, ultricies malesuada risus. Donec ut vulputate nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mollis dui nec porta euismod. Sed consectetur ac enim in imperdiet. Mauris leo tellus, dictum sit amet turpis ut, ultrices consectetur sapien. Fusce rhoncus, ex a vehicula elementum, lorem turpis sollicitudin dui, ut suscipit sem nisi in mi. Vivamus finibus ornare lorem a tristique. Mauris a euismod nisl. Maecenas sodales consectetur sapien, ac malesuada dolor cursus et. In lobortis nisl eu consequat porttitor. Aenean id nibh ornare, mollis erat eget, cursus quam. In hac habitasse platea dictumst. Phasellus consectetur orci at aliquet consequat. \nNam turpis tortor, finibus et interdum sed, semper a nulla. Nulla faucibus, turpis a consectetur ultrices, arcu ante dignissim ante, nec ultrices massa lacus et justo. Nulla rhoncus arcu vel tellus tristique, in placerat est lobortis. Donec quam velit, finibus ac faucibus eu, facilisis quis purus. Suspendisse laoreet aliquam risus, sed viverra orci. Vestibulum eget velit in tortor semper pellentesque et non est. Nam in mollis sem, iaculis scelerisque ipsum. Nunc dictum nulla ut felis gravida, non dictum elit aliquet. Phasellus sodales lacus nunc, vel tincidunt dui commodo vel. Morbi nec quam faucibus, pulvinar turpis nec, maximus metus. Nunc pulvinar nisi non nunc pulvinar elementum.";
@@ -57,12 +58,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback(_initScrollToBottom);
+    hasScroll = false;
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    Overlay.of(context).deactivate();
     detailsOverlayEntry?.dispose();
+    Overlay.of(context).dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -75,13 +79,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void _scrollToBottom(_) {
-    print(
-        "IN _scrollToBottom 2 + i == ${_scrollController.position.maxScrollExtent}");
-    print("IN _scrollToBottom 2 + i == ${_scrollController.offset}");
+    // print("IN _scrollToBottom 2 + i == ${_scrollController.position.maxScrollExtent}");
+    // print("IN _scrollToBottom 2 + i == ${_scrollController.offset}");
 
-    //if(((_scrollController.position.maxScrollExtent - _scrollController.offset) <= 10)) {
-    _initScrollToBottom(_);
-    //}
+    if (!hasScroll) {
+      _initScrollToBottom(_);
+    }
   }
 
   void removeDetailsOverlay(BuildContext context) {
@@ -118,10 +121,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Stream<String> addStreamData2() async* {
-    for (int i = 0; i <= 10; i++) {
+    for (int i = 0; i <= 15; i++) {
       print("IN ADD STREAM 2 + i == $i");
 
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 5));
       yield "In vulputate, mauris non rhoncus laoreet, orci dolor venenatis nulla, vitae dignissim metus diam ac turpis. \nCurabitur dictum tortor non neque sagittis placerat. Integer dolor augue, faucibus vel mi ac, ultricies malesuada risus. Donec ut vulputate nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
     }
   }
@@ -298,24 +301,47 @@ class _MeetingScreenState extends State<MeetingScreen> {
               padding: const EdgeInsets.all(10),
               child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 650.0),
-                  child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: StreamBuilder(
-                          stream: addStreamData2(),
-                          builder: (BuildContext context, snapshot) {
-                            if (snapshot.hasError) {
-                              return const Text("Error");
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator.adaptive();
-                            }
+                  child: Stack(
+                    children: [
+                      // if (hasScroll)
+                      //   Positioned(
+                      //     bottom: 50, // Adjust as needed
+                      //     right: 16, // Adjust as needed
+                      //     child: FloatingActionButton(onPressed: (){ }, backgroundColor: Colors.black.withOpacity(0.6), child: const FaIcon(FontAwesomeIcons.angleDown),),
+                      //   ),
+                      SingleChildScrollView(
+                        controller: _scrollController,
+                        child: StreamBuilder(
+                            stream: addStreamData2(),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasError) {
+                                return const Text("Error");
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator
+                                    .adaptive();
+                              }
 
-                            tt += "\n\n${snapshot.data}";
-                            WidgetsBinding.instance
-                                .addPostFrameCallback(_scrollToBottom);
+                              tt += "\n\n${snapshot.data}";
 
-                            return Text(trying + tt);
-                          }))
+                              if (_scrollController.offset !=
+                                  _scrollController.position.maxScrollExtent) {
+                                hasScroll = true;
+                              } else {
+                                hasScroll = false;
+                              }
+
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback(_scrollToBottom);
+
+                              // return Text(trying + tt);
+
+                              return Text(trying + tt);
+                            }),
+                      ),
+                    ],
+                  )
+
                   /*
                 (widget.meeting.endDateAtMillis != null ||
                         widget.meeting.status == MeetingStatus.ended)
@@ -328,7 +354,27 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       )
                     :
 
+SingleChildScrollView(
+                        // controller: _scrollController,
+                        controller: _scrollController,
+                        child: StreamBuilder(
+                            stream: addStreamData2(),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.hasError) {
+                                return const Text("Error");
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator
+                                    .adaptive();
+                              }
 
+                              tt += "\n\n${snapshot.data}";
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback(_scrollToBottom);
+
+                              return Text(trying + tt);
+                            }),
+                      )
                      */
 
                   // SingleChildScrollView(
@@ -403,6 +449,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
           ],
         ),
       ),
+      floatingActionButton: hasScroll
+          ? FloatingActionButton(
+              onPressed: () {
+                WidgetsBinding.instance.addPostFrameCallback(_scrollToBottom);
+              },
+              backgroundColor: Colors.grey.shade600,
+              child: const FaIcon(FontAwesomeIcons.angleDown),
+            )
+          : null,
     );
   }
 }
