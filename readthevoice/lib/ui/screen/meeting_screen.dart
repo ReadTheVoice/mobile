@@ -29,6 +29,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
   Stream<DatabaseEvent>? stream;
   OverlayEntry? detailsOverlayEntry; // Variable to hold the OverlayEntry
   final ScrollController _scrollController = ScrollController();
+  final double _scrollThreshold = 200; // Threshold to show/hide FAB
 
   bool hasScroll = false;
 
@@ -63,9 +64,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   void dispose() {
-    Overlay.of(context).deactivate();
     detailsOverlayEntry?.dispose();
     Overlay.of(context).dispose();
+    removeDetailsOverlay(context);
     _scrollController.dispose();
     super.dispose();
   }
@@ -131,6 +132,23 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset != _scrollController.position.maxScrollExtent) {
+        // User has scrolled down past the threshold, show the FAB
+        if (!hasScroll) {
+          // Only update state if necessary to avoid unnecessary rebuilds
+          hasScroll = true;
+        }
+      } else {
+        // User is at the top or scrolled up, hide the FAB
+        if (hasScroll) {
+          // Only update state if necessary to avoid unnecessary rebuilds
+          hasScroll = false;
+        }
+      }
+    });
+    
     var tt = "";
     return Scaffold(
       appBar: AppBar(
