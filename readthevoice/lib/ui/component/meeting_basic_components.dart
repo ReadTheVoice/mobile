@@ -59,8 +59,10 @@ class MeetingAttributeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return SizedBox(
-      width: 170,
+      width: (screenWidth/2 - 20),
       child: Card(
         color: Theme.of(context).colorScheme.primaryContainer,
         child: Padding(

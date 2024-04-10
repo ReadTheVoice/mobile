@@ -67,15 +67,16 @@ class _MainScreenState extends State<MainScreen> {
         ),
         items: [
           BottomBarItem(
-            icon: const Icon(Icons.house_outlined),
-            selectedIcon: const Icon(Icons.house_rounded),
+            icon: Icon(selected == 0 ? Icons.house_rounded : Icons.house_outlined),
+            // selectedIcon: const Icon(Icons.house_rounded),
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('home_bottom_bar').tr(),
+
           ),
           BottomBarItem(
-            icon: const Icon(Icons.star_border_rounded),
-            selectedIcon: const Icon(Icons.star_rounded),
+            icon: const Icon(Icons.favorite_border_rounded),
+            selectedIcon: const Icon(Icons.favorite_rounded),
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),

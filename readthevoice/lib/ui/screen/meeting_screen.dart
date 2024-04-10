@@ -286,7 +286,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: ConstrainedBox(
-                  // constraints: BoxConstraints(maxHeight: screenHeight - 220),
                   constraints:
                       BoxConstraints.tightFor(height: screenHeight - 170),
                   child: (widget.meeting.endDateAtMillis != null ||
@@ -366,127 +365,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               )
             ],
           ),
-        )
-
-        /*
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text("Show details"),
-                const Spacer(),
-                IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.eye,
-                    size: 15,
-                  ),
-                  onPressed: () => {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DetailsOverlay(
-                          onClose: () => Navigator.pop(context),
-                          meeting: widget.meeting,
-                        )))
-                  },
-                ),
-              ],
-            ),
-            const MeetingCardDivider(),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: (screenHeight - 220)),
-                  child: (widget.meeting.endDateAtMillis != null ||
-                      widget.meeting.status == MeetingStatus.ended)
-                      ? ScrollableTextIndicator(
-                    text: Text(widget.meeting.transcription),
-                    indicatorBarColor:
-                    Theme.of(context).colorScheme.onBackground,
-                    indicatorThumbColor:
-                    Theme.of(context).colorScheme.onBackground,
-                  )
-                      : SingleChildScrollView(
-                    controller: _scrollController,
-                    child: StreamBuilder(
-                        stream: transcriptDatabaseReference
-                            .child(widget.meeting.id)
-                            .onValue,
-                        builder: (BuildContext context, snapshot) {
-                          print("Snapshot".toUpperCase());
-                          print(snapshot);
-
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator
-                                .adaptive();
-                          }
-
-                          if (snapshot.hasData) {
-                            if (snapshot.data != null &&
-                                snapshot.data!.snapshot.exists &&
-                                snapshot.data?.snapshot.value != null) {
-                              // {data: . Bonjour.. . . Un. . deux. . . }
-                              dynamic data =
-                                  snapshot.data?.snapshot.value;
-
-                              // set transcription
-                              _updateTranscription(
-                                  data["data"], widget.meeting.id);
-
-                              if (_scrollController.offset !=
-                                  _scrollController
-                                      .position.maxScrollExtent) {
-                                hasScroll = true;
-                              } else {
-                                hasScroll = false;
-                              }
-
-                              WidgetsBinding.instance
-                                  .addPostFrameCallback(_scrollToBottom);
-
-                              return Text(
-                                  "${data["data"] ?? "No Transcription"}");
-                            }
-
-                            if (snapshot.hasError) {
-                              print("SNAPSHOT ERROR");
-                              print(snapshot.error);
-                            }
-
-                            return const Center(
-                              child: Text("No Transcription"),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text("Error: \n${snapshot.error}");
-                          } else {
-                            return (widget.meeting.transcription
-                                .trim()
-                                .isNotEmpty)
-                                ? Text(widget.meeting.transcription)
-                                : const AppPlaceholder();
-                          }
-                        }),
-                  )),
-            ),
-            const Spacer(),
-            Center(
-              child: Text(
-                "ID: ${widget.meeting.id}",
-                style: TextStyle(
-                  color: Colors.grey.shade300,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-      */
-        );
+        ));
   }
 }
 

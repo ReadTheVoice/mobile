@@ -15,6 +15,7 @@ class MeetingList extends StatefulWidget {
   final Function rightFunction;
 
   final bool? unarchiving;
+  final bool? isFavoriteList;
 
   const MeetingList(
       {super.key,
@@ -24,7 +25,9 @@ class MeetingList extends StatefulWidget {
       required this.leftColor,
       required this.rightColor,
       required this.leftFunction,
-      required this.rightFunction, this.unarchiving});
+      required this.rightFunction,
+      this.unarchiving,
+      this.isFavoriteList = false});
 
   @override
   State<MeetingList> createState() => _MeetingListState();
@@ -42,7 +45,6 @@ class _MeetingListState extends State<MeetingList> {
       ),
     );
   }
-
 
   void _showConfirmationDialog(Meeting? currentMeeting) {
     showDialog(
@@ -91,7 +93,7 @@ class _MeetingListState extends State<MeetingList> {
         return Dismissible(
           // dismissThresholds: const {
           //   DismissDirection.startToEnd: 0.5,
-          //   DismissDirection.endToStart: 0.5
+          //   // DismissDirection.endToStart: 0.5
           // },
           direction: DismissDirection.startToEnd,
           background: Container(
@@ -118,7 +120,7 @@ class _MeetingListState extends State<MeetingList> {
                 }
 
                 String snackBarText = "Archiving complete";
-                if(widget.unarchiving != null && widget.unarchiving == true) {
+                if (widget.unarchiving != null && widget.unarchiving == true) {
                   snackBarText = "Unarchiving complete";
                 }
 
@@ -132,6 +134,7 @@ class _MeetingListState extends State<MeetingList> {
           },
           child: MeetingCard(
             meeting: currentMeeting!,
+            isFavoriteList: widget.isFavoriteList,
             deleteFunction: () {
               setState(() {
                 widget.meetings!.remove(currentMeeting);

@@ -4,6 +4,7 @@ import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_list_component.dart';
+import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _showSnackBar("Deletion complete !");
                     },
                   )
-                : const Text("No Data");
+                : const NoDataWidget(currentScreen: AvailableScreens.home,);
           } else {
             return const AppProgressIndicator();
           }

@@ -4,7 +4,10 @@ import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
+import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/utils/utils.dart';
+
+import '../component/meeting_list_component.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
   const FavoriteMeetingsScreen({super.key});
@@ -20,6 +23,16 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
   Future<List<Meeting>> retrieveMeetings() async {
     await refreshMeetingList();
     return await meetingService.getFavoriteMeetings();
+  }
+
+  void _showSnackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        showCloseIcon: true,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
@@ -53,7 +66,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                       );
                     },
                   )
-                : const Text("No Data");
+                : const NoDataWidget(currentScreen: AvailableScreens.favoriteMeetings,);
           } else {
             return const AppProgressIndicator();
           }

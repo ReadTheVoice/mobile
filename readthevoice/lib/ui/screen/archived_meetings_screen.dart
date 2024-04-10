@@ -4,6 +4,7 @@ import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_list_component.dart';
+import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/utils/utils.dart';
 
 class ArchivedMeetingsScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                     },
                     unarchiving: true,
                   )
-                : const Text("No Data");
+                : const NoDataWidget(currentScreen: AvailableScreens.archivedMeetings,);
           } else {
             return const AppProgressIndicator();
           }
