@@ -37,7 +37,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   Future<void> _getStream() async {
     var transcript = await firebaseService
-        .updateLocalMeetingTranscription(widget.meeting.id);
+        .getMeetingTranscription(widget.meeting.id);
     await meetingService.updateMeetingTranscription(
         widget.meeting.id, transcript);
   }
@@ -141,110 +141,112 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           ),
                         ),
                       ),
-                      PopupMenuItem(
-                        child: TextButton(
-                          onPressed: () async {
-                            await _getStream();
+                      if(widget.meeting.allowDownload)
+                        PopupMenuItem(
+                          child: TextButton(
+                            onPressed: () async {
+                              await _getStream();
 
-                            if (widget.meeting.transcription
-                                .trim()
-                                .isNotEmpty) {
-                              bool result = await _permissionRequest();
-                              if (result) {
-                                downloadTextFile(widget.meeting.title,
-                                    widget.meeting.transcription,
-                                    onSuccess: (filePath) {
-                                  toastification.show(
-                                    context: context,
-                                    alignment: Alignment.bottomCenter,
-                                    type: ToastificationType.success,
-                                    style: ToastificationStyle.minimal,
-                                    autoCloseDuration:
-                                        const Duration(seconds: 5),
-                                    title: Text("File saved to: $filePath"),
-                                    icon:
-                                        const Icon(Icons.download_done_rounded),
-                                  );
-                                });
+                              if (widget.meeting.transcription
+                                  .trim()
+                                  .isNotEmpty) {
+                                bool result = await _permissionRequest();
+                                if (result) {
+                                  downloadTextFile(widget.meeting.title,
+                                      widget.meeting.transcription,
+                                      onSuccess: (filePath) {
+                                        toastification.show(
+                                          context: context,
+                                          alignment: Alignment.bottomCenter,
+                                          type: ToastificationType.success,
+                                          style: ToastificationStyle.minimal,
+                                          autoCloseDuration:
+                                          const Duration(seconds: 5),
+                                          title: Text("File saved to: $filePath"),
+                                          icon:
+                                          const Icon(Icons.download_done_rounded),
+                                        );
+                                      });
+                                }
+                              } else {
+                                toastification.show(
+                                  context: context,
+                                  alignment: Alignment.bottomCenter,
+                                  type: ToastificationType.error,
+                                  style: ToastificationStyle.minimal,
+                                  autoCloseDuration: const Duration(seconds: 2),
+                                  title:
+                                  const Text("The transcription is empty."),
+                                  icon: const FaIcon(
+                                      FontAwesomeIcons.triangleExclamation),
+                                );
                               }
-                            } else {
-                              toastification.show(
-                                context: context,
-                                alignment: Alignment.bottomCenter,
-                                type: ToastificationType.error,
-                                style: ToastificationStyle.minimal,
-                                autoCloseDuration: const Duration(seconds: 2),
-                                title:
-                                    const Text("The transcription is empty."),
-                                icon: const FaIcon(
-                                    FontAwesomeIcons.triangleExclamation),
-                              );
-                            }
 
-                            Navigator.pop(context);
-                          },
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                child: Icon(
-                                  Icons.file_download_outlined,
-                                  color: Colors.white,
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                  child: Icon(
+                                    Icons.file_download_outlined,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              const Text(
-                                "download_transcript",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ).tr()
-                            ],
+                                const Text(
+                                  "download_transcript",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ).tr()
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      PopupMenuItem(
-                        child: TextButton(
-                          onPressed: () async {
-                            if (widget.meeting.transcription
-                                .trim()
-                                .isNotEmpty) {
-                              shareTextFile(widget.meeting.title,
-                                  widget.meeting.transcription);
-                            } else {
-                              toastification.show(
-                                context: context,
-                                alignment: Alignment.bottomCenter,
-                                type: ToastificationType.error,
-                                style: ToastificationStyle.minimal,
-                                autoCloseDuration: const Duration(seconds: 2),
-                                title:
-                                    const Text("The transcription is empty."),
-                                icon: const FaIcon(
-                                    FontAwesomeIcons.triangleExclamation),
-                              );
-                            }
+                        PopupMenuItem(
+                          child: TextButton(
+                            onPressed: () async {
+                              if (widget.meeting.transcription
+                                  .trim()
+                                  .isNotEmpty) {
+                                shareTextFile(widget.meeting.title,
+                                    widget.meeting.transcription);
+                              } else {
+                                toastification.show(
+                                  context: context,
+                                  alignment: Alignment.bottomCenter,
+                                  type: ToastificationType.error,
+                                  style: ToastificationStyle.minimal,
+                                  autoCloseDuration: const Duration(seconds: 2),
+                                  title:
+                                  const Text("The transcription is empty."),
+                                  icon: const FaIcon(
+                                      FontAwesomeIcons.triangleExclamation),
+                                );
+                              }
 
-                            Navigator.pop(context);
-                          },
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                child: Icon(
-                                  Icons.share_rounded,
-                                  color: Colors.white,
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                  child: Icon(
+                                    Icons.share_rounded,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              const Text(
-                                "share_transcript",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ).tr()
-                            ],
+                                const Text(
+                                  "share_transcript",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ).tr()
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+
                     ])
           ],
         ),
@@ -285,6 +287,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               ),
               Align(
                 alignment: Alignment.bottomLeft,
+                // alignment: Alignment.topLeft,
                 child: ConstrainedBox(
                   constraints:
                       BoxConstraints.tightFor(height: screenHeight - 170),
@@ -338,8 +341,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     WidgetsBinding.instance
                                         .addPostFrameCallback(_scrollToBottom);
 
+                                    String transcript = data["data"] ?? "";
+
                                     return Text(
-                                        "${data["data"] ?? "No Transcription"}");
+                                        transcript.trim().isNotEmpty ? transcript : "No Transcription");
                                   }
 
                                   if (snapshot.hasError) {

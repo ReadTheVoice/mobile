@@ -66,7 +66,11 @@ class FirebaseDatabaseService {
             scheduledDate: data['scheduledDate'] != null
                 ? DateTime.fromMillisecondsSinceEpoch(
                     (data['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
-                : null);
+                : null,
+        allowDownload: data["allowDownload"] ?? false,
+        language: data["language"]);
+
+        fbMeeting.transcription = await getMeetingTranscription(meetingId);
 
         UserModel creator = await getMeetingCreator(fbMeeting.creator);
         return fbMeeting.toMeeting(creator);
@@ -83,7 +87,7 @@ class FirebaseDatabaseService {
   }
 
   // Stream meeting transcription
-  Future<String?> updateLocalMeetingTranscription(
+  Future<String?> getMeetingTranscription(
       String meetingId) async {
      final transcript = await transcriptDatabaseReference.child(meetingId).once();
      if(transcript.snapshot.exists) {

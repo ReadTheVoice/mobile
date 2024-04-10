@@ -64,6 +64,7 @@ class Meeting {
   int? autoDeletionDateAtMillis;
   int? scheduledDateAtMillis;
   int? endDateAtMillis;
+  String? language;
 
   MeetingStatus status;
   String description;
@@ -71,6 +72,7 @@ class Meeting {
   bool isTranscriptAccessibleAfter;
   bool favorite;
   bool archived;
+  bool allowDownload;
 
   Meeting(
       {required this.id,
@@ -87,7 +89,7 @@ class Meeting {
       this.autoDeletion = false,
       this.isTranscriptAccessibleAfter = true,
       this.favorite = false,
-      this.archived = false});
+      this.archived = false, this.language, this.allowDownload = false});
 
   static Meeting example(String id) {
     return Meeting(

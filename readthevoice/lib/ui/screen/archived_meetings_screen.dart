@@ -24,6 +24,12 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   }
 
   @override
+  void initState() {
+    retrieveMeetings();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(

@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `endDateAtMillis` INTEGER, `status` INTEGER NOT NULL, `description` TEXT NOT NULL, `transcription` TEXT NOT NULL, `isTranscriptAccessibleAfter` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `meeting` (`id` TEXT NOT NULL, `creationDateAtMillis` INTEGER NOT NULL, `title` TEXT NOT NULL, `userId` TEXT NOT NULL, `userName` TEXT, `autoDeletion` INTEGER, `autoDeletionDateAtMillis` INTEGER, `scheduledDateAtMillis` INTEGER, `endDateAtMillis` INTEGER, `language` TEXT, `status` INTEGER NOT NULL, `description` TEXT NOT NULL, `transcription` TEXT NOT NULL, `isTranscriptAccessibleAfter` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, `archived` INTEGER NOT NULL, `allowDownload` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -119,13 +119,15 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'endDateAtMillis': item.endDateAtMillis,
+                  'language': item.language,
                   'status': item.status.index,
                   'description': item.description,
                   'transcription': item.transcription,
                   'isTranscriptAccessibleAfter':
                       item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
-                  'archived': item.archived ? 1 : 0
+                  'archived': item.archived ? 1 : 0,
+                  'allowDownload': item.allowDownload ? 1 : 0
                 }),
         _meetingUpdateAdapter = UpdateAdapter(
             database,
@@ -143,13 +145,15 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'endDateAtMillis': item.endDateAtMillis,
+                  'language': item.language,
                   'status': item.status.index,
                   'description': item.description,
                   'transcription': item.transcription,
                   'isTranscriptAccessibleAfter':
                       item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
-                  'archived': item.archived ? 1 : 0
+                  'archived': item.archived ? 1 : 0,
+                  'allowDownload': item.allowDownload ? 1 : 0
                 }),
         _meetingDeletionAdapter = DeletionAdapter(
             database,
@@ -167,13 +171,15 @@ class _$MeetingDao extends MeetingDao {
                   'autoDeletionDateAtMillis': item.autoDeletionDateAtMillis,
                   'scheduledDateAtMillis': item.scheduledDateAtMillis,
                   'endDateAtMillis': item.endDateAtMillis,
+                  'language': item.language,
                   'status': item.status.index,
                   'description': item.description,
                   'transcription': item.transcription,
                   'isTranscriptAccessibleAfter':
                       item.isTranscriptAccessibleAfter ? 1 : 0,
                   'favorite': item.favorite ? 1 : 0,
-                  'archived': item.archived ? 1 : 0
+                  'archived': item.archived ? 1 : 0,
+                  'allowDownload': item.allowDownload ? 1 : 0
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -210,7 +216,9 @@ class _$MeetingDao extends MeetingDao {
             isTranscriptAccessibleAfter:
                 (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
-            archived: (row['archived'] as int) != 0));
+            archived: (row['archived'] as int) != 0,
+            language: row['language'] as String?,
+            allowDownload: (row['allowDownload'] as int) != 0));
   }
 
   @override
@@ -235,7 +243,9 @@ class _$MeetingDao extends MeetingDao {
             isTranscriptAccessibleAfter:
                 (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
-            archived: (row['archived'] as int) != 0));
+            archived: (row['archived'] as int) != 0,
+            language: row['language'] as String?,
+            allowDownload: (row['allowDownload'] as int) != 0));
   }
 
   @override
@@ -260,7 +270,9 @@ class _$MeetingDao extends MeetingDao {
             isTranscriptAccessibleAfter:
                 (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
-            archived: (row['archived'] as int) != 0));
+            archived: (row['archived'] as int) != 0,
+            language: row['language'] as String?,
+            allowDownload: (row['allowDownload'] as int) != 0));
   }
 
   @override
@@ -285,7 +297,9 @@ class _$MeetingDao extends MeetingDao {
             isTranscriptAccessibleAfter:
                 (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
-            archived: (row['archived'] as int) != 0));
+            archived: (row['archived'] as int) != 0,
+            language: row['language'] as String?,
+            allowDownload: (row['allowDownload'] as int) != 0));
   }
 
   @override
@@ -317,7 +331,9 @@ class _$MeetingDao extends MeetingDao {
             isTranscriptAccessibleAfter:
                 (row['isTranscriptAccessibleAfter'] as int) != 0,
             favorite: (row['favorite'] as int) != 0,
-            archived: (row['archived'] as int) != 0),
+            archived: (row['archived'] as int) != 0,
+            language: row['language'] as String?,
+            allowDownload: (row['allowDownload'] as int) != 0),
         arguments: [id]);
   }
 

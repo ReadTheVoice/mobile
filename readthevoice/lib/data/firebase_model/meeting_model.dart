@@ -13,7 +13,8 @@ class MeetingModel {
   bool isTranscriptAccessibleAfter;
   DateTime? scheduledDate;
   bool allowDownload;
-  // language
+  String? transcription;
+  String? language;
 
   MeetingModel(
       {required this.id,
@@ -26,7 +27,7 @@ class MeetingModel {
       this.isFinished = false,
       this.isTranscriptAccessibleAfter = true,
       this.scheduledDate,
-      this.allowDownload = false});
+      this.allowDownload = false, this.transcription = "", this.language});
 
   static MeetingModel example() {
     return MeetingModel(
@@ -44,6 +45,8 @@ extension MeetingModelConversion on MeetingModel {
       status = MeetingStatus.ended;
     } else if (scheduledDate != null &&
         (DateTime.now().isAfter(scheduledDate!))) {
+      status = MeetingStatus.started;
+    } else if(transcription != null && transcription!.trim().isNotEmpty) {
       status = MeetingStatus.started;
     }
 
@@ -63,6 +66,9 @@ extension MeetingModelConversion on MeetingModel {
         autoDeletionDateAtMillis:
             autoDelete ? deletionDate?.millisecondsSinceEpoch : null,
         userName: username,
-        status: status);
+        status: status,
+    allowDownload: allowDownload,
+    transcription: transcription ?? "",
+    language: language);
   }
 }

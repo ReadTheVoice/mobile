@@ -203,6 +203,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
               if (meeting != null) {
                 // insert it locally
                 await meetingService.insertMeeting(meeting);
+                await meetingService.getAllMeetings();
                 manageMeeting(meeting);
               } else {
                 _showMeetingNotExistingDialog(meetingId);

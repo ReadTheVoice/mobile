@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
@@ -18,11 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
   MeetingService meetingService = const MeetingService();
   FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
   String filterText = "";
+  Timer? _timer;
 
   Future<List<Meeting>> retrieveMeetings() async {
     await refreshMeetingList();
 
-    await meetingService.insertSampleData();
+    // setState(() {
+    //   // meetingService.getAllMeetings();
+    //   meetingService.getUnarchivedMeetings().then((value) => null);
+    // });
 
     List<Meeting> currentMeetings =
         await meetingService.getUnarchivedMeetings();
@@ -36,6 +42,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return currentMeetings;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveMeetings();
+    // _timer = Timer.periodic(const Duration(minutes: 5), (_) => retrieveMeetings);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void _showSnackBar(String text) {

@@ -28,23 +28,27 @@ Future<void> refreshMeetingList() async {
 
   List<Meeting> localMeetings = await meetingService.getAllMeetings();
 
-  // if (localMeetings.isNotEmpty) {
-  //   for (var existing in localMeetings) {
-  //     // get fb entity
-  //     Meeting? meeting = await firebaseService.getMeeting(existing.id);
-  //
-  //     if (meeting != null) {
-  //       meeting.favorite = existing.favorite;
-  //       meeting.archived = existing.archived;
-  //
-  //       if (meeting.endDateAtMillis != null) {
-  //         meeting.status = MeetingStatus.ended;
-  //       }
-  //
-  //       await meetingService.updateMeeting(meeting);
-  //     } else {
-  //       await meetingService.deleteMeetingById(existing.id);
-  //     }
-  //   }
-  // }
+  if (localMeetings.isNotEmpty) {
+    for (var existing in localMeetings) {
+      // get fb entity
+      Meeting? meeting = await firebaseService.getMeeting(existing.id);
+
+      if (meeting != null) {
+        meeting.favorite = existing.favorite;
+        meeting.archived = existing.archived;
+
+        if(meeting.transcription.isNotEmpty) {
+          meeting.status = MeetingStatus.started;
+        }
+
+        if (meeting.endDateAtMillis != null) {
+          meeting.status = MeetingStatus.ended;
+        }
+
+        await meetingService.updateMeeting(meeting);
+      } else {
+        await meetingService.deleteMeetingById(existing.id);
+      }
+    }
+  }
 }
