@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_list_component.dart';
+import 'package:readthevoice/utils/utils.dart';
 
 class ArchivedMeetingsScreen extends StatefulWidget {
   const ArchivedMeetingsScreen({super.key});
@@ -13,8 +15,10 @@ class ArchivedMeetingsScreen extends StatefulWidget {
 
 class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   MeetingService meetingService = const MeetingService();
+  FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
 
   Future<List<Meeting>> retrieveMeetings() async {
+    await refreshMeetingList();
     return await meetingService.getArchivedMeetings();
   }
 
@@ -22,6 +26,8 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
+            child: RefreshIndicator(
+      onRefresh: refreshMeetingList,
       child: FutureBuilder(
         future: retrieveMeetings(),
         builder: (BuildContext context, AsyncSnapshot<List<Meeting>> snapshot) {
@@ -49,6 +55,6 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
           }
         },
       ),
-    ));
+    )));
   }
 }

@@ -94,179 +94,200 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.meeting.title,
-          maxLines: 1,
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton(
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: TextButton(
-                        onPressed: () {
-                          toastification.show(
-                            context: context,
-                            alignment: Alignment.bottomCenter,
-                            style: ToastificationStyle.minimal,
-                            type: ToastificationType.warning,
-                            autoCloseDuration: const Duration(seconds: 2),
-                            title: const Text('Not yet implemented.'),
-                            icon: const FaIcon(
-                                FontAwesomeIcons.triangleExclamation),
-                          );
+    double screenHeight = MediaQuery.of(context).size.height;
 
-                          Navigator.pop(context);
-                          // If they wanna share it
-                        },
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                              child: Icon(
-                                Icons.info_outline_rounded,
-                                color: Colors.white,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.meeting.title,
+            maxLines: 1,
+          ),
+          centerTitle: true,
+          actions: [
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () {
+                            toastification.show(
+                              context: context,
+                              alignment: Alignment.bottomCenter,
+                              style: ToastificationStyle.minimal,
+                              type: ToastificationType.warning,
+                              autoCloseDuration: const Duration(seconds: 2),
+                              title: const Text('Not yet implemented.'),
+                              icon: const FaIcon(
+                                  FontAwesomeIcons.triangleExclamation),
+                            );
+
+                            Navigator.pop(context);
+                            // If they wanna share it
+                          },
+                          child: const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            Text("Show qr code",
+                              Text("Show qr code",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () async {
+                            await _getStream();
+
+                            if (widget.meeting.transcription
+                                .trim()
+                                .isNotEmpty) {
+                              bool result = await _permissionRequest();
+                              if (result) {
+                                downloadTextFile(widget.meeting.title,
+                                    widget.meeting.transcription,
+                                    onSuccess: (filePath) {
+                                  toastification.show(
+                                    context: context,
+                                    alignment: Alignment.bottomCenter,
+                                    type: ToastificationType.success,
+                                    style: ToastificationStyle.minimal,
+                                    autoCloseDuration:
+                                        const Duration(seconds: 5),
+                                    title: Text("File saved to: $filePath"),
+                                    icon:
+                                        const Icon(Icons.download_done_rounded),
+                                  );
+                                });
+                              }
+                            } else {
+                              toastification.show(
+                                context: context,
+                                alignment: Alignment.bottomCenter,
+                                type: ToastificationType.error,
+                                style: ToastificationStyle.minimal,
+                                autoCloseDuration: const Duration(seconds: 2),
+                                title:
+                                    const Text("The transcription is empty."),
+                                icon: const FaIcon(
+                                    FontAwesomeIcons.triangleExclamation),
+                              );
+                            }
+
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                child: Icon(
+                                  Icons.file_download_outlined,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Text(
+                                "download_transcript",
                                 style: TextStyle(
                                   color: Colors.white,
-                                ))
-                          ],
+                                ),
+                              ).tr()
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    PopupMenuItem(
-                      child: TextButton(
-                        onPressed: () async {
-                          await _getStream();
-
-                          if (widget.meeting.transcription.trim().isNotEmpty) {
-                            bool result = await _permissionRequest();
-                            if (result) {
-                              downloadTextFile(widget.meeting.title,
-                                  widget.meeting.transcription,
-                                  onSuccess: (filePath) {
-                                toastification.show(
-                                  context: context,
-                                  alignment: Alignment.bottomCenter,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.minimal,
-                                  autoCloseDuration: const Duration(seconds: 5),
-                                  title: Text("File saved to: $filePath"),
-                                  icon: const Icon(Icons.download_done_rounded),
-                                );
-                              });
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () async {
+                            if (widget.meeting.transcription
+                                .trim()
+                                .isNotEmpty) {
+                              shareTextFile(widget.meeting.title,
+                                  widget.meeting.transcription);
+                            } else {
+                              toastification.show(
+                                context: context,
+                                alignment: Alignment.bottomCenter,
+                                type: ToastificationType.error,
+                                style: ToastificationStyle.minimal,
+                                autoCloseDuration: const Duration(seconds: 2),
+                                title:
+                                    const Text("The transcription is empty."),
+                                icon: const FaIcon(
+                                    FontAwesomeIcons.triangleExclamation),
+                              );
                             }
-                          } else {
-                            toastification.show(
-                              context: context,
-                              alignment: Alignment.bottomCenter,
-                              type: ToastificationType.error,
-                              style: ToastificationStyle.minimal,
-                              autoCloseDuration: const Duration(seconds: 2),
-                              title: const Text("The transcription is empty."),
-                              icon: const FaIcon(
-                                  FontAwesomeIcons.triangleExclamation),
-                            );
-                          }
 
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                              child: Icon(
-                                Icons.file_download_outlined,
-                                color: Colors.white,
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                child: Icon(
+                                  Icons.share_rounded,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            const Text(
-                              "download_transcript",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ).tr()
-                          ],
+                              const Text(
+                                "share_transcript",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ).tr()
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    PopupMenuItem(
-                      child: TextButton(
-                        onPressed: () async {
-                          if (widget.meeting.transcription.trim().isNotEmpty) {
-                            shareTextFile(widget.meeting.title,
-                                widget.meeting.transcription);
-                          } else {
-                            toastification.show(
-                              context: context,
-                              alignment: Alignment.bottomCenter,
-                              type: ToastificationType.error,
-                              style: ToastificationStyle.minimal,
-                              autoCloseDuration: const Duration(seconds: 2),
-                              title: const Text("The transcription is empty."),
-                              icon: const FaIcon(
-                                  FontAwesomeIcons.triangleExclamation),
-                            );
-                          }
-
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                              child: Icon(
-                                Icons.share_rounded,
-                                color: Colors.white,
-                              ),
+                    ])
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Stack(
+            alignment: AlignmentDirectional.topCenter,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints.tightFor(height: 70),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Show details"),
+                          const Spacer(),
+                          IconButton(
+                            icon: const FaIcon(
+                              FontAwesomeIcons.eye,
+                              size: 15,
                             ),
-                            const Text(
-                              "share_transcript",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ).tr()
-                          ],
-                        ),
+                            onPressed: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => DetailsOverlay(
+                                        onClose: () => Navigator.pop(context),
+                                        meeting: widget.meeting,
+                                      )))
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                  ])
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text("Show details"),
-                const Spacer(),
-                IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.eye,
-                    size: 15,
+                      const MeetingCardDivider(),
+                    ],
                   ),
-                  onPressed: () => {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DetailsOverlay(
-                              onClose: () => Navigator.pop(context),
-                              meeting: widget.meeting,
-                            )))
-                  },
                 ),
-              ],
-            ),
-            const MeetingCardDivider(),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 650.0),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: ConstrainedBox(
+                  // constraints: BoxConstraints(maxHeight: screenHeight - 220),
+                  constraints:
+                      BoxConstraints.tightFor(height: screenHeight - 170),
                   child: (widget.meeting.endDateAtMillis != null ||
                           widget.meeting.status == MeetingStatus.ended)
                       ? ScrollableTextIndicator(
@@ -337,7 +358,115 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       : const AppPlaceholder();
                                 }
                               }),
-                        )),
+                        ),
+                ),
+              )
+            ],
+          ),
+        )
+
+        /*
+      Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text("Show details"),
+                const Spacer(),
+                IconButton(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.eye,
+                    size: 15,
+                  ),
+                  onPressed: () => {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetailsOverlay(
+                          onClose: () => Navigator.pop(context),
+                          meeting: widget.meeting,
+                        )))
+                  },
+                ),
+              ],
+            ),
+            const MeetingCardDivider(),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: (screenHeight - 220)),
+                  child: (widget.meeting.endDateAtMillis != null ||
+                      widget.meeting.status == MeetingStatus.ended)
+                      ? ScrollableTextIndicator(
+                    text: Text(widget.meeting.transcription),
+                    indicatorBarColor:
+                    Theme.of(context).colorScheme.onBackground,
+                    indicatorThumbColor:
+                    Theme.of(context).colorScheme.onBackground,
+                  )
+                      : SingleChildScrollView(
+                    controller: _scrollController,
+                    child: StreamBuilder(
+                        stream: transcriptDatabaseReference
+                            .child(widget.meeting.id)
+                            .onValue,
+                        builder: (BuildContext context, snapshot) {
+                          print("Snapshot".toUpperCase());
+                          print(snapshot);
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator
+                                .adaptive();
+                          }
+
+                          if (snapshot.hasData) {
+                            if (snapshot.data != null &&
+                                snapshot.data!.snapshot.exists &&
+                                snapshot.data?.snapshot.value != null) {
+                              // {data: . Bonjour.. . . Un. . deux. . . }
+                              dynamic data =
+                                  snapshot.data?.snapshot.value;
+
+                              // set transcription
+                              _updateTranscription(
+                                  data["data"], widget.meeting.id);
+
+                              if (_scrollController.offset !=
+                                  _scrollController
+                                      .position.maxScrollExtent) {
+                                hasScroll = true;
+                              } else {
+                                hasScroll = false;
+                              }
+
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback(_scrollToBottom);
+
+                              return Text(
+                                  "${data["data"] ?? "No Transcription"}");
+                            }
+
+                            if (snapshot.hasError) {
+                              print("SNAPSHOT ERROR");
+                              print(snapshot.error);
+                            }
+
+                            return const Center(
+                              child: Text("No Transcription"),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("Error: \n${snapshot.error}");
+                          } else {
+                            return (widget.meeting.transcription
+                                .trim()
+                                .isNotEmpty)
+                                ? Text(widget.meeting.transcription)
+                                : const AppPlaceholder();
+                          }
+                        }),
+                  )),
             ),
             const Spacer(),
             Center(
@@ -353,7 +482,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
           ],
         ),
       ),
-    );
+      */
+        );
   }
 }
 
@@ -443,6 +573,19 @@ class DetailsOverlay extends StatelessWidget {
                             ? meeting.autoDeletionDateAtMillis!
                                 .toDateTimeString()
                             : "")),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: Text(
+                      "ID: ${meeting.id}",
+                      style: TextStyle(
+                        color: Colors.grey.shade300,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

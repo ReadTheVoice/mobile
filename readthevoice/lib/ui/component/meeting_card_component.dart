@@ -80,6 +80,8 @@ class _MeetingCardState extends State<MeetingCard> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -118,7 +120,7 @@ class _MeetingCardState extends State<MeetingCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 250,
+                      width: screenWidth - 150,  // Here
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                         child: Column(

@@ -28,9 +28,9 @@ enum MeetingStatus {
       case MeetingStatus.createdNotStarted:
         return Colors.grey; // Has not yet started
       case MeetingStatus.started:
-        return Colors.deepPurpleAccent;
+        return Colors.green;
       case MeetingStatus.ended:
-        return Colors.redAccent;
+        return Colors.grey;
       default:
         return Colors.transparent;
     }

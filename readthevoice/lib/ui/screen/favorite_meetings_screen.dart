@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
+import 'package:readthevoice/utils/utils.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
   const FavoriteMeetingsScreen({super.key});
@@ -13,8 +15,10 @@ class FavoriteMeetingsScreen extends StatefulWidget {
 
 class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
   MeetingService meetingService = const MeetingService();
+  FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
 
   Future<List<Meeting>> retrieveMeetings() async {
+    await refreshMeetingList();
     return await meetingService.getFavoriteMeetings();
   }
 
@@ -22,7 +26,9 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: FutureBuilder(
+      child: RefreshIndicator(
+        onRefresh: refreshMeetingList,
+        child: FutureBuilder(
         future: retrieveMeetings(),
         builder: (BuildContext context, AsyncSnapshot<List<Meeting>> snapshot) {
           if (snapshot.hasData) {
@@ -52,7 +58,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
             return const AppProgressIndicator();
           }
         },
-      ),
+      ),)
     ));
   }
 }

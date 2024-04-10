@@ -185,7 +185,6 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             if (existing != null) {
               // check whether it exists in firestore or not
               if (meeting != null) {
-                meeting.transcription = existing.transcription;
                 meeting.favorite = existing.favorite;
                 meeting.archived = existing.archived;
 
