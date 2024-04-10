@@ -8,11 +8,19 @@ class NoDataWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget widget = const Text("No data");
+
     switch (currentScreen) {
       case AvailableScreens.home:
-        return Text("No data for ${currentScreen.name}");
+        widget = Text("No data for ${currentScreen.name}");
+        break;
       default:
-        return Text("No data for ${currentScreen.name}");
+        widget = Text("No data for ${currentScreen.name}");
+        break;
     }
+
+    return Center(
+      child: widget,
+    );
   }
 }

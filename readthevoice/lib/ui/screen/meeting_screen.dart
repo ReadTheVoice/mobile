@@ -50,11 +50,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
   @override
   void initState() {
     _getStream();
-
-    super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback(_initScrollToBottom);
     hasScroll = false;
+
+    super.initState();
   }
 
   @override
@@ -64,11 +63,13 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void _initScrollToBottom(_) {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 20),
-      curve: Curves.easeInOut,
-    );
+    if (_scrollController.positions.isNotEmpty) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 20),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _scrollToBottom(_) {
@@ -325,9 +326,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     _updateTranscription(
                                         data["data"], widget.meeting.id);
 
-                                    if (_scrollController.offset !=
-                                        _scrollController
-                                            .position.maxScrollExtent) {
+                                    if (_scrollController
+                                            .positions.isNotEmpty &&
+                                        (_scrollController.offset !=
+                                            _scrollController
+                                                .position.maxScrollExtent)) {
                                       hasScroll = true;
                                     } else {
                                       hasScroll = false;
