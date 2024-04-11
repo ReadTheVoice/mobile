@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
+import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
@@ -19,7 +21,7 @@ class StreamFbList extends StatefulWidget {
 class _StreamFbListState extends State<StreamFbList> {
   final meetingService = const MeetingService();
 
-  late List<String>? meetingIds;
+  late List<String>? meetingIds = null;
 
   Future<void> initList() async {
     await refreshMeetingList();
@@ -73,10 +75,12 @@ class _StreamFbListState extends State<StreamFbList> {
                                   print("data".toUpperCase());
                                   print(data);
 
-                                  return ListTile(
-                                    title: Text(data['name'] ?? ""),
-                                    subtitle: Text(data['description'] ?? ""),
-                                  );
+                                  // return ListTile(
+                                  //   title: Text(data['name'] ?? ""),
+                                  //   subtitle: Text(data['description'] ?? ""),
+                                  // );
+
+                                  return StreamedCard(meeting: Meeting.example(document.id));
                                 } else {
                                   return const ListTile(
                                     title: NoDataWidget(
