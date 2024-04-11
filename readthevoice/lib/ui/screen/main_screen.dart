@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:readthevoice/ui/screen/qr_code_screen.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
-import 'package:stylish_bottom_bar/model/bar_items.dart';
+import 'package:readthevoice/ui/screen/qr_code_screen.dart';
+import 'package:readthevoice/ui/screen/stream_fb_list.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -18,6 +18,11 @@ class _MainScreenState extends State<MainScreen> {
   dynamic selected = 0;
   Text screenTitle = const Text("app_name").tr();
   PageController controller = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -41,6 +46,9 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         screenTitle = const Text("favorite_meetings_screen_title").tr();
         break;
+      case 2:
+        screenTitle = const Text("favorite_meetings_screen_title").tr();
+        break;
       default:
         throw UnimplementedError('no widget for $selected');
     }
@@ -55,6 +63,7 @@ class _MainScreenState extends State<MainScreen> {
           children: const [
             Center(child: HomeScreen()),
             Center(child: FavoriteMeetingsScreen()),
+            Center(child: StreamFbList()),
           ],
         ),
       ),
@@ -81,10 +90,17 @@ class _MainScreenState extends State<MainScreen> {
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),
           ),
+          BottomBarItem(
+            icon: const Icon(Icons.stream_rounded),
+            selectedIcon: const Icon(Icons.stream_rounded),
+            unSelectedColor: Colors.grey.shade700,
+            selectedColor: Theme.of(context).colorScheme.onSurface,
+            title: const Text('favorite_bottom_bar').tr(),
+          ),
         ],
         hasNotch: true,
         fabLocation: StylishBarFabLocation.end,
-        currentIndex: selected ?? 0,
+        currentIndex: selected ?? 0, // enum.index
         onTap: (index) {
           _onItemTapped(index);
         },

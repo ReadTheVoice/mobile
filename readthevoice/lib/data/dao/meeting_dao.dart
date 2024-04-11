@@ -6,19 +6,19 @@ import 'package:readthevoice/data/model/meeting.dart';
 @dao
 abstract class MeetingDao {
   @Query('SELECT * FROM $MEETING_TABLE_NAME order by creationDateAtMillis desc')
-  Future<List<Meeting>> findAllMeetings();
+  Future<List<Meeting>?> findAllMeetings();
   
   @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${false} order by creationDateAtMillis desc")
-  Future<List<Meeting>> findUnarchivedMeetings();
+  Future<List<Meeting>?> findUnarchivedMeetings();
 
   @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${true} order by creationDateAtMillis desc")
-  Future<List<Meeting>> findArchivedMeetings();
+  Future<List<Meeting>?> findArchivedMeetings();
 
   @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true} order by creationDateAtMillis desc")
-  Future<List<Meeting>> findFavoriteMeetings();
+  Future<List<Meeting>?> findFavoriteMeetings();
 
   @Query('SELECT title FROM $MEETING_TABLE_NAME')
-  Stream<List<String>> findMeetingTitles();
+  Stream<List<String>?> findMeetingTitles();
 
   @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')
   Future<Meeting?> findMeetingById(String id);

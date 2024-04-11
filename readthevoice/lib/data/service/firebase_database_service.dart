@@ -39,6 +39,13 @@ class FirebaseDatabaseService {
     return UserModel.example();
   }
 
+  // Stream meeting transcription
+  // Future<Stream<QuerySnapshot<Object?>>> streamMeetings() async {
+  Future<Stream<QuerySnapshot>> streamMeetings() async {
+    // return meetingCollectionReference.where("id", )
+    return meetingCollectionReference.orderBy("field", descending: true).snapshots();
+  }
+
   Future<Meeting?> getMeeting(String meetingId) async {
     var docSnapshot = await meetingCollectionReference.doc(meetingId).get();
     if (docSnapshot.exists) {

@@ -11,7 +11,7 @@ class MeetingService {
         .build();
 
     final meetingDao = database.meetingDao;
-    return await meetingDao.findAllMeetings();
+    return await meetingDao.findAllMeetings() ?? List.empty();
   }
 
   Future<List<Meeting>> getUnarchivedMeetings() async {
@@ -20,7 +20,7 @@ class MeetingService {
         .build();
 
     final meetingDao = database.meetingDao;
-    return await meetingDao.findUnarchivedMeetings();
+    return await meetingDao.findUnarchivedMeetings() ?? List.empty();
   }
 
   Future<List<Meeting>> getArchivedMeetings() async {
@@ -29,7 +29,7 @@ class MeetingService {
         .build();
 
     final meetingDao = database.meetingDao;
-    return await meetingDao.findArchivedMeetings();
+    return await meetingDao.findArchivedMeetings() ?? List.empty();
   }
 
   Future<List<Meeting>> getFavoriteMeetings() async {
@@ -38,7 +38,7 @@ class MeetingService {
         .build();
 
     final meetingDao = database.meetingDao;
-    return await meetingDao.findFavoriteMeetings();
+    return await meetingDao.findFavoriteMeetings() ?? List.empty();
   }
 
   Future<void> setArchiveMeetingById(String meetingId, bool archiveMeeting) async {

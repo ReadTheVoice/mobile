@@ -12,7 +12,10 @@ enum AvailableScreens {
   settings,
   aboutUs,
   meeting,
-  transcriptionStream
+  transcriptionStream,
+  noData,
+  noInternetConnection,
+  streamFbList
 }
 
 extension DateTimeStringConversion on int {

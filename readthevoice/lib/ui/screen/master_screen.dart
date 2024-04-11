@@ -1,9 +1,12 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:readthevoice/ui/helper/connectivityCheckHelper.dart';
 import 'package:readthevoice/ui/screen/about_screen.dart';
 import 'package:readthevoice/ui/screen/archived_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/main_screen.dart';
+import 'package:readthevoice/ui/screen/no_internet_screen.dart';
 import 'package:readthevoice/ui/screen/settings_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
@@ -21,13 +24,28 @@ class _MasterScreenState extends State<MasterScreen> {
 
   AvailableScreens selectedScreen = AvailableScreens.main;
 
+  Map _source = {ConnectivityResult.none: false};
+  final ConnectivityCheckHelper _connectivity = ConnectivityCheckHelper.instance;
+
+  Future<void> initPackage() async {
+    packageInfo = await PackageInfo.fromPlatform();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      this.packageInfo = packageInfo;
+    initPackage();
+    _connectivity.initialize();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
     });
+  }
+
+  @override
+  void dispose() {
+    _connectivity.disposeStream();
+    super.dispose();
   }
 
   void _onItemTapped(AvailableScreens chosenScreen) {
@@ -62,6 +80,13 @@ class _MasterScreenState extends State<MasterScreen> {
     }
 
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        return const NoInternetScreen();
+      default:
+        break;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -175,3 +200,45 @@ class _MasterScreenState extends State<MasterScreen> {
     );
   }
 }
+
+/*
+class _HomePageState extends State<HomePage> {
+  Map _source = {ConnectivityResult.none: false};
+  final ConnectivityCheckHelper _connectivity = ConnectivityCheckHelper.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivity.initialize();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String string;
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.mobile:
+        string = 'Mobile: Online';
+        break;
+      case ConnectivityResult.wifi:
+        string = 'WiFi: Online';
+        break;
+      case ConnectivityResult.none:
+      default:
+        string = 'Offline';
+    }
+
+    return Scaffold(
+      body: Center(child: Text(string)),
+    );
+  }
+
+  @override
+  void dispose() {
+    _connectivity.disposeStream();
+    super.dispose();
+  }
+}
+ */

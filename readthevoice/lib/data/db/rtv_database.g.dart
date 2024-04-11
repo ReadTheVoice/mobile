@@ -195,7 +195,7 @@ class _$MeetingDao extends MeetingDao {
   final DeletionAdapter<Meeting> _meetingDeletionAdapter;
 
   @override
-  Future<List<Meeting>> findAllMeetings() async {
+  Future<List<Meeting>?> findAllMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -222,7 +222,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<List<Meeting>> findUnarchivedMeetings() async {
+  Future<List<Meeting>?> findUnarchivedMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = false order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -249,7 +249,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<List<Meeting>> findArchivedMeetings() async {
+  Future<List<Meeting>?> findArchivedMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE archived = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -276,7 +276,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<List<Meeting>> findFavoriteMeetings() async {
+  Future<List<Meeting>?> findFavoriteMeetings() async {
     return _queryAdapter.queryList(
         'SELECT * FROM meeting WHERE favorite = true order by creationDateAtMillis desc',
         mapper: (Map<String, Object?> row) => Meeting(
@@ -303,7 +303,7 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Stream<List<String>> findMeetingTitles() {
+  Stream<List<String>?> findMeetingTitles() {
     return _queryAdapter.queryListStream('SELECT title FROM meeting',
         mapper: (Map<String, Object?> row) => row.values.first as String,
         queryableName: 'meeting',

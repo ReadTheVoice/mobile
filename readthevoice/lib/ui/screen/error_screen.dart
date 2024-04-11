@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ErrorScreen extends StatefulWidget {
-  const ErrorScreen({super.key});
+  String text;
+
+  ErrorScreen({super.key, this.text = ""});
 
   @override
   State<ErrorScreen> createState() => _ErrorScreenState();
@@ -27,13 +29,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                 style: TextStyle(color: Colors.white, backgroundColor: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
-            Image.network(
-              // Image.asset(
-              "https://cdn.pixabay.com/photo/2024/02/29/12/41/woman-8604350_960_720.jpg",
-              height: 200,
-              width: 200,
-            ),
-
+            Text(widget.text),
             SvgPicture.asset(
               "assets/images/svg/372-Beauty.svg",
               semanticsLabel: 'My SVG Image',
