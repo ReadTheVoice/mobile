@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 Future<File> createTempFile(String meetingTitle, String transcription) async {
@@ -20,7 +19,7 @@ Future<void> shareTextFile(String meetingTitle, String transcription) async {
   await Share.shareXFiles([XFile(tempFile.path)]);
 }
 
-Future<void> downloadTextFile(String meetingTitle, String transcription, {Function? onSuccess}) async {
+Future<void> downloadTextFile(String meetingTitle, String transcription, {Function? onSuccess, Function? onCanceled}) async {
   final tempFile = await createTempFile(meetingTitle, transcription);
   String? outputFile = await FilePicker.platform.saveFile(
     dialogTitle: 'Please select an output file:',

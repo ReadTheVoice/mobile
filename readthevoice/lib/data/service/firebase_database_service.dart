@@ -42,8 +42,11 @@ class FirebaseDatabaseService {
   // Stream meeting transcription
   // Future<Stream<QuerySnapshot<Object?>>> streamMeetings() async {
   Future<Stream<QuerySnapshot>> streamMeetings() async {
-    // return meetingCollectionReference.where("id", )
     return meetingCollectionReference.orderBy("field", descending: true).snapshots();
+  }
+
+  Meeting convertToMeeting() {
+    return Meeting.example("id");
   }
 
   Future<Meeting?> getMeeting(String meetingId) async {

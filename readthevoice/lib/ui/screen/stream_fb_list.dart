@@ -9,11 +9,6 @@ import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
-// import 'package:readthevoice/ui/component/basic_components.dart';
-// import 'package:readthevoice/ui/component/meeting_list_component.dart';
-// import 'package:readthevoice/ui/component/no_data_widget.dart';
-// import 'package:readthevoice/utils/utils.dart';
-
 class StreamFbList extends StatefulWidget {
   const StreamFbList({super.key});
 
@@ -22,14 +17,9 @@ class StreamFbList extends StatefulWidget {
 }
 
 class _StreamFbListState extends State<StreamFbList> {
-  final Stream<QuerySnapshot> _usersStream = FirebaseDatabaseService()
-      .meetingCollectionReference
-      .orderBy("createdAt", descending: true)
-      .snapshots();
   final meetingService = const MeetingService();
 
-  // late List<String> meetingIds = List.empty();
-  late List<String>? meetingIds = null;
+  late List<String>? meetingIds;
 
   Future<void> initList() async {
     await refreshMeetingList();
