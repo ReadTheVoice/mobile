@@ -141,7 +141,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.archivedMeetings);
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
                       }),
                   ListTile(
                       title: Text(
@@ -155,7 +155,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.settings);
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
                       }),
                   ListTile(
                       title: Text(
@@ -169,7 +169,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.aboutUs);
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
                       }),
                 ],
               ),
@@ -200,45 +200,3 @@ class _MasterScreenState extends State<MasterScreen> {
     );
   }
 }
-
-/*
-class _HomePageState extends State<HomePage> {
-  Map _source = {ConnectivityResult.none: false};
-  final ConnectivityCheckHelper _connectivity = ConnectivityCheckHelper.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    _connectivity.initialize();
-    _connectivity.myStream.listen((source) {
-      setState(() => _source = source);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String string;
-    switch (_source.keys.toList()[0]) {
-      case ConnectivityResult.mobile:
-        string = 'Mobile: Online';
-        break;
-      case ConnectivityResult.wifi:
-        string = 'WiFi: Online';
-        break;
-      case ConnectivityResult.none:
-      default:
-        string = 'Offline';
-    }
-
-    return Scaffold(
-      body: Center(child: Text(string)),
-    );
-  }
-
-  @override
-  void dispose() {
-    _connectivity.disposeStream();
-    super.dispose();
-  }
-}
- */

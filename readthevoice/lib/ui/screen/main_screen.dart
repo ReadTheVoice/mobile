@@ -5,6 +5,7 @@ import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
 import 'package:readthevoice/ui/screen/stream_fb_list.dart';
+import 'package:readthevoice/utils/utils.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -15,8 +16,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  dynamic selected = 0;
-  Text screenTitle = const Text("app_name").tr();
+  dynamic selected = AvailableScreens.home.index;
   PageController controller = PageController();
 
   @override
@@ -39,20 +39,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    switch (selected) {
-      case 0:
-        screenTitle = const Text("app_name").tr();
-        break;
-      case 1:
-        screenTitle = const Text("favorite_meetings_screen_title").tr();
-        break;
-      case 2:
-        screenTitle = const Text("favorite_meetings_screen_title").tr();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selected');
-    }
-
     return Scaffold(
       extendBody: true,
       resizeToAvoidBottomInset: false,
@@ -76,31 +62,33 @@ class _MainScreenState extends State<MainScreen> {
         ),
         items: [
           BottomBarItem(
-            icon: Icon(selected == 0 ? Icons.house_rounded : Icons.house_outlined),
-            // selectedIcon: const Icon(Icons.house_rounded),
+            icon: Icon(
+                selected == 0 ? Icons.house_rounded : Icons.house_outlined),
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('home_bottom_bar').tr(),
-
           ),
           BottomBarItem(
-            icon: const Icon(Icons.favorite_border_rounded),
-            selectedIcon: const Icon(Icons.favorite_rounded),
+            icon: Icon(selected == 1
+                ? Icons.favorite_rounded
+                : Icons.favorite_border_rounded),
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),
           ),
           BottomBarItem(
-            icon: const Icon(Icons.stream_rounded),
-            selectedIcon: const Icon(Icons.stream_rounded),
+            icon: Icon(selected == 2
+                ? Icons.view_stream_rounded
+                : Icons.view_stream_outlined),
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
-            title: const Text('favorite_bottom_bar').tr(),
+            title: const Text('Stream').tr(),
           ),
         ],
         hasNotch: true,
         fabLocation: StylishBarFabLocation.end,
-        currentIndex: selected ?? 0, // enum.index
+        currentIndex: selected ?? 0,
+        // enum.index
         onTap: (index) {
           _onItemTapped(index);
         },
