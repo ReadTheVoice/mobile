@@ -16,7 +16,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  dynamic selected = AvailableScreens.home.index;
+  dynamic selected = 0;
   PageController controller = PageController();
 
   @override

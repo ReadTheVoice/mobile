@@ -21,7 +21,7 @@ class FirebaseDatabaseService {
   }
 
   // https://github.com/firebase/flutterfire/blob/master/packages/cloud_firestore/cloud_firestore/example/lib/main.dart
-  Future<UserModel> getMeetingCreator(String userId) async {
+  Future<UserModel?> getMeetingCreator(String userId) async {
     var docSnapshot = await userCollectionReference.doc(userId).get();
 
     if (docSnapshot.exists) {
@@ -36,7 +36,7 @@ class FirebaseDatabaseService {
       }
     }
 
-    return UserModel.example();
+    return null;
   }
 
   // Stream meeting transcription
@@ -82,7 +82,7 @@ class FirebaseDatabaseService {
 
         fbMeeting.transcription = await getMeetingTranscription(meetingId);
 
-        UserModel creator = await getMeetingCreator(fbMeeting.creator);
+        UserModel creator = await getMeetingCreator(fbMeeting.creator) ?? UserModel.example();
         return fbMeeting.toMeeting(creator);
       }
     }

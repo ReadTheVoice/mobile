@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
@@ -19,15 +20,13 @@ class SteamedMeetingCard extends StatefulWidget {
   final Color rightColor;
 
   final Function leftFunction;
-  final Function rightFunction;
+  final Function cardDeleteFunction;
 
   final bool? unarchiving;
   final bool? isFavoriteList;
 
   // New attributes
-  final String? name;
-  final String? description;
-  final DateTime? createdDate;
+  final MeetingModel? meetingModel;
 
   const SteamedMeetingCard(
       {super.key,
@@ -37,9 +36,9 @@ class SteamedMeetingCard extends StatefulWidget {
       required this.leftColor,
       required this.rightColor,
       required this.leftFunction,
-      required this.rightFunction,
+      required this.cardDeleteFunction,
       this.unarchiving,
-      this.isFavoriteList = false, this.name, this.description, this.createdDate});
+      this.isFavoriteList = false, this.meetingModel});
 
   @override
   State<SteamedMeetingCard> createState() => _SteamedMeetingCardState();
@@ -88,15 +87,12 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
           });
         }
       },
-      child: MeetingCard(
+      child: StreamedCard(
         meeting: widget.currentMeeting,
         isFavoriteList: widget.isFavoriteList,
-        deleteFunction: () {
-          setState(() {
-            // widget.meetings!.remove(widget.currentMeeting);
-          });
-        },
-      ),
+        deleteFunction: widget.cardDeleteFunction,
+        meetingModel: widget.meetingModel,
+      )
     );
   }
 }
@@ -111,9 +107,17 @@ class StreamedCard extends StatefulWidget {
   final Function? favoriteFunction;
   final Function? deleteFunction;
 
-  final String? name;
-  final String? description;
-  final DateTime? createdDate;
+  final MeetingModel? meetingModel;
+
+  /*
+      MeetingStatus status = model.getMeetingStatus();
+
+      var id = document.id;
+      var createdDate = DateTime.fromMillisecondsSinceEpoch((data['createdAt'] as Timestamp).millisecondsSinceEpoch);
+      var creatorId = data['creator'];
+      var title = data['name'];
+      var description = data['description'] ?? "";
+   */
 
   const StreamedCard(
       {super.key,
@@ -122,7 +126,7 @@ class StreamedCard extends StatefulWidget {
       this.favoriteFunction,
       this.deleteFunction,
       this.background,
-      this.textColor = Colors.white, this.name, this.description, this.createdDate});
+      this.textColor = Colors.white, this.meetingModel});
 
   @override
   State<StreamedCard> createState() => _StreamedCardState();
@@ -130,6 +134,29 @@ class StreamedCard extends StatefulWidget {
 
 class _StreamedCardState extends State<StreamedCard> {
   final MeetingService meetingService = const MeetingService();
+  late final MeetingModel meetingModel;
+  late final MeetingST currentMeeting;
+
+  Future<void> initializeAttributes() async {
+    meetingModel = widget.meetingModel ?? MeetingModel.example();
+    var existing = await meetingService.getMeetingById(meetingModel.id);
+    if(existing != null) {
+      // currentMeeting = await meetingService.getMeetingById(meetingModel.id);
+    } else {
+      // MeetingST inserting = MeetingST(id: id, userId: userId);
+      // await meetingService.insertMeeting(meeting);
+
+      // currentMeeting = await meetingService.getMeetingById(meetingModel.id);
+    }
+
+    setState(() { });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeAttributes();
+  }
 
   void _showConfirmationDialog() {
     showDialog(
@@ -151,10 +178,8 @@ class _StreamedCardState extends State<StreamedCard> {
     ).then((confirmed) {
       if (confirmed ?? false) {
         setState(() {
-          meetingService.deleteMeetingById(widget.meeting.id);
-
           if (widget.deleteFunction != null) {
-            widget.deleteFunction!();
+            widget.deleteFunction!(meetingModel.id);
           }
 
           toastification.show(
@@ -184,6 +209,7 @@ class _StreamedCardState extends State<StreamedCard> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MeetingScreen(
+              // meetingModel OR meetingModel.id
               meeting: widget.meeting,
             ),
           ),
@@ -198,20 +224,24 @@ class _StreamedCardState extends State<StreamedCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  widget.meeting.title.trim() != ""
-                      ? widget.meeting.title
+                  // widget.meeting.title.trim() != ""
+                  meetingModel.name.trim() != ""
+                      // ? widget.meeting.title
+                      ? meetingModel.name
                       : "Title: ...",
                   style: TextStyle(color: widget.textColor, fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const Spacer(),
-                MeetingStatusChip(meetingStatus: widget.meeting.status),
+                // MeetingStatusChip(meetingStatus: widget.meeting.status),
+                MeetingStatusChip(meetingStatus: meetingModel.getMeetingStatus()),
               ],
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const MeetingCardDivider(),
                 const MeetingCardDivider(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,6 +257,7 @@ class _StreamedCardState extends State<StreamedCard> {
                             if (widget.isFavoriteList != null &&
                                 widget.isFavoriteList == true &&
                                 widget.meeting.archived)
+                                // widget.meeting.archived)
                               Row(
                                 children: [
                                   FaIcon(
@@ -249,7 +280,8 @@ class _StreamedCardState extends State<StreamedCard> {
                                 ],
                               ),
                             Text(
-                              widget.meeting.description,
+                              meetingModel.description ?? "",
+                              // widget.meeting.description,
                               style: TextStyle(
                                   color: widget.textColor, fontSize: 16),
                               maxLines: 2,
@@ -261,7 +293,8 @@ class _StreamedCardState extends State<StreamedCard> {
                     ),
                     const Spacer(),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
                             onPressed: () {
@@ -270,7 +303,8 @@ class _StreamedCardState extends State<StreamedCard> {
 
                                 widget.meeting.favorite = fav;
                                 meetingService.setFavoriteMeetingById(
-                                    widget.meeting.id, fav);
+                                    meetingModel.id, fav);
+                                    // widget.meeting.id, fav);
 
                                 if (widget.favoriteFunction != null) {
                                   widget.favoriteFunction!();
@@ -297,7 +331,8 @@ class _StreamedCardState extends State<StreamedCard> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    "${tr("meeting_creation_date")}: ${widget.meeting.creationDateAtMillis.toDateTimeString()}",
+                    "${tr("meeting_creation_date")}: ${meetingModel.createdAt.toString()}",
+                    // "${tr("meeting_creation_date")}: ${widget.meeting.creationDateAtMillis.toDateTimeString()}",
                     style: TextStyle(
                         color:
                         Theme.of(context).colorScheme.onPrimaryContainer),

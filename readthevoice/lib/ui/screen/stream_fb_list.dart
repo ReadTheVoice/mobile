@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -27,7 +28,8 @@ class _StreamFbListState extends State<StreamFbList> {
     await refreshMeetingList();
 
     meetingIds =
-        (await meetingService.getAllMeetings()).map((e) => e.id).toList();
+        (await meetingService.getUnarchivedMeetings()).map((e) => e.id).toList();
+        // (await meetingService.getAllMeetings()).map((e) => e.id).toList();
     print("meetingIds".toUpperCase());
     print(meetingIds);
 
@@ -38,8 +40,8 @@ class _StreamFbListState extends State<StreamFbList> {
 
   @override
   void initState() {
-    initList();
     super.initState();
+    initList();
   }
 
   @override
@@ -75,12 +77,39 @@ class _StreamFbListState extends State<StreamFbList> {
                                   print("data".toUpperCase());
                                   print(data);
 
-                                  // return ListTile(
-                                  //   title: Text(data['name'] ?? ""),
-                                  //   subtitle: Text(data['description'] ?? ""),
-                                  // );
+                                  MeetingModel model = MeetingModel.fromFirebase(document.id, data);
+                                  MeetingStatus status = model.getMeetingStatus();
 
-                                  return StreamedCard(meeting: Meeting.example(document.id));
+                                  var id = document.id;
+                                  var createdDate = DateTime.fromMillisecondsSinceEpoch((data['createdAt'] as Timestamp).millisecondsSinceEpoch);
+                                  var creatorId = data['creator'];
+                                  var title = data['name'];
+                                  var description = data['description'] ?? "";
+
+                                  // Whether the meeting is archived or not
+
+                                  return SteamedMeetingCard(
+                                    currentMeeting: Meeting.example(document.id),
+                                    meetingModel: model,
+                                    leftIcon: const Icon(Icons.archive_outlined),
+                                    rightIcon: const Icon(Icons.delete_forever),
+                                    leftColor: Colors.green,
+                                    rightColor: Colors.red,
+                                    leftFunction: (String meetingId, bool archived) {
+                                      if (!archived) {
+                                        meetingService.setArchiveMeetingById(meetingId, true);
+                                        meetingIds?.remove(meetingId);
+                                      }
+
+                                      setState(() { });
+                                    },
+                                    cardDeleteFunction: (String meetingId) {
+                                      meetingService.deleteMeetingById(meetingId);
+                                      meetingIds?.remove(meetingId);
+                                      setState(() { });
+                                    },
+                                  );
+                                  // return StreamedCard(meeting: Meeting.example(document.id), meetingModel: model,);
                                 } else {
                                   return const ListTile(
                                     title: NoDataWidget(

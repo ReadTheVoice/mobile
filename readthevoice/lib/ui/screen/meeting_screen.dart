@@ -203,6 +203,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ),
                           ),
                         ),
+                      if(widget.meeting.allowDownload)
                         PopupMenuItem(
                           child: TextButton(
                             onPressed: () async {
