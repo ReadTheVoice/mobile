@@ -170,8 +170,7 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<List<Meeting>?> findUnarchivedMeetings() async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM meeting WHERE archived = false',
+    return _queryAdapter.queryList('SELECT * FROM meeting WHERE archived = 0',
         mapper: (Map<String, Object?> row) => Meeting(
             id: row['id'] as String,
             userId: row['userId'] as String,
@@ -184,8 +183,7 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<List<Meeting>?> findArchivedMeetings() async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM meeting WHERE archived = true',
+    return _queryAdapter.queryList('SELECT * FROM meeting WHERE archived = 1',
         mapper: (Map<String, Object?> row) => Meeting(
             id: row['id'] as String,
             userId: row['userId'] as String,
@@ -198,8 +196,7 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<List<Meeting>?> findFavoriteMeetings() async {
-    return _queryAdapter.queryList(
-        'SELECT * FROM meeting WHERE favorite = true',
+    return _queryAdapter.queryList('SELECT * FROM meeting WHERE favorite = 1',
         mapper: (Map<String, Object?> row) => Meeting(
             id: row['id'] as String,
             userId: row['userId'] as String,

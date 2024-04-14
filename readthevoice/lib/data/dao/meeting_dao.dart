@@ -8,13 +8,16 @@ abstract class MeetingDao {
   @Query('SELECT * FROM $MEETING_TABLE_NAME')
   Future<List<Meeting>?> findAllMeetings();
 
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${false}")
+  // @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${false}")
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = 0")
   Future<List<Meeting>?> findUnarchivedMeetings();
 
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${true}")
+  // @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${true}")
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = 1")
   Future<List<Meeting>?> findArchivedMeetings();
 
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true}")
+  // @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true}")
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = 1")
   Future<List<Meeting>?> findFavoriteMeetings();
 
   @Query('SELECT title FROM $MEETING_TABLE_NAME')

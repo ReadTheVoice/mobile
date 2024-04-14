@@ -42,6 +42,8 @@ Future<void> refreshMeetingList() async {
         meeting.favorite = existing.favorite;
         meeting.archived = existing.archived;
         meeting.status = model!.getMeetingStatus();
+        meeting.transcription = await firebaseService.getMeetingTranscription(existing.id) ?? existing.transcription;
+        meeting.userName = (await firebaseService.getMeetingCreator(model.creator))?.toString();
 
         await meetingService.updateMeeting(meeting);
       } else {

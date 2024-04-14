@@ -57,8 +57,8 @@ class Meeting {
   final String id;
 
   final String userId;
-  final String? userName;
 
+  String? userName;
   MeetingStatus status;
   String transcription;
   bool favorite;

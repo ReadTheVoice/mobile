@@ -114,11 +114,11 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                                 .cast(),
                           )
                         : const NoDataWidget(
-                            currentScreen: AvailableScreens.archivedMeetings);
+                            currentScreen: AvailableScreens.favoriteMeetings);
                   },
                 )
               : const NoDataWidget(
-                  currentScreen: AvailableScreens.archivedMeetings))
+                  currentScreen: AvailableScreens.favoriteMeetings))
           : const AppPlaceholder(),
     )));
   }

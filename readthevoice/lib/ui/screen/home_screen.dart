@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await refreshMeetingList();
 
     meetingIds = (await meetingService.getUnarchivedMeetings())
+    // meetingIds = (await meetingService.getAllMeetings())
         .map((e) => e.id)
         .toList();
 

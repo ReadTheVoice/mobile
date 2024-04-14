@@ -46,5 +46,11 @@
     "successful_unarchiving": "Désarchivage terminé",
     "not_yet_implemented": "Pas encore implémenté",
     "saved_file_path": "Fichier enregistré sous",
-    "empty_transcription": "La transcription est vide"
+    "empty_transcription": "Il n'y a pas de transcription",
+    "show_qr_code": "Afficher le code QR",
+    "unknown_document": "Le document n'existe pas",
+    "show_details": "Afficher les détails",
+    "archived_button_tooltip": "Cette réunion a été archivée",
+    "favorite_button_tooltip": "Cette réunion fait partie de vos favoris",
+    "close_details_view": "Fermer la vue détaillée"
 }

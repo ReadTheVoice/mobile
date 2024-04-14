@@ -8,4 +8,9 @@ class UserModel {
   static UserModel example() {
     return const UserModel(id: "", firstName: "", lastName: "");
   }
+
+  @override
+  String toString() {
+    return "$firstName $lastName";
+  }
 }
