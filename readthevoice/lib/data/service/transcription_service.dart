@@ -9,7 +9,9 @@ Future<File> createTempFile(String meetingTitle, String transcription) async {
   final tempDir = await getTemporaryDirectory();
   final tempFile = File(
       '${tempDir.path}/${meetingTitle.replaceAll(" ", "_")}_${DateTime.now().toString().replaceAll(" ", "_")}.txt');
-  await tempFile.writeAsBytes(utf8.encode(transcription));
+
+  String textToSend = "\t$meetingTitle \n\n$transcription";
+  await tempFile.writeAsBytes(utf8.encode(textToSend));
   return tempFile;
 }
 

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:readthevoice/data/firebase_model/user_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
+import 'package:readthevoice/data/service/firebase_database_service.dart';
 
 class MeetingModel {
   final String id;
@@ -15,6 +17,7 @@ class MeetingModel {
   bool allowDownload;
   String? transcription;
   String? language;
+  UserModel? creatorModel;
 
   MeetingModel(
       {required this.id,
@@ -27,18 +30,60 @@ class MeetingModel {
       this.isFinished = false,
       this.isTranscriptAccessibleAfter = true,
       this.scheduledDate,
-      this.allowDownload = false, this.transcription = "", this.language});
+      this.allowDownload = false,
+      this.transcription = "",
+      this.language,
+      this.creatorModel});
 
   static MeetingModel example() {
     return MeetingModel(
         id: "", createdAt: DateTime.now(), creator: "", name: "");
   }
+
+  static MeetingModel fromFirebase(
+      String meetingId, Map<String, dynamic> data) {
+    MeetingModel fbMeeting = MeetingModel(
+        id: meetingId,
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+            (data['createdAt'] as Timestamp).millisecondsSinceEpoch),
+        creator: data['creator'],
+        name: data['name'],
+        deletionDate: data['deletionDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                (data['deletionDate'] as Timestamp).millisecondsSinceEpoch)
+            : null,
+        description: data['description'],
+        endDate: data['endDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                (data['endDate'] as Timestamp).millisecondsSinceEpoch)
+            : null,
+        isFinished: data['isFinished'],
+        isTranscriptAccessibleAfter: data['isTranscriptAccessibleAfter'],
+        scheduledDate: data['scheduledDate'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                (data['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
+            : null,
+        allowDownload: data["allowDownload"] ?? false,
+        language: data["language"]);
+
+    fbMeeting.setTranscriptionAndCreatorModel(meetingId, fbMeeting);
+
+    return fbMeeting;
+  }
 }
 
 extension MeetingModelConversion on MeetingModel {
-  Meeting toMeeting(UserModel? creator) {
-    bool autoDelete = deletionDate != null;
-    String username = "${creator?.firstName} ${creator?.lastName}";
+  Future<void> setTranscriptionAndCreatorModel(String meetingId, MeetingModel model) async {
+    FirebaseDatabaseService().getMeetingTranscription(meetingId).then((value) {
+      model.transcription = value;
+    });
+
+    FirebaseDatabaseService().getMeetingCreator(creator).then((value) {
+      model.creatorModel = value;
+    });
+  }
+
+  MeetingStatus getMeetingStatus() {
     MeetingStatus status = MeetingStatus.createdNotStarted;
 
     if (isFinished || endDate != null) {
@@ -46,29 +91,22 @@ extension MeetingModelConversion on MeetingModel {
     } else if (scheduledDate != null &&
         (DateTime.now().isAfter(scheduledDate!))) {
       status = MeetingStatus.started;
-    } else if(transcription != null && transcription!.trim().isNotEmpty) {
+    } else if (transcription != null && transcription!.trim().isNotEmpty) {
       status = MeetingStatus.started;
     }
 
+    return status;
+  }
+
+  Meeting toMeeting() {
+    String username = "${creatorModel?.firstName} ${creatorModel?.lastName}";
+    MeetingStatus status = getMeetingStatus();
+
     return Meeting(
         id: id,
-        title: name,
-        creationDateAtMillis: createdAt.millisecondsSinceEpoch,
-        userId: this.creator,
-        autoDeletion: autoDelete,
-        description: description ?? "",
-        isTranscriptAccessibleAfter: isTranscriptAccessibleAfter,
-        scheduledDateAtMillis: (scheduledDate != null)
-            ? scheduledDate?.millisecondsSinceEpoch
-            : null,
-        endDateAtMillis:
-            (endDate != null) ? endDate?.millisecondsSinceEpoch : null,
-        autoDeletionDateAtMillis:
-            autoDelete ? deletionDate?.millisecondsSinceEpoch : null,
+        userId: creator,
+        transcription: transcription ?? "",
         userName: username,
-        status: status,
-    allowDownload: allowDownload,
-    transcription: transcription ?? "",
-    language: language);
+        status: status);
   }
 }

@@ -1,15 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
-import 'package:readthevoice/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
-  final Meeting meeting;
+  final MeetingModel meetingModel;
+
   final Color? background;
   final Color? textColor;
 
@@ -18,14 +19,15 @@ class MeetingCard extends StatefulWidget {
   final Function? favoriteFunction;
   final Function? deleteFunction;
 
-  const MeetingCard(
-      {super.key,
-      required this.meeting,
-      this.isFavoriteList,
-      this.favoriteFunction,
-      this.deleteFunction,
-      this.background,
-      this.textColor = Colors.white});
+  const MeetingCard({
+    super.key,
+    required this.meetingModel,
+    this.isFavoriteList,
+    this.favoriteFunction,
+    this.deleteFunction,
+    this.background,
+    this.textColor = Colors.white,
+  });
 
   @override
   State<MeetingCard> createState() => _MeetingCardState();
@@ -33,6 +35,27 @@ class MeetingCard extends StatefulWidget {
 
 class _MeetingCardState extends State<MeetingCard> {
   final MeetingService meetingService = const MeetingService();
+  late Meeting? currentMeeting = null;
+
+  Future<void> initializeAttributes() async {
+    var existing = await meetingService.getMeetingById(widget.meetingModel.id);
+    if (existing == null) {
+      Meeting inserting = widget.meetingModel.toMeeting();
+      await meetingService.insertMeeting(inserting);
+      currentMeeting =
+          (await meetingService.getMeetingById(widget.meetingModel.id))!;
+    } else {
+      currentMeeting = existing;
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeAttributes();
+  }
 
   void _showConfirmationDialog() {
     showDialog(
@@ -54,10 +77,8 @@ class _MeetingCardState extends State<MeetingCard> {
     ).then((confirmed) {
       if (confirmed ?? false) {
         setState(() {
-          meetingService.deleteMeetingById(widget.meeting.id);
-
           if (widget.deleteFunction != null) {
-            widget.deleteFunction!();
+            widget.deleteFunction!(widget.meetingModel.id);
           }
 
           toastification.show(
@@ -87,7 +108,12 @@ class _MeetingCardState extends State<MeetingCard> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MeetingScreen(
-              meeting: widget.meeting,
+              // meetingModel: widget.meetingModel,
+              meetingModelId: widget.meetingModel.id,
+              meetingModelName: widget.meetingModel.name,
+              meetingModelAllowDownload: widget.meetingModel.allowDownload,
+              meetingModelTranscription:
+                  widget.meetingModel.transcription ?? "",
             ),
           ),
         );
@@ -101,26 +127,28 @@ class _MeetingCardState extends State<MeetingCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  widget.meeting.title.trim() != ""
-                      ? widget.meeting.title
+                  widget.meetingModel.name.trim() != ""
+                      ? widget.meetingModel.name
                       : "Title: ...",
                   style: TextStyle(color: widget.textColor, fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const Spacer(),
-                MeetingStatusChip(meetingStatus: widget.meeting.status),
+                MeetingStatusChip(
+                    meetingStatus: widget.meetingModel.getMeetingStatus()),
               ],
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const MeetingCardDivider(),
+                const MeetingCardDivider(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: screenWidth - 150,  // Here
+                      width: screenWidth - 150, // Here
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                         child: Column(
@@ -128,8 +156,10 @@ class _MeetingCardState extends State<MeetingCard> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (widget.isFavoriteList != null &&
-                                widget.isFavoriteList == true &&
-                                widget.meeting.archived)
+                                    widget.isFavoriteList == true &&
+                                    currentMeeting != null
+                                ? currentMeeting!.archived
+                                : false)
                               Row(
                                 children: [
                                   FaIcon(
@@ -152,7 +182,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                 ],
                               ),
                             Text(
-                              widget.meeting.description,
+                              widget.meetingModel.description ?? "",
                               style: TextStyle(
                                   color: widget.textColor, fontSize: 16),
                               maxLines: 2,
@@ -164,24 +194,28 @@ class _MeetingCardState extends State<MeetingCard> {
                     ),
                     const Spacer(),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         IconButton(
                             onPressed: () {
                               setState(() {
-                                bool fav = !widget.meeting.favorite;
+                                if (currentMeeting != null) {
+                                  bool fav = !currentMeeting!.favorite;
 
-                                widget.meeting.favorite = fav;
-                                meetingService.setFavoriteMeetingById(
-                                    widget.meeting.id, fav);
+                                  currentMeeting!.favorite = fav;
+                                  meetingService.setFavoriteMeetingById(
+                                      widget.meetingModel.id, fav);
 
-                                if (widget.favoriteFunction != null) {
-                                  widget.favoriteFunction!();
+                                  if (widget.favoriteFunction != null) {
+                                    widget.favoriteFunction!();
+                                  }
                                 }
                               });
                             },
                             icon: Icon(
-                              widget.meeting.favorite
+                              (currentMeeting != null
+                                      ? currentMeeting!.favorite
+                                      : false)
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_border_rounded,
                               color: widget.textColor,
@@ -200,7 +234,7 @@ class _MeetingCardState extends State<MeetingCard> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    "${tr("meeting_creation_date")}: ${widget.meeting.creationDateAtMillis.toDateTimeString()}",
+                    "${tr("meeting_creation_date")}: ${widget.meetingModel.createdAt.toString()}",
                     style: TextStyle(
                         color:
                             Theme.of(context).colorScheme.onPrimaryContainer),

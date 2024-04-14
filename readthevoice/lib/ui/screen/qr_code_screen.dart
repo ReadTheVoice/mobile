@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
-import 'package:readthevoice/utils/utils.dart';
 
 class QrCodeScreen extends StatefulWidget {
   const QrCodeScreen({super.key});
@@ -86,23 +86,24 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           if (confirmed)
             {
               // Dismiss the dialog after operation
-              Navigator.pop(context)
+              Navigator.pop(context, true)
             }
         });
   }
 
-  void _showNotYetStartedDialog(Meeting meeting) {
+  void _showNotYetStartedDialog(MeetingModel meetingModel) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.timer_outlined),
-        title: Text('${meeting.title} - Not yet started'),
+        title: Text('${meetingModel.name} - Not yet started'),
         content: Center(
           child: Column(
             children: [
-              Text('The meeting created by: ${meeting.userName}'),
               Text(
-                  'The meeting is scheduled for: ${meeting.scheduledDateAtMillis?.toDateTimeString()} !'),
+                  'The meeting created by: ${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}'),
+              Text(
+                  'The meeting is scheduled for: ${meetingModel.scheduledDate?.toString() ?? ""} !'),
               const Text('Please wait some time for the meeting to start.'),
             ],
           ),
@@ -118,7 +119,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           if (confirmed)
             {
               // Dismiss the dialog after operation
-              Navigator.pop(context)
+              Navigator.pop(context, true)
             }
         });
   }
@@ -150,7 +151,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           if (confirmed)
             {
               // Dismiss the dialog after operation
-              Navigator.pop(context)
+              Navigator.pop(context, true)
             }
         });
   }
@@ -177,7 +178,16 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
 
             // get fb entity
-            Meeting? meeting = await firebaseService.getMeeting(meetingId);
+            MeetingModel? meetingModel =
+                await firebaseService.getMeetingModel(meetingId);
+            meetingModel?.transcription = await firebaseService.getMeetingTranscription(meetingId);
+
+            if(meetingModel != null) {
+              meetingModel.creatorModel = await firebaseService
+                  .getMeetingCreator(meetingModel.creator);
+            }
+
+            Meeting? meeting = meetingModel?.toMeeting();
 
             // get local entity
             Meeting? existing = await meetingService.getMeetingById(meetingId);
@@ -188,15 +198,18 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 meeting.favorite = existing.favorite;
                 meeting.archived = existing.archived;
 
-                if (meeting.endDateAtMillis != null) {
+                // Will disappear
+                if (meetingModel!.endDate != null) {
                   meeting.status = MeetingStatus.ended;
                 }
 
                 await meetingService.updateMeeting(meeting);
-                manageMeeting(meeting);
+
+                manageMeeting(meeting, meetingModel);
               } else {
-                String title = existing.title;
+                String title = meetingModel?.name ?? "";
                 await meetingService.deleteMeetingById(existing.id);
+
                 _showMeetingNotExistingDialog(meetingId, meetingTitle: title);
               }
             } else {
@@ -204,7 +217,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 // insert it locally
                 await meetingService.insertMeeting(meeting);
                 await meetingService.getAllMeetings();
-                manageMeeting(meeting);
+
+                manageMeeting(meeting, meetingModel!);
               } else {
                 _showMeetingNotExistingDialog(meetingId);
               }
@@ -215,29 +229,29 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     });
   }
 
-  void manageMeeting(Meeting meeting) {
-    bool hasNotStarted = meeting.scheduledDateAtMillis != null
-        ? DateTime.fromMillisecondsSinceEpoch(meeting.scheduledDateAtMillis!)
-            .isAfter(DateTime.now())
+  void manageMeeting(Meeting meeting, MeetingModel meetingModel) {
+    bool hasNotStarted = meetingModel.scheduledDate != null
+        ? meetingModel.scheduledDate!.isAfter(DateTime.now())
         : false;
     bool isShowingDialog = false;
 
     // check whether it started or not
-    if (meeting.status == MeetingStatus.createdNotStarted || hasNotStarted) {
+    var status = meetingModel.getMeetingStatus();
+    if (status == MeetingStatus.createdNotStarted || hasNotStarted) {
       isShowingDialog = true;
-      _showNotYetStartedDialog(meeting);
+      _showNotYetStartedDialog(meetingModel);
     }
 
     if (!isShowingDialog) {
-      // - created and started but no transcription OR ended => go to meeting_screen
-      // - ongoing transcription => go to stream_screen
-
       // go to meeting screen
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => MeetingScreen(
-              meeting: meeting,
+              meetingModelId: meetingModel.id,
+              meetingModelName: meetingModel.name,
+              meetingModelAllowDownload: meetingModel.allowDownload,
+              meetingModelTranscription: meetingModel.transcription ?? "",
             ),
           ),
           result: Navigator.pushReplacement(context,
