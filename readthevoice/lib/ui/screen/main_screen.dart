@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
-import 'package:readthevoice/ui/screen/menu_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
@@ -44,11 +43,13 @@ class _MainScreenState extends State<MainScreen> {
       body: SafeArea(
         child: PageView(
           controller: controller,
-          // physics: const NeverScrollableScrollPhysics(),
+          physics: const PageScrollPhysics(),
+          onPageChanged: (index) {
+            _onItemTapped(index);
+          },
           children: const [
             Center(child: HomeScreen()),
             Center(child: FavoriteMeetingsScreen()),
-            Center(child: MenuScreen())
           ],
         ),
       ),
@@ -74,14 +75,6 @@ class _MainScreenState extends State<MainScreen> {
             unSelectedColor: Colors.grey.shade700,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),
-          ),
-          BottomBarItem(
-            icon: Icon(selected == 2
-                ? Icons.menu
-                : Icons.menu_rounded),
-            unSelectedColor: Colors.grey.shade700,
-            selectedColor: Theme.of(context).colorScheme.onSurface,
-            title: const Text('menu_bottom_bar').tr(),
           ),
         ],
         hasNotch: true,
