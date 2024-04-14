@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -10,9 +11,9 @@ class AboutScreen extends StatefulWidget {
 class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         body: Placeholder(
-      child: Text("About Read The Voice"),
+      child: const Text("about_screen_title").tr(),
     ));
   }
 }

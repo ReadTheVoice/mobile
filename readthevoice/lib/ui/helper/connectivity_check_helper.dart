@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 
@@ -8,16 +7,14 @@ class ConnectivityCheckHelper {
   ConnectivityCheckHelper._();
 
   static final _instance = ConnectivityCheckHelper._();
+
   static ConnectivityCheckHelper get instance => _instance;
   final _connectivity = Connectivity();
   final _controller = StreamController.broadcast();
+
   Stream get myStream => _controller.stream;
 
   void initialize() async {
-    var test = await _connectivity.checkConnectivity();
-    print("test initialize ConnectivityCheckHelper".toUpperCase());
-    print(test);
-    
     List<ConnectivityResult> result = await _connectivity.checkConnectivity();
     _checkStatus(result[0]);
     _connectivity.onConnectivityChanged.listen((result) {

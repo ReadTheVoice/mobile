@@ -27,8 +27,6 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
   Future<void> initList() async {
     await refreshMeetingList();
 
-    print("init list of meetings".toUpperCase());
-
     meetingIds =
         (await meetingService.getFavoriteMeetings()).map((e) => e.id).toList();
 
@@ -98,11 +96,8 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                                             style: ToastificationStyle.minimal,
                                             autoCloseDuration: const Duration(seconds: 5),
                                             title: const Text('successful_deletion').tr(),
-                                            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
                                             icon: const FaIcon(FontAwesomeIcons.circleCheck),
                                             primaryColor: Colors.green,
-                                            // backgroundColor: Colors.white,
-                                            // foregroundColor: Colors.black,
                                           );
                                         });
                                       },

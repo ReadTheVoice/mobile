@@ -1,10 +1,3 @@
-/*
-help :
-    - https://www.youtube.com/watch?v=yj4aNEOun6I*
-    - https://www.youtube.com/watch?v=pKGTKdS8lAs
-    - https://pub.dev/packages/qr_code_scanner
-*/
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

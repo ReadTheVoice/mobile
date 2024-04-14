@@ -27,8 +27,6 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   Future<void> initList() async {
     await refreshMeetingList();
 
-    print("init list of meetings".toUpperCase());
-
     meetingIds =
         (await meetingService.getArchivedMeetings()).map((e) => e.id).toList();
 
@@ -113,12 +111,9 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                                             title: const Text(
                                                     'successful_deletion')
                                                 .tr(),
-                                            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
                                             icon: const FaIcon(
                                                 FontAwesomeIcons.circleCheck),
                                             primaryColor: Colors.green,
-                                            // backgroundColor: Colors.white,
-                                            // foregroundColor: Colors.black,
                                           );
                                         });
                                       },

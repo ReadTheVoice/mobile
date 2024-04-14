@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
-import 'package:readthevoice/ui/helper/connectivityCheckHelper.dart';
+import 'package:readthevoice/ui/helper/connectivity_check_helper.dart';
 import 'package:readthevoice/ui/screen/about_screen.dart';
 import 'package:readthevoice/ui/screen/archived_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/main_screen.dart';
