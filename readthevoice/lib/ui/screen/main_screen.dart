@@ -19,9 +19,18 @@ class _MainScreenState extends State<MainScreen> {
   dynamic selected = 0;
   PageController controller = PageController();
 
+  Future<void> initList() async {
+    await refreshMeetingList();
+
+    setState(() {
+      // print(meetingIds);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initList();
   }
 
   @override
@@ -99,7 +108,10 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const QrCodeScreen(),
+                builder: (context) => QrCodeScreen(refreshList: () {
+                  // refresh
+                  initList();
+                },),
               ),
             );
           });

@@ -71,6 +71,8 @@ class MeetingModel {
     // fbMeeting.creatorModel =
     //     await FirebaseDatabaseService().getMeetingCreator(fbMeeting.creator);
 
+    fbMeeting.setTranscriptionAndCreatorModel(fbMeeting.id);
+
     return fbMeeting;
   }
 }
@@ -99,8 +101,8 @@ extension MeetingModelConversion on MeetingModel {
     return status;
   }
 
-  MeetingST toMeetingST(UserModel? creator) {
-    String username = (creatorModel != null) ? "${creatorModel?.firstName} ${creatorModel?.lastName}" : "${creator?.firstName} ${creator?.lastName}";
+  MeetingST toMeetingST() {
+    String username = "${creatorModel?.firstName} ${creatorModel?.lastName}";
     MeetingStatus status = getMeetingStatus();
 
     return MeetingST(

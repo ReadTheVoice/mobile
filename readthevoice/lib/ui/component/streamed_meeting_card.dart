@@ -211,6 +211,7 @@ class _StreamedCardState extends State<StreamedCard> {
             builder: (context) => MeetingScreen(
               // meetingModel OR meetingModel.id
               meeting: widget.meeting,
+              meetingModel: widget.meetingModel,
             ),
           ),
         );

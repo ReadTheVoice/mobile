@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -7,12 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 import 'package:scrollable_text_indicator/scrollable_text_indicator.dart';
 import 'package:toastification/toastification.dart';
@@ -20,7 +23,9 @@ import 'package:toastification/toastification.dart';
 class MeetingScreen extends StatefulWidget {
   final Meeting meeting;
 
-  const MeetingScreen({super.key, required this.meeting});
+  final MeetingModel? meetingModel;
+
+  const MeetingScreen({super.key, required this.meeting, this.meetingModel});
 
   @override
   State<MeetingScreen> createState() => _MeetingScreenState();
@@ -33,27 +38,42 @@ class _MeetingScreenState extends State<MeetingScreen> {
   final DatabaseReference transcriptDatabaseReference =
       FirebaseDatabase.instance.ref(TRANSCRIPT_COLLECTION);
 
+  late final MeetingST? currentMeeting = null;
   bool hasScroll = false;
 
+  Future<void> initializeAttributes() async {
+    var existing = await meetingService.getMeetingById(widget.meetingModel!.id);
+    if(existing != null) {
+      // currentMeeting = existing;
+    } else {
+      MeetingST inserting = widget.meetingModel!.toMeetingST();
+      // await meetingService.insertMeeting(inserting);
+
+      // currentMeeting = await meetingService.getMeetingById(widget.meetingModel!.id);
+    }
+
+    setState(() { });
+  }
+
   Future<void> _getStream() async {
-    var transcript = await firebaseService
-        .getMeetingTranscription(widget.meeting.id);
+    var transcript =
+        await firebaseService.getMeetingTranscription(widget.meetingModel!.id);
     await meetingService.updateMeetingTranscription(
-        widget.meeting.id, transcript);
+        widget.meetingModel!.id, transcript);
   }
 
   Future<void> _updateTranscription(
       dynamic data, String? transcriptionId) async {
-    await meetingService.updateMeetingTranscription(widget.meeting.id, data);
+    await meetingService.updateMeetingTranscription(widget.meetingModel!.id, data);
   }
 
   @override
   void initState() {
+    super.initState();
     _getStream();
     WidgetsBinding.instance.addPostFrameCallback(_initScrollToBottom);
     hasScroll = false;
-
-    super.initState();
+    initializeAttributes();
   }
 
   @override
@@ -100,7 +120,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.meeting.title,
+            widget.meetingModel!.name,
             maxLines: 1,
           ),
           centerTitle: true,
@@ -141,19 +161,17 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           ),
                         ),
                       ),
-                      if(widget.meeting.allowDownload)
+                      if(widget.meetingModel!.allowDownload)
                         PopupMenuItem(
                           child: TextButton(
                             onPressed: () async {
                               await _getStream();
 
-                              if (widget.meeting.transcription
-                                  .trim()
-                                  .isNotEmpty) {
+                              if (widget.meetingModel!.transcription != null ? widget.meetingModel!.transcription!.trim().isNotEmpty : false) {
                                 bool result = await _permissionRequest();
                                 if (result) {
-                                  downloadTextFile(widget.meeting.title,
-                                      widget.meeting.transcription,
+                                  downloadTextFile(widget.meetingModel!.name,
+                                      widget.meetingModel!.transcription ?? "",
                                       onSuccess: (filePath) {
                                         toastification.show(
                                           context: context,
@@ -203,15 +221,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ),
                           ),
                         ),
-                      if(widget.meeting.allowDownload)
+                      if(widget.meetingModel!.allowDownload)
                         PopupMenuItem(
                           child: TextButton(
                             onPressed: () async {
-                              if (widget.meeting.transcription
-                                  .trim()
-                                  .isNotEmpty) {
-                                shareTextFile(widget.meeting.title,
-                                    widget.meeting.transcription);
+                              // if (widget.meeting.transcription.trim().isNotEmpty) {
+                              if (widget.meetingModel!.transcription != null ? widget.meetingModel!.transcription!.trim().isNotEmpty : false) {
+
+                                shareTextFile(widget.meetingModel!.name,
+                                    widget.meetingModel!.transcription ?? "");
                               } else {
                                 toastification.show(
                                   context: context,
@@ -247,65 +265,96 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ),
                           ),
                         ),
-
                     ])
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Stack(
-            alignment: AlignmentDirectional.topCenter,
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints.tightFor(height: 70),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text("Show details"),
-                          const Spacer(),
-                          IconButton(
-                            icon: const FaIcon(
-                              FontAwesomeIcons.eye,
-                              size: 15,
+        body: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseDatabaseService()
+              .meetingCollectionReference
+              .doc(widget.meetingModel!.id)
+              .snapshots(),
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.hasError) {
+              return ErrorScreen(
+                text: "Something went wrong\n${snapshot.error}",
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading");
+            }
+
+            if (!snapshot.hasData || snapshot.data == null || !snapshot.data!.exists) {
+              // return const NoDataWidget(currentScreen: AvailableScreens.meeting);
+              return const Center(child: Text('Document does not exist'));
+            }
+
+            Map<String, dynamic> data =
+            snapshot.data!.data() as Map<String, dynamic>;
+
+            print("data".toUpperCase());
+            print(data);
+
+            MeetingModel model = MeetingModel.fromFirebase(snapshot.data!.id, data);
+            MeetingStatus status = model.getMeetingStatus();
+
+            return
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Stack(
+                  alignment: AlignmentDirectional.topCenter,
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints.tightFor(height: 70),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text("Show details"),
+                                const Spacer(),
+                                IconButton(
+                                  icon: const FaIcon(
+                                    FontAwesomeIcons.eye,
+                                    size: 15,
+                                  ),
+                                  onPressed: () => {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => DetailsOverlay(
+                                          onClose: () => Navigator.pop(context),
+                                          meetingModel: widget.meetingModel,
+                                          meetingST: currentMeeting ?? MeetingST.example(widget.meetingModel!.id),
+                                        )))
+                                  },
+                                ),
+                              ],
                             ),
-                            onPressed: () => {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => DetailsOverlay(
-                                        onClose: () => Navigator.pop(context),
-                                        meeting: widget.meeting,
-                                      )))
-                            },
-                          ),
-                        ],
+                            const MeetingCardDivider(),
+                          ],
+                        ),
                       ),
-                      const MeetingCardDivider(),
-                    ],
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                // alignment: Alignment.topLeft,
-                child: ConstrainedBox(
-                  constraints:
-                      BoxConstraints.tightFor(height: screenHeight - 170),
-                  child: (widget.meeting.endDateAtMillis != null ||
-                          widget.meeting.status == MeetingStatus.ended)
-                      ? ScrollableTextIndicator(
-                          text: Text(widget.meeting.transcription),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      // alignment: Alignment.topLeft,
+                      child: ConstrainedBox(
+                        constraints:
+                        BoxConstraints.tightFor(height: screenHeight - 170),
+                        child: (widget.meetingModel?.endDate != null ||
+                            currentMeeting?.status == MeetingStatus.ended)
+                            ? ScrollableTextIndicator(
+                          text: Text(widget.meetingModel!.transcription!),
                           indicatorBarColor:
-                              Theme.of(context).colorScheme.onBackground,
+                          Theme.of(context).colorScheme.onBackground,
                           indicatorThumbColor:
-                              Theme.of(context).colorScheme.onBackground,
+                          Theme.of(context).colorScheme.onBackground,
                         )
-                      : SingleChildScrollView(
+                            : SingleChildScrollView(
                           controller: _scrollController,
                           child: StreamBuilder(
                               stream: transcriptDatabaseReference
-                                  .child(widget.meeting.id)
+                                  .child(widget.meetingModel!.id)
                                   .onValue,
                               builder: (BuildContext context, snapshot) {
                                 print("Snapshot".toUpperCase());
@@ -327,10 +376,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
                                     // set transcription
                                     _updateTranscription(
-                                        data["data"], widget.meeting.id);
+                                        data["data"], widget.meetingModel!.id);
 
                                     if (_scrollController
-                                            .positions.isNotEmpty &&
+                                        .positions.isNotEmpty &&
                                         (_scrollController.offset !=
                                             _scrollController
                                                 .position.maxScrollExtent)) {
@@ -359,31 +408,39 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                 } else if (snapshot.hasError) {
                                   return Text("Error: \n${snapshot.error}");
                                 } else {
-                                  return (widget.meeting.transcription
-                                          .trim()
-                                          .isNotEmpty)
-                                      ? Text(widget.meeting.transcription)
+                                  return (widget.meetingModel!.transcription != null ? widget.meetingModel!.transcription!
+                                      .trim()
+                                      .isNotEmpty : false)
+                                      ? Text(widget.meetingModel!.transcription!)
                                       : const AppPlaceholder();
                                 }
                               }),
                         ),
+                      ),
+                    )
+                  ],
                 ),
               )
-            ],
-          ),
-        ));
+              ;
+          },
+        )
+    );
   }
 }
 
 class DetailsOverlay extends StatelessWidget {
   final Function() onClose;
-  final Meeting meeting;
+
+  final MeetingModel? meetingModel;
+  final MeetingST meetingST; // pass currentMeeting
 
   const DetailsOverlay(
-      {super.key, required this.onClose, required this.meeting});
+      {super.key, required this.onClose, this.meetingModel, required this.meetingST});
 
   @override
   Widget build(BuildContext context) {
+    bool autoDeletion = meetingModel?.deletionDate != null;
+
     return SafeArea(
         child: Material(
       child: SingleChildScrollView(
@@ -406,7 +463,7 @@ class DetailsOverlay extends StatelessWidget {
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const Spacer(),
-                          if (meeting.archived)
+                          if (meetingST.archived)
                             const Tooltip(
                               message: "This meeting has been archived!",
                               showDuration: Duration(seconds: 3),
@@ -415,7 +472,7 @@ class DetailsOverlay extends StatelessWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          if (meeting.favorite)
+                          if (meetingST.favorite)
                             const Tooltip(
                               message: "This meeting is one of your favorites!",
                               showDuration: Duration(seconds: 3),
@@ -425,48 +482,41 @@ class DetailsOverlay extends StatelessWidget {
                       ),
                     ),
                   ),
-                  MeetingField(name: "meeting_title", value: meeting.title),
+                  MeetingField(name: "meeting_title", value: meetingModel!.name),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       MeetingAttributeCard(
                         firstName: "meeting_status",
-                        firstValue: meeting.status.title,
+                        firstValue: meetingST.status.title,
                         secondName: "meeting_schedule_date",
-                        secondValue: (meeting.scheduledDateAtMillis != null
-                            ? meeting.scheduledDateAtMillis!.toDateTimeString()
-                            : ""),
+                        secondValue: meetingModel!.scheduledDate!.toString() ?? "",
                       ),
                       MeetingAttributeCard(
                         firstName: "meeting_creator",
-                        firstValue: meeting.userName,
+                        firstValue: "${meetingModel!.creatorModel?.firstName} ${meetingModel!.creatorModel?.lastName}",
+                        // firstValue: meetingST.userName!.trim().isNotEmpty ? meetingST.userName : "${meetingModel!.creatorModel?.firstName} ${meetingModel!.creatorModel?.lastName}",
                         secondName: "meeting_creation_date",
-                        secondValue:
-                            meeting.creationDateAtMillis.toDateTimeString(),
+                        secondValue: meetingModel!.createdAt.toString(),
                       ),
                     ],
                   ),
                   MeetingField(
-                      name: "meeting_description", value: meeting.description),
+                      name: "meeting_description", value: meetingModel!.description),
                   MeetingField(
                       name: "meeting_end_date",
-                      value: ((meeting.endDateAtMillis != null)
-                          ? meeting.endDateAtMillis!.toDateTimeString()
-                          : "")),
-                  if (meeting.autoDeletion == true)
+                      value: meetingModel!.endDate!.toString() ?? ""),
+                  if (autoDeletion == true)
                     MeetingField(
                         name: "meeting_auto_delete_date",
-                        value: ((meeting.autoDeletionDateAtMillis != null)
-                            ? meeting.autoDeletionDateAtMillis!
-                                .toDateTimeString()
-                            : "")),
+                        value: meetingModel!.deletionDate!.toString() ?? ""),
                   const SizedBox(
                     height: 10,
                   ),
                   Center(
                     child: Text(
-                      "ID: ${meeting.id}",
+                      "ID: ${meetingModel!.id}",
                       style: TextStyle(
                         color: Colors.grey.shade300,
                         fontSize: 10,

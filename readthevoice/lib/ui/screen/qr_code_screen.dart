@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -18,7 +19,10 @@ import 'package:readthevoice/ui/screen/meeting_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 
 class QrCodeScreen extends StatefulWidget {
-  const QrCodeScreen({super.key});
+  // meetingId, isRemoval
+  final Function? refreshList;
+
+  const QrCodeScreen({super.key, this.refreshList});
 
   @override
   State<QrCodeScreen> createState() => _QrCodeScreenState();
@@ -91,18 +95,18 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         });
   }
 
-  void _showNotYetStartedDialog(Meeting meeting) {
+  void _showNotYetStartedDialog(MeetingModel meetingModel) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.timer_outlined),
-        title: Text('${meeting.title} - Not yet started'),
+        title: Text('${meetingModel.name} - Not yet started'),
         content: Center(
           child: Column(
             children: [
-              Text('The meeting created by: ${meeting.userName}'),
+              Text('The meeting created by: ${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}'),
               Text(
-                  'The meeting is scheduled for: ${meeting.scheduledDateAtMillis?.toDateTimeString()} !'),
+                  'The meeting is scheduled for: ${meetingModel.scheduledDate!.toString() ?? ""} !'),
               const Text('Please wait some time for the meeting to start.'),
             ],
           ),
@@ -177,9 +181,12 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
 
             // get fb entity
-            Meeting? meeting = await firebaseService.getMeeting(meetingId);
+            MeetingModel meetingModel = await firebaseService.getMeetingModel(meetingId) ?? MeetingModel.example();
+            // MeetingST? meeting = await firebaseService.getMeeting(meetingId);
+            Meeting? meeting = meetingModel.toMeeting(null);
 
             // get local entity
+            // MeetingST? existing = await meetingService.getMeetingById(meetingId);
             Meeting? existing = await meetingService.getMeetingById(meetingId);
 
             if (existing != null) {
@@ -188,15 +195,26 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 meeting.favorite = existing.favorite;
                 meeting.archived = existing.archived;
 
+                // Will disappear
                 if (meeting.endDateAtMillis != null) {
                   meeting.status = MeetingStatus.ended;
                 }
 
                 await meetingService.updateMeeting(meeting);
-                manageMeeting(meeting);
+
+                if(widget.refreshList != null) {
+                  widget.refreshList!();
+                }
+
+                manageMeeting(meeting, meetingModel);
               } else {
                 String title = existing.title;
                 await meetingService.deleteMeetingById(existing.id);
+
+                if(widget.refreshList != null) {
+                  widget.refreshList!();
+                }
+
                 _showMeetingNotExistingDialog(meetingId, meetingTitle: title);
               }
             } else {
@@ -204,7 +222,11 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                 // insert it locally
                 await meetingService.insertMeeting(meeting);
                 await meetingService.getAllMeetings();
-                manageMeeting(meeting);
+
+                if(widget.refreshList != null) {
+                  widget.refreshList!();
+                }
+                manageMeeting(meeting, meetingModel);
               } else {
                 _showMeetingNotExistingDialog(meetingId);
               }
@@ -215,17 +237,17 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     });
   }
 
-  void manageMeeting(Meeting meeting) {
-    bool hasNotStarted = meeting.scheduledDateAtMillis != null
-        ? DateTime.fromMillisecondsSinceEpoch(meeting.scheduledDateAtMillis!)
-            .isAfter(DateTime.now())
+  void manageMeeting(Meeting meeting, MeetingModel meetingModel) {
+    bool hasNotStarted = meetingModel.scheduledDate != null
+        ? meetingModel.scheduledDate!.isAfter(DateTime.now())
         : false;
     bool isShowingDialog = false;
 
     // check whether it started or not
-    if (meeting.status == MeetingStatus.createdNotStarted || hasNotStarted) {
+    var status = meetingModel.getMeetingStatus();
+    if (status == MeetingStatus.createdNotStarted || hasNotStarted) {
       isShowingDialog = true;
-      _showNotYetStartedDialog(meeting);
+      _showNotYetStartedDialog(meetingModel);
     }
 
     if (!isShowingDialog) {
@@ -238,6 +260,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           MaterialPageRoute(
             builder: (context) => MeetingScreen(
               meeting: meeting,
+              meetingModel: meetingModel,
             ),
           ),
           result: Navigator.pushReplacement(context,

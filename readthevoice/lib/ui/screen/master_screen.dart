@@ -141,7 +141,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.archivedMeetings);
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                       }),
                   ListTile(
                       title: Text(
@@ -155,7 +155,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.settings);
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                       }),
                   ListTile(
                       title: Text(
@@ -169,7 +169,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       ),
                       onTap: () {
                         _onItemTapped(AvailableScreens.aboutUs);
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                       }),
                 ],
               ),

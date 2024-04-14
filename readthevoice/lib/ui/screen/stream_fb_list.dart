@@ -78,18 +78,17 @@ class _StreamFbListState extends State<StreamFbList> {
                                   print(data);
 
                                   MeetingModel model = MeetingModel.fromFirebase(document.id, data);
-                                  MeetingStatus status = model.getMeetingStatus();
 
-                                  var id = document.id;
-                                  var createdDate = DateTime.fromMillisecondsSinceEpoch((data['createdAt'] as Timestamp).millisecondsSinceEpoch);
-                                  var creatorId = data['creator'];
-                                  var title = data['name'];
-                                  var description = data['description'] ?? "";
+                                  // MeetingStatus status = model.getMeetingStatus();
+                                  // var id = document.id;
+                                  // var createdDate = DateTime.fromMillisecondsSinceEpoch((data['createdAt'] as Timestamp).millisecondsSinceEpoch);
+                                  // var creatorId = data['creator'];
+                                  // var title = data['name'];
+                                  // var description = data['description'] ?? "";
 
                                   // Whether the meeting is archived or not
-
                                   return SteamedMeetingCard(
-                                    currentMeeting: Meeting.example(document.id),
+                                    currentMeeting: Meeting.example(document.id),  // here
                                     meetingModel: model,
                                     leftIcon: const Icon(Icons.archive_outlined),
                                     rightIcon: const Icon(Icons.delete_forever),

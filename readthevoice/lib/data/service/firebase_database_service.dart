@@ -56,34 +56,52 @@ class FirebaseDatabaseService {
 
       if (data != null) {
         // {createdAt: Timestamp(seconds=1710342183, nanoseconds=275000000), creator: 0AZouh2I45hyDPNvwXPy81mSDPp2, endDate: null, deletionDate: null, isTranscriptAccessibleAfter: true, name: bonjour, description: Je n'ai pas d'idée, scheduledDate: Timestamp(seconds=1710342060, nanoseconds=0), isFinished: false}
-        MeetingModel fbMeeting = MeetingModel(
-            id: meetingId,
-            createdAt: DateTime.fromMillisecondsSinceEpoch(
-                (data['createdAt'] as Timestamp).millisecondsSinceEpoch),
-            creator: data['creator'],
-            name: data['name'],
-            deletionDate: data['deletionDate'] != null
-                ? DateTime.fromMillisecondsSinceEpoch(
-                    (data['deletionDate'] as Timestamp).millisecondsSinceEpoch)
-                : null,
-            description: data['description'],
-            endDate: data['endDate'] != null
-                ? DateTime.fromMillisecondsSinceEpoch(
-                    (data['endDate'] as Timestamp).millisecondsSinceEpoch)
-                : null,
-            isFinished: data['isFinished'],
-            isTranscriptAccessibleAfter: data['isTranscriptAccessibleAfter'],
-            scheduledDate: data['scheduledDate'] != null
-                ? DateTime.fromMillisecondsSinceEpoch(
-                    (data['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
-                : null,
-        allowDownload: data["allowDownload"] ?? false,
-        language: data["language"]);
+        // MeetingModel.fromFirebase(snapshot.data!.id, data);
+        Map<String, dynamic> mappedData = data as Map<String, dynamic>;
+        MeetingModel fbMeeting = MeetingModel.fromFirebase(meetingId, data);
 
-        fbMeeting.transcription = await getMeetingTranscription(meetingId);
-
+        // MeetingModel fbMeeting = MeetingModel(
+        //     id: meetingId,
+        //     createdAt: DateTime.fromMillisecondsSinceEpoch(
+        //         (mappedData['createdAt'] as Timestamp).millisecondsSinceEpoch),
+        //     creator: mappedData['creator'],
+        //     name: mappedData['name'],
+        //     deletionDate: mappedData['deletionDate'] != null
+        //         ? DateTime.fromMillisecondsSinceEpoch(
+        //             (mappedData['deletionDate'] as Timestamp).millisecondsSinceEpoch)
+        //         : null,
+        //     description: mappedData['description'],
+        //     endDate: mappedData['endDate'] != null
+        //         ? DateTime.fromMillisecondsSinceEpoch(
+        //             (mappedData['endDate'] as Timestamp).millisecondsSinceEpoch)
+        //         : null,
+        //     isFinished: mappedData['isFinished'],
+        //     isTranscriptAccessibleAfter: mappedData['isTranscriptAccessibleAfter'],
+        //     scheduledDate: mappedData['scheduledDate'] != null
+        //         ? DateTime.fromMillisecondsSinceEpoch(
+        //             (mappedData['scheduledDate'] as Timestamp).millisecondsSinceEpoch)
+        //         : null,
+        // allowDownload: mappedData["allowDownload"] ?? false,
+        // language: mappedData["language"]);
+        // fbMeeting.transcription = await getMeetingTranscription(meetingId);
         UserModel creator = await getMeetingCreator(fbMeeting.creator) ?? UserModel.example();
+
         return fbMeeting.toMeeting(creator);
+
+        // return fbMeeting.toMeetingST();
+      }
+    }
+
+    return null;
+  }
+
+  Future<MeetingModel?> getMeetingModel(String meetingId) async {
+    var docSnapshot = await meetingCollectionReference.doc(meetingId).get();
+    if (docSnapshot.exists) {
+      final dynamic data = docSnapshot.data();
+      if (data != null) {
+        Map<String, dynamic> mappedData = data as Map<String, dynamic>;
+        return MeetingModel.fromFirebase(meetingId, mappedData);
       }
     }
 
