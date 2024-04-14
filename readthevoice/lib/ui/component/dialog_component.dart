@@ -19,16 +19,16 @@ class DialogComponent extends StatelessWidget {
 /*
 AlertDialog(
   icon: const Icon(Icons.warning_amber_rounded),
-  title: const Text('Confirmation'),
-  content: const Text('Are you sure you want to perform this action ?'),
+  title: const Text('confirmation_title').tr(),
+  content: const Text('confirmation_message_text').tr(),
   actions: [
     TextButton(
       onPressed: () => Navigator.pop(context, false),
-      child: const Text('Cancel'),
+      child: const Text('cancel').tr(),
     ),
     TextButton(
       onPressed: () => Navigator.pop(context, true),
-      child: const Text('Confirm'),
+      child: const Text('confirm').tr(),
     ),
   ],
 ),

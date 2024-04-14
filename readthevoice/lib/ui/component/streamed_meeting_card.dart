@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
@@ -56,10 +57,6 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
-        // action: SnackBarAction(
-        //   label: 'Confirm',
-        //   onPressed: () => print('Action confirmed!'),
-        // ),
       ),
     );
   }
@@ -81,13 +78,9 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
                 widget.meetingModel.toMeeting().archived);
 
             setState(() {
-              // if (widget.meetings != null) {
-              //   widget.meetings?.remove(widget.currentMeeting);
-              // }
-
-              String snackBarText = "Archiving complete";
+              String snackBarText = tr("successful_archiving");
               if (widget.unarchiving != null && widget.unarchiving == true) {
-                snackBarText = "Unarchiving complete";
+                snackBarText = tr("successful_unarchiving");
               }
 
               _showSnackBar(snackBarText);

@@ -145,7 +145,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               style: ToastificationStyle.minimal,
                               type: ToastificationType.warning,
                               autoCloseDuration: const Duration(seconds: 2),
-                              title: const Text('Not yet implemented.'),
+                              title: const Text('not_yet_implemented').tr(),
                               icon: const FaIcon(
                                   FontAwesomeIcons.triangleExclamation),
                             );
@@ -191,7 +191,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       style: ToastificationStyle.minimal,
                                       autoCloseDuration:
                                           const Duration(seconds: 5),
-                                      title: Text("File saved to: $filePath"),
+                                      title: Text(
+                                          "${tr("saved_file_path")}: $filePath"),
                                       icon: const Icon(
                                           Icons.download_done_rounded),
                                     );
@@ -204,8 +205,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   type: ToastificationType.error,
                                   style: ToastificationStyle.minimal,
                                   autoCloseDuration: const Duration(seconds: 2),
-                                  title:
-                                      const Text("The transcription is empty."),
+                                  title: const Text("empty_transcription").tr(),
                                   icon: const FaIcon(
                                       FontAwesomeIcons.triangleExclamation),
                                 );
@@ -249,8 +249,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   type: ToastificationType.error,
                                   style: ToastificationStyle.minimal,
                                   autoCloseDuration: const Duration(seconds: 2),
-                                  title:
-                                      const Text("The transcription is empty."),
+                                  title: const Text("empty_transcription").tr(),
                                   icon: const FaIcon(
                                       FontAwesomeIcons.triangleExclamation),
                                 );

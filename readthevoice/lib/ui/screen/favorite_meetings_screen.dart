@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -8,6 +10,7 @@ import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
+import 'package:toastification/toastification.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
   const FavoriteMeetingsScreen({super.key});
@@ -43,7 +46,8 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
     return Scaffold(
         body: Center(
             child: RefreshIndicator(
-      onRefresh: refreshMeetingList,
+      onRefresh: initList,
+      // onRefresh: refreshMeetingList,
       child: (meetingIds != null)
           ? ((meetingIds!.isNotEmpty)
               ? StreamBuilder<QuerySnapshot>(
@@ -86,7 +90,21 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                                         meetingService
                                             .deleteMeetingById(meetingId);
                                         meetingIds?.remove(meetingId);
-                                        setState(() {});
+                                        setState(() {
+                                          toastification.show(
+                                            context: context,
+                                            alignment: Alignment.bottomCenter,
+                                            type: ToastificationType.success,
+                                            style: ToastificationStyle.minimal,
+                                            autoCloseDuration: const Duration(seconds: 5),
+                                            title: const Text('successful_deletion').tr(),
+                                            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
+                                            icon: const FaIcon(FontAwesomeIcons.circleCheck),
+                                            primaryColor: Colors.green,
+                                            // backgroundColor: Colors.white,
+                                            // foregroundColor: Colors.black,
+                                          );
+                                        });
                                       },
                                     );
                                   } else {

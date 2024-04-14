@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
-import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
@@ -9,6 +10,7 @@ import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
+import 'package:toastification/toastification.dart';
 
 class ArchivedMeetingsScreen extends StatefulWidget {
   const ArchivedMeetingsScreen({super.key});
@@ -43,7 +45,8 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: RefreshIndicator(
-      onRefresh: refreshMeetingList,
+      onRefresh: initList,
+      // onRefresh: refreshMeetingList,
       child: (meetingIds != null)
           ? ((meetingIds!.isNotEmpty)
               ? StreamBuilder<QuerySnapshot>(
@@ -72,7 +75,9 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                                     Map<String, dynamic> data = document.data()!
                                         as Map<String, dynamic>;
 
-                                    MeetingModel model = MeetingModel.fromFirebase(document.id, data);
+                                    MeetingModel model =
+                                        MeetingModel.fromFirebase(
+                                            document.id, data);
 
                                     // Whether the meeting is archived or not
                                     return SteamedMeetingCard(
@@ -97,7 +102,25 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                                         meetingService
                                             .deleteMeetingById(meetingId);
                                         meetingIds?.remove(meetingId);
-                                        setState(() {});
+                                        setState(() {
+                                          toastification.show(
+                                            context: context,
+                                            alignment: Alignment.bottomCenter,
+                                            type: ToastificationType.success,
+                                            style: ToastificationStyle.minimal,
+                                            autoCloseDuration:
+                                                const Duration(seconds: 5),
+                                            title: const Text(
+                                                    'successful_deletion')
+                                                .tr(),
+                                            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
+                                            icon: const FaIcon(
+                                                FontAwesomeIcons.circleCheck),
+                                            primaryColor: Colors.green,
+                                            // backgroundColor: Colors.white,
+                                            // foregroundColor: Colors.black,
+                                          );
+                                        });
                                       },
                                     );
                                   } else {

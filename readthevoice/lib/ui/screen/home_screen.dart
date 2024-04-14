@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -10,6 +12,7 @@ import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
+import 'package:toastification/toastification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,13 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initList() async {
     await refreshMeetingList();
 
-    print("init list of meetings".toUpperCase());
-
     meetingIds = (await meetingService.getUnarchivedMeetings())
         .map((e) => e.id)
         .toList();
 
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }
@@ -44,9 +45,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      initList();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: refreshMeetingList,
+        // onRefresh: refreshMeetingList,
+        onRefresh: initList,
         child: (meetingIds != null)
             ? ((meetingIds!.isNotEmpty)
                 ? StreamBuilder<QuerySnapshot>(
@@ -75,9 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Map<String, dynamic> data = document
                                           .data()! as Map<String, dynamic>;
 
-                                      MeetingModel model = MeetingModel.fromFirebase(document.id, data);
+                                      MeetingModel model =
+                                          MeetingModel.fromFirebase(
+                                              document.id, data);
 
-                                      // Whether the meeting is archived or not
                                       return SteamedMeetingCard(
                                         meetingModel: model,
                                         leftIcon:
@@ -101,7 +113,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                           meetingService
                                               .deleteMeetingById(meetingId);
                                           meetingIds?.remove(meetingId);
-                                          setState(() {});
+                                          setState(() {
+                                            toastification.show(
+                                              context: context,
+                                              alignment: Alignment.bottomCenter,
+                                              type: ToastificationType.success,
+                                              style:
+                                                  ToastificationStyle.minimal,
+                                              autoCloseDuration:
+                                                  const Duration(seconds: 5),
+                                              title: const Text(
+                                                      'successful_deletion')
+                                                  .tr(),
+                                              icon: const FaIcon(
+                                                  FontAwesomeIcons.circleCheck),
+                                              primaryColor: Colors.green,
+                                            );
+                                          });
                                         },
                                       );
                                     } else {

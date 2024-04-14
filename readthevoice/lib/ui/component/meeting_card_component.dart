@@ -6,7 +6,6 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
-import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
   final MeetingModel meetingModel;
@@ -61,40 +60,24 @@ class _MeetingCardState extends State<MeetingCard> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirmation'),
-        content: const Text('Are you sure you want to perform this action ?'),
+        title: const Text('deletion_confirmation_title').tr(),
+        content: const Text('confirmation_message_text').tr(),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: const Text('cancel').tr(),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Confirm'),
+            child: const Text('confirm').tr(),
           ),
         ],
       ),
     ).then((confirmed) {
       if (confirmed ?? false) {
-        setState(() {
-          if (widget.deleteFunction != null) {
-            widget.deleteFunction!(widget.meetingModel.id);
-          }
-
-          toastification.show(
-            context: context,
-            alignment: Alignment.bottomCenter,
-            type: ToastificationType.success,
-            style: ToastificationStyle.minimal,
-            autoCloseDuration: const Duration(seconds: 5),
-            title: const Text('Successfully deleted.'),
-            // description: RichText(text: const TextSpan(text: 'This is a sample toast message. ')),
-            icon: const FaIcon(FontAwesomeIcons.circleCheck),
-            primaryColor: Colors.green,
-            // backgroundColor: Colors.white,
-            // foregroundColor: Colors.black,
-          );
-        });
+        if (widget.deleteFunction != null) {
+          widget.deleteFunction!(widget.meetingModel.id);
+        }
       }
     });
   }
@@ -108,7 +91,6 @@ class _MeetingCardState extends State<MeetingCard> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MeetingScreen(
-              // meetingModel: widget.meetingModel,
               meetingModelId: widget.meetingModel.id,
               meetingModelName: widget.meetingModel.name,
               meetingModelAllowDownload: widget.meetingModel.allowDownload,
@@ -129,7 +111,7 @@ class _MeetingCardState extends State<MeetingCard> {
                 Text(
                   widget.meetingModel.name.trim() != ""
                       ? widget.meetingModel.name
-                      : "Title: ...",
+                      : "${tr("meeting_title")}: ...",
                   style: TextStyle(color: widget.textColor, fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -148,7 +130,7 @@ class _MeetingCardState extends State<MeetingCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: screenWidth - 150, // Here
+                      width: screenWidth - 150,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                         child: Column(

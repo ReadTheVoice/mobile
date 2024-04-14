@@ -34,5 +34,16 @@
     "meeting_creator": "Créé par",
     "meeting_end_date": "Terminé le",
     "meeting_auto_delete_date": "Suppression automatique le",
-    "meeting_transcription": "Transcription"
+    "meeting_transcription": "Transcription",
+    "confirmation_title": "Confirmation",
+    "deletion_confirmation_title": "Suppression locale permanente",
+    "confirmation_message_text": "Êtes-vous sûr de vouloir effectuer cette action ?",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "successful_deletion": "Suppression réussie",
+    "successful_archiving": "Archivage terminé",
+    "successful_unarchiving": "Désarchivage terminé",
+    "not_yet_implemented": "Pas encore implémenté",
+    "saved_file_path": "Fichier enregistré sous",
+    "empty_transcription": "La transcription est vide"
 }
