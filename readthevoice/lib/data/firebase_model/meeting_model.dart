@@ -40,8 +40,8 @@ class MeetingModel {
         id: "", createdAt: DateTime.now(), creator: "", name: "");
   }
 
-  static MeetingModel fromFirebase(String meetingId, Map<String, dynamic> data) {
-  // static Future<MeetingModel> fromFirebase(String meetingId, Map<String, dynamic> data) async {
+  static MeetingModel fromFirebase(
+      String meetingId, Map<String, dynamic> data) {
     MeetingModel fbMeeting = MeetingModel(
         id: meetingId,
         createdAt: DateTime.fromMillisecondsSinceEpoch(
@@ -66,24 +66,21 @@ class MeetingModel {
         allowDownload: data["allowDownload"] ?? false,
         language: data["language"]);
 
-    // fbMeeting.transcription =
-    //     await FirebaseDatabaseService().getMeetingTranscription(meetingId);
-    // fbMeeting.creatorModel =
-    //     await FirebaseDatabaseService().getMeetingCreator(fbMeeting.creator);
-
-    fbMeeting.setTranscriptionAndCreatorModel(fbMeeting.id);
+    fbMeeting.setTranscriptionAndCreatorModel(meetingId, fbMeeting);
 
     return fbMeeting;
   }
 }
 
 extension MeetingModelConversion on MeetingModel {
-  Future<void> setTranscriptionAndCreatorModel(String meetingId) async {
-    transcription =
-    await FirebaseDatabaseService().getMeetingTranscription(meetingId);
+  Future<void> setTranscriptionAndCreatorModel(String meetingId, MeetingModel model) async {
+    FirebaseDatabaseService().getMeetingTranscription(meetingId).then((value) {
+      model.transcription = value;
+    });
 
-    creatorModel =
-    await FirebaseDatabaseService().getMeetingCreator(creator);
+    FirebaseDatabaseService().getMeetingCreator(creator).then((value) {
+      model.creatorModel = value;
+    });
   }
 
   MeetingStatus getMeetingStatus() {
@@ -101,51 +98,15 @@ extension MeetingModelConversion on MeetingModel {
     return status;
   }
 
-  MeetingST toMeetingST() {
+  Meeting toMeeting() {
     String username = "${creatorModel?.firstName} ${creatorModel?.lastName}";
     MeetingStatus status = getMeetingStatus();
 
-    return MeetingST(
+    return Meeting(
         id: id,
-        userId: this.creator,
+        userId: creator,
         transcription: transcription ?? "",
         userName: username,
         status: status);
-  }
-
-  Meeting toMeeting(UserModel? creator) {
-    bool autoDelete = deletionDate != null;
-    String username = "${creator?.firstName} ${creator?.lastName}";
-    MeetingStatus status = MeetingStatus.createdNotStarted;
-
-    if (isFinished || endDate != null) {
-      status = MeetingStatus.ended;
-    } else if (scheduledDate != null &&
-        (DateTime.now().isAfter(scheduledDate!))) {
-      status = MeetingStatus.started;
-    } else if (transcription != null && transcription!.trim().isNotEmpty) {
-      status = MeetingStatus.started;
-    }
-
-    return Meeting(
-        id: id,
-        title: name,
-        creationDateAtMillis: createdAt.millisecondsSinceEpoch,
-        userId: this.creator,
-        autoDeletion: autoDelete,
-        description: description ?? "",
-        isTranscriptAccessibleAfter: isTranscriptAccessibleAfter,
-        scheduledDateAtMillis: (scheduledDate != null)
-            ? scheduledDate?.millisecondsSinceEpoch
-            : null,
-        endDateAtMillis:
-            (endDate != null) ? endDate?.millisecondsSinceEpoch : null,
-        autoDeletionDateAtMillis:
-            autoDelete ? deletionDate?.millisecondsSinceEpoch : null,
-        userName: username,
-        status: status,
-        allowDownload: allowDownload,
-        transcription: transcription ?? "",
-        language: language);
   }
 }

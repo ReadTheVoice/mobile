@@ -1,3 +1,4 @@
+import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
@@ -34,19 +35,13 @@ Future<void> refreshMeetingList() async {
   if (localMeetings.isNotEmpty) {
     for (var existing in localMeetings) {
       // get fb entity
-      Meeting? meeting = await firebaseService.getMeeting(existing.id);
+      MeetingModel? model = await firebaseService.getMeetingModel(existing.id);
+      Meeting? meeting = model?.toMeeting();
 
       if (meeting != null) {
         meeting.favorite = existing.favorite;
         meeting.archived = existing.archived;
-
-        if(meeting.transcription.isNotEmpty) {
-          meeting.status = MeetingStatus.started;
-        }
-
-        if (meeting.endDateAtMillis != null) {
-          meeting.status = MeetingStatus.ended;
-        }
+        meeting.status = model!.getMeetingStatus();
 
         await meetingService.updateMeeting(meeting);
       } else {

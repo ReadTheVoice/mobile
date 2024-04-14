@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
-import 'package:readthevoice/ui/screen/stream_fb_list.dart';
-import 'package:readthevoice/utils/utils.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,18 +17,9 @@ class _MainScreenState extends State<MainScreen> {
   dynamic selected = 0;
   PageController controller = PageController();
 
-  Future<void> initList() async {
-    await refreshMeetingList();
-
-    setState(() {
-      // print(meetingIds);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    initList();
   }
 
   @override
@@ -58,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
           children: const [
             Center(child: HomeScreen()),
             Center(child: FavoriteMeetingsScreen()),
-            Center(child: StreamFbList()),
           ],
         ),
       ),
@@ -85,14 +73,6 @@ class _MainScreenState extends State<MainScreen> {
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),
           ),
-          BottomBarItem(
-            icon: Icon(selected == 2
-                ? Icons.view_stream_rounded
-                : Icons.view_stream_outlined),
-            unSelectedColor: Colors.grey.shade700,
-            selectedColor: Theme.of(context).colorScheme.onSurface,
-            title: const Text('Stream').tr(),
-          ),
         ],
         hasNotch: true,
         fabLocation: StylishBarFabLocation.end,
@@ -108,10 +88,7 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => QrCodeScreen(refreshList: () {
-                  // refresh
-                  initList();
-                },),
+                builder: (context) => const QrCodeScreen(),
               ),
             );
           });

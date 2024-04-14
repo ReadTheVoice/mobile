@@ -132,15 +132,27 @@ class _MeetingListState extends State<MeetingList> {
             //   _showConfirmationDialog(currentMeeting);
             // }
           },
-          child: MeetingCard(
-            meeting: currentMeeting!,
-            isFavoriteList: widget.isFavoriteList,
-            deleteFunction: () {
-              setState(() {
-                widget.meetings!.remove(currentMeeting);
-              });
-            },
-          ),
+          child: const Text("data"),
+
+          // MeetingCard(
+          //   meetingModel: widget.me,
+          //   isFavoriteList: widget.isFavoriteList,
+          //   deleteFunction: () {
+          //     /*
+          //     MeetingScreen(
+          //     // meetingModel: widget.meetingModel,
+          //     meetingModelId: widget.meetingModel.id,
+          //     meetingModelName: widget.meetingModel.name,
+          //     meetingModelAllowDownload: widget.meetingModel.allowDownload,
+          //     meetingModelTranscription:
+          //         widget.meetingModel.transcription ?? "",
+          //      */
+          //
+          //     setState(() {
+          //       widget.meetings!.remove(currentMeeting);
+          //     });
+          //   },
+          // ),
         );
       },
     );

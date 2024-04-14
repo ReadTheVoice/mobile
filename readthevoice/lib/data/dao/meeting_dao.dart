@@ -5,16 +5,16 @@ import 'package:readthevoice/data/model/meeting.dart';
 // Data Access Object
 @dao
 abstract class MeetingDao {
-  @Query('SELECT * FROM $MEETING_TABLE_NAME order by creationDateAtMillis desc')
+  @Query('SELECT * FROM $MEETING_TABLE_NAME')
   Future<List<Meeting>?> findAllMeetings();
-  
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${false} order by creationDateAtMillis desc")
+
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${false}")
   Future<List<Meeting>?> findUnarchivedMeetings();
 
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${true} order by creationDateAtMillis desc")
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE archived = ${true}")
   Future<List<Meeting>?> findArchivedMeetings();
 
-  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true} order by creationDateAtMillis desc")
+  @Query("SELECT * FROM $MEETING_TABLE_NAME WHERE favorite = ${true}")
   Future<List<Meeting>?> findFavoriteMeetings();
 
   @Query('SELECT title FROM $MEETING_TABLE_NAME')
@@ -22,6 +22,7 @@ abstract class MeetingDao {
 
   @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')
   Future<Meeting?> findMeetingById(String id);
+
   // Stream<Meeting?> findMeetingById(String id);
 
   @Query('UPDATE $MEETING_TABLE_NAME SET archived = :archived WHERE id = :id')
@@ -30,7 +31,8 @@ abstract class MeetingDao {
   @Query('UPDATE $MEETING_TABLE_NAME SET favorite = :favorite WHERE id = :id')
   Future<void> setFavoriteMeetingById(String id, bool favorite);
 
-  @Query('UPDATE $MEETING_TABLE_NAME SET transcription = :transcription WHERE id = :id')
+  @Query(
+      'UPDATE $MEETING_TABLE_NAME SET transcription = :transcription WHERE id = :id')
   Future<void> updateTranscriptionMeetingById(String id, String transcription);
 
   @Insert(onConflict: OnConflictStrategy.abort)
@@ -47,20 +49,4 @@ abstract class MeetingDao {
 
   @delete
   Future<void> deleteAllMeeting(List<Meeting> list);
-  // Future<int> deleteAllMeeting(List<Meeting> list);
 }
-
-/*
-  @Query('Select * from todo order by id desc limit 1')
-  Future<Todo> getMaxTodo();
-
-  @Query('SELECT * FROM todo order by id desc')
-  Stream<List<Todo>> fetchStreamData();
-
-  @Query("delete from todo where id = :id")
-  Future<void> deleteTodo(int id);
-
-  @delete
-  Future<int> deleteAll(List<Todo> list);
- */
-
