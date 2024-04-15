@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
-import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -17,6 +16,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   dynamic selected = 0;
   PageController controller = PageController();
+  String? newMeetingId = null;
 
   @override
   void initState() {
@@ -48,9 +48,12 @@ class _MainScreenState extends State<MainScreen> {
           onPageChanged: (index) {
             _onItemTapped(index);
           },
-          children: const [
-            Center(child: HomeScreen()),
-            Center(child: FavoriteMeetingsScreen()),
+          children: [
+            Center(
+                child: HomeScreen(
+              newMeetingId: newMeetingId,
+            )),
+            const Center(child: FavoriteMeetingsScreen()),
           ],
         ),
       ),
@@ -89,12 +92,17 @@ class _MainScreenState extends State<MainScreen> {
         onPressed: () {
           setState(() {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const QrCodeScreen(),
-                fullscreenDialog: true
-              )
-            );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const QrCodeScreen(),
+                        fullscreenDialog: true))
+                .then((value) {
+              if (value != null && value is String) {
+                setState(() {
+                  this.newMeetingId = value;
+                });
+              }
+            });
           });
         },
         backgroundColor: Theme.of(context).colorScheme.onSurfaceVariant,

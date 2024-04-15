@@ -30,7 +30,9 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
     meetingIds =
         (await meetingService.getFavoriteMeetings()).map((e) => e.id).toList();
 
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -45,7 +47,6 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
         body: Center(
             child: RefreshIndicator(
       onRefresh: initList,
-      // onRefresh: refreshMeetingList,
       child: (meetingIds != null)
           ? ((meetingIds!.isNotEmpty)
               ? StreamBuilder<QuerySnapshot>(

@@ -30,7 +30,9 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
     meetingIds =
         (await meetingService.getArchivedMeetings()).map((e) => e.id).toList();
 
-    setState(() {});
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -47,7 +49,6 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
       ),
         body: RefreshIndicator(
       onRefresh: initList,
-      // onRefresh: refreshMeetingList,
       child: (meetingIds != null)
           ? ((meetingIds!.isNotEmpty)
               ? StreamBuilder<QuerySnapshot>(
