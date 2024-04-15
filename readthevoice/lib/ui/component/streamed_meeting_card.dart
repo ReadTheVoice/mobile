@@ -39,7 +39,7 @@ class SteamedMeetingCard extends StatefulWidget {
 
 class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
   final MeetingService meetingService = const MeetingService();
-  late Meeting currentMeeting;
+  late Meeting? currentMeeting = null;
 
   Future<void> initializeMeeting() async {
     var existing = await meetingService.getMeetingById(widget.meetingModel.id);
@@ -62,6 +62,12 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    initializeMeeting();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dismissible(
         direction: DismissDirection.startToEnd,
@@ -75,7 +81,7 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
         onDismissed: (DismissDirection direction) async {
           if (direction == DismissDirection.startToEnd) {
             widget.leftFunction(widget.meetingModel.id,
-                currentMeeting.archived);
+                currentMeeting?.archived ?? false);
 
             setState(() {
               String snackBarText = tr("successful_archiving");

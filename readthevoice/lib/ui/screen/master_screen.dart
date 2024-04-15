@@ -8,7 +8,6 @@ import 'package:readthevoice/ui/screen/archived_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/main_screen.dart';
 import 'package:readthevoice/ui/screen/no_internet_screen.dart';
 import 'package:readthevoice/ui/screen/settings_screen.dart';
-import 'package:readthevoice/utils/utils.dart';
 
 class MasterScreen extends StatefulWidget {
   const MasterScreen({super.key});
@@ -18,11 +17,7 @@ class MasterScreen extends StatefulWidget {
 }
 
 class _MasterScreenState extends State<MasterScreen> {
-  Text screenTitle = const Text("app_name").tr();
-
   PackageInfo? packageInfo;
-
-  AvailableScreens selectedScreen = AvailableScreens.main;
 
   Map _source = {ConnectivityResult.none: false};
   final ConnectivityCheckHelper _connectivity =
@@ -49,26 +44,8 @@ class _MasterScreenState extends State<MasterScreen> {
     super.dispose();
   }
 
-  void _onItemTapped(AvailableScreens chosenScreen) {
-    setState(() {
-      selectedScreen = chosenScreen;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget screen;
-
-    // Discuss whether to refactor or not
-    switch (selectedScreen) {
-      case AvailableScreens.main:
-        screen = const MainScreen();
-        screenTitle = const Text("app_name").tr();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedScreen');
-    }
-
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     switch (_source.keys.toList()[0]) {
@@ -80,7 +57,8 @@ class _MasterScreenState extends State<MasterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: screenTitle,
+        title: const Text("app_name").tr(),
+        // title: screenTitle,
         // leading: IconButton(
         //   icon: const FaIcon(FontAwesomeIcons.barsStaggered),
         //   onPressed: () => Scaffold.of(context).openDrawer(),
@@ -116,7 +94,6 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(AvailableScreens.main);
                         Navigator.pop(context);
                       }),
                   ListTile(
@@ -190,7 +167,7 @@ class _MasterScreenState extends State<MasterScreen> {
           ),
         ),
       ),
-      body: screen,
+      body: const MainScreen(),
     );
   }
 }

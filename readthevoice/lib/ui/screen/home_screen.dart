@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
@@ -11,6 +12,7 @@ import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
+import 'package:readthevoice/ui/screen/qr_code_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
@@ -49,16 +51,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (ModalRoute.of(context)?.isCurrent ?? false) {
-      initList();
-    }
+    // if (ModalRoute.of(context)?.isCurrent ?? false) {
+    //   print("still bugging ?".toUpperCase());
+    //   initList();
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return Scaffold(
+        body: RefreshIndicator(
         // onRefresh: refreshMeetingList,
         onRefresh: initList,
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
         child: (meetingIds != null)
             ? ((meetingIds!.isNotEmpty)
                 ? StreamBuilder<QuerySnapshot>(
@@ -149,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   )
                 : const NoDataWidget(currentScreen: AvailableScreens.home))
-            : const AppPlaceholder());
+            : const AppPlaceholder()),
+    );
   }
 }
