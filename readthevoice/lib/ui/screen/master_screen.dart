@@ -25,7 +25,8 @@ class _MasterScreenState extends State<MasterScreen> {
   AvailableScreens selectedScreen = AvailableScreens.main;
 
   Map _source = {ConnectivityResult.none: false};
-  final ConnectivityCheckHelper _connectivity = ConnectivityCheckHelper.instance;
+  final ConnectivityCheckHelper _connectivity =
+      ConnectivityCheckHelper.instance;
 
   Future<void> initPackage() async {
     packageInfo = await PackageInfo.fromPlatform();
@@ -58,22 +59,11 @@ class _MasterScreenState extends State<MasterScreen> {
   Widget build(BuildContext context) {
     Widget screen;
 
+    // Discuss whether to refactor or not
     switch (selectedScreen) {
       case AvailableScreens.main:
         screen = const MainScreen();
         screenTitle = const Text("app_name").tr();
-        break;
-      case AvailableScreens.archivedMeetings:
-        screen = const ArchivedMeetingsScreen();
-        screenTitle = const Text("archived_meetings_screen_title").tr();
-        break;
-      case AvailableScreens.settings:
-        screen = const SettingsScreen();
-        screenTitle = const Text("settings_screen_title").tr();
-        break;
-      case AvailableScreens.aboutUs:
-        screen = const AboutScreen();
-        screenTitle = const Text("about_screen_title").tr();
         break;
       default:
         throw UnimplementedError('no widget for $selectedScreen');
@@ -140,8 +130,10 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(AvailableScreens.archivedMeetings);
                         Navigator.pop(context);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                const ArchivedMeetingsScreen()));
                       }),
                   ListTile(
                       title: Text(
@@ -154,8 +146,9 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(AvailableScreens.settings);
                         Navigator.pop(context);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const SettingsScreen()));
                       }),
                   ListTile(
                       title: Text(
@@ -168,8 +161,9 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
                       onTap: () {
-                        _onItemTapped(AvailableScreens.aboutUs);
                         Navigator.pop(context);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const AboutScreen()));
                       }),
                 ],
               ),

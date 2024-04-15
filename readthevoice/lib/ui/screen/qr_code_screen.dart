@@ -273,22 +273,27 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         title: const Text("qr_code_scan_screen_title").tr(),
       ),
       body: Center(
-        child: Column(
-          children: [
-            const Spacer(),
-            Center(
-              child: SizedBox(
-                width: 300,
-                height: 300,
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: _onQRViewCreated,
-                ),
-              ),
-            ),
-            const Spacer()
-          ],
+        child: QRView(
+          key: qrKey,
+          onQRViewCreated: _onQRViewCreated,
         ),
+
+        // Column(
+        //   children: [
+        //     const Spacer(),
+        //     Center(
+        //       child: SizedBox(
+        //         width: 300,
+        //         height: 300,
+        //         child: QRView(
+        //           key: qrKey,
+        //           onQRViewCreated: _onQRViewCreated,
+        //         ),
+        //       ),
+        //     ),
+        //     const Spacer()
+        //   ],
+        // ),
       ),
     );
   }

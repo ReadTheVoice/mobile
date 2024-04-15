@@ -42,6 +42,9 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("archived_meetings_screen_title").tr(),
+      ),
         body: RefreshIndicator(
       onRefresh: initList,
       // onRefresh: refreshMeetingList,
