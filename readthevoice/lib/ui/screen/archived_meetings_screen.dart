@@ -83,6 +83,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                                     // Whether the meeting is archived or not
                                     return SteamedMeetingCard(
                                       meetingModel: model,
+                                      unarchiving: true,
                                       leftIcon:
                                           const Icon(Icons.unarchive_outlined),
                                       rightIcon:
