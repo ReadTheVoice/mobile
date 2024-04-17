@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
@@ -37,6 +38,34 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   void _showNotRecognizedDialog(String qrcodeData) {
     showDialog(
       context: context,
+      builder: (BuildContext context) {
+        return GiffyDialog.image(
+          Image.network(
+            "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          title: const Text(
+            'Image Animation',
+            textAlign: TextAlign.center,
+          ),
+          content: const Text(
+            'This is a image animation dialog box. This library helps you easily create fancy giffy dialog.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'CANCEL'),
+              child: const Text('CANCEL'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      }
+      /*
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.qr_code_scanner_rounded),
         title: const Text('Unknown Qr Code'),
@@ -74,6 +103,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           ),
         ],
       ),
+      */
     ).then((confirmed) => {
           if (confirmed)
             {
@@ -111,7 +141,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           if (confirmed)
             {
               // Dismiss the dialog after operation
-              Navigator.pop(context, true)
+              Navigator.pop(context, meetingModel.id)
             }
         });
   }
