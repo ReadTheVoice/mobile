@@ -31,12 +31,37 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # Use with the CupertinoIcons class for iOS style icons. /home/sharonn/.pub-cache/hosted/pub.dev/another_flutter_splash_screen-1.2.0/lib
   cupertino_icons: ^1.0.2
   easy_localization: ^3.0.3
   qr_code_scanner: ^1.0.1
+
+  # Utility packages
+  # flutter_native_splash: ^2.3.13
+  flutter_native_splash: ^2.3.2
+  another_flutter_splash_screen: ^1.2.0
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.17.8
+  firebase_database: ^10.4.9
+  firebase_storage: ^11.6.9
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+  font_awesome_flutter: ^10.7.0
+  lottie: ^3.1.0
+  stylish_bottom_bar: ^1.0.3
+  sqflite: ^2.3.2
+  floor: ^1.4.2
+  package_info: ^2.0.0+2
+  toastification: ^1.2.1
+  cloud_firestore: ^4.15.10
+  permission_handler: ^11.3.1
+  path_provider: any
+  share_plus: ^8.0.2
+  file_picker: ^8.0.0+1
+  device_info_plus: ^10.0.1
+  scrollable_text_indicator: ^0.0.2
+  connectivity_plus: ^6.0.2
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +73,15 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.0.0
+  floor_generator: any
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logos/logo_new.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -63,8 +97,13 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/translations/
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+    - assets/images/
+    - assets/images/svg/
+#    - assets/theme/
+    - assets/icons/
+    - assets/icons/shapes/
+    - assets/logos/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -73,10 +112,6 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   # fonts:
   #   - family: Schyler
   #     fonts:
@@ -88,6 +123,26 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:
+    - family: Madimi One
+      fonts:
+        - asset: assets/theme/fonts/MadimiOne-Regular.ttf
+          style: normal
+#    - family: RobotoMono
+#      fonts:
+#        - asset: fonts/RobotoMono-Regular.ttf
+#        - asset: fonts/RobotoMono-Bold.ttf
+#          weight: 700
+
+# Splash screen settings
+flutter_native_splash:
+  color: "#D6E3FF"
+  color_dark: "#003063"
+
+  android_12:
+    color: "#D6E3FF"
+    color_dark: #003063"
+
+  web: false
+

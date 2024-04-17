@@ -1,7 +1,56 @@
 {
     "Language": "English",
+
     "AppName": "ReadTheVoice",
 
-    "HomePage": "Home",
-    "QrCodeScan": "Qr Code"
+    "HomeScreen": "Home",
+    "QrCodeScan": "Qr Code",
+
+    "app_name": "Read The Voice",
+    "home_screen_title": "Home",
+    "qr_code_scan_screen_title": "Qr Code Scanning",
+    "favorite_meetings_screen_title": "Favorite meetings",
+    "archived_meetings_screen_title": "Archived meetings",
+    "settings_screen_title": "Settings",
+    "about_screen_title": "About Read The Voice",
+
+    "home_bottom_bar": "Home",
+    "favorite_bottom_bar": "Favorite",
+    "menu_bottom_bar": "Menu",
+
+    "unknown_qr_code": "Unknown Qr Code",
+
+    "download_transcript": "Download transcription",
+    "share_transcript": "Share transcription",
+    "meeting_is_archived": "Archived",
+    "meeting_is_favorite": "Favorite",
+    "meeting_status_created": "Created",
+    "meeting_status_started": "Started",
+    "meeting_status_ended": "Ended",
+    "meeting_description": "Description",
+    "meeting_title": "Title",
+    "meeting_status": "Status",
+    "meeting_schedule_date": "Scheduled at",
+    "meeting_creation_date": "Created on",
+    "meeting_creator": "Created by",
+    "meeting_end_date": "Ended on",
+    "meeting_auto_delete_date": "Will be deleted by",
+    "meeting_transcription": "Transcription",
+    "confirmation_title": "Confirmation",
+    "deletion_confirmation_title": "Local permanent deletion",
+    "confirmation_message_text": "Are you sure you want to perform this action ?",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "successful_deletion": "Successfully deleted",
+    "successful_archiving": "Archiving complete",
+    "successful_unarchiving": "Unarchiving complete",
+    "not_yet_implemented": "Not yet implemented",
+    "saved_file_path": "File saved to",
+    "empty_transcription": "There is no transcription",
+    "show_qr_code": "Show qr code",
+    "unknown_document": "Document does not exist",
+    "show_details": "Show details",
+    "archived_button_tooltip": "This meeting has been archived",
+    "favorite_button_tooltip": "This meeting is one of your favorites",
+    "close_details_view": "Close the details view"
 }
