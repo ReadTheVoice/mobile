@@ -38,7 +38,7 @@ abstract class MeetingDao {
       'UPDATE $MEETING_TABLE_NAME SET transcription = :transcription WHERE id = :id')
   Future<void> updateTranscriptionMeetingById(String id, String transcription);
 
-  @Insert(onConflict: OnConflictStrategy.abort)
+  @Insert(onConflict: OnConflictStrategy.rollback)
   Future<void> insertMeeting(Meeting meeting);
 
   @insert

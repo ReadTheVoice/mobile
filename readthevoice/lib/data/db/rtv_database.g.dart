@@ -267,7 +267,7 @@ class _$MeetingDao extends MeetingDao {
 
   @override
   Future<void> insertMeeting(Meeting meeting) async {
-    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.abort);
+    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.rollback);
   }
 
   @override

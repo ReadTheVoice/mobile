@@ -63,7 +63,6 @@ dependencies:
   scrollable_text_indicator: ^0.0.2
   connectivity_plus: ^6.0.2
   giffy_dialog: ^2.1.0
-  qr_bar_code_scanner_dialog: ^0.0.5
 
 dev_dependencies:
   flutter_test:
