@@ -96,6 +96,7 @@ class _MeetingCardState extends State<MeetingCard> {
               meetingModelAllowDownload: widget.meetingModel.allowDownload,
               meetingModelTranscription:
                   widget.meetingModel.transcription ?? "",
+              meetingModelStatus: widget.meetingModel.getMeetingStatus(),
             ),
           ),
         );

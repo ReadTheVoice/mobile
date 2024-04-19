@@ -41,9 +41,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         builder: (BuildContext context) {
           return GiffyDialog.image(
             Image.asset(
-              "assets/gifs/unknown-guy.gif",
-              width: 120,
-              height: 100,
+              "assets/gifs/question_mark.gif",
+              width: 200,
+              height: 150,
               fit: BoxFit.contain,
             ),
             title: const Text(
@@ -106,10 +106,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         builder: (BuildContext context) {
           return GiffyDialog.image(
             Image.asset(
-              "assets/gifs/sandglass.gif",
-              // "assets/gifs/moving-ball-man.gif",
+              "assets/gifs/moving_clock.gif",
               width: 200,
-              height: 170,
+              height: 150,
               fit: BoxFit.contain,
               filterQuality: FilterQuality.high,
             ),
@@ -165,7 +164,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         builder: (BuildContext context) {
           return GiffyDialog.image(
             Image.asset(
-              "assets/images/no_data.png",
+              "assets/gifs/warning_sign.gif",
+              // "assets/images/no_data.png",
               width: 200,
               height: 170,
               fit: BoxFit.contain,
@@ -222,7 +222,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       if (result.isNotEmpty && result.trim() != "") {
         controller.pauseCamera();
 
-        bool isOk = result.isNotEmpty && result.contains(QR_CODE_DATA_PREFIX);
+        bool isOk = result.isNotEmpty && result.startsWith(QR_CODE_DATA_PREFIX);
         if (mounted) {
           if (!isOk) {
             _showNotRecognizedDialog(result);
@@ -301,6 +301,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
               meetingModelName: meetingModel.name,
               meetingModelAllowDownload: meetingModel.allowDownload,
               meetingModelTranscription: meetingModel.transcription ?? "",
+              meetingModelStatus: meetingModel.getMeetingStatus(),
             ),
           ));
     }

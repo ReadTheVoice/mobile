@@ -21,10 +21,11 @@
     "retry": "Riprova",
     "cancel": "Annulla",
     "confirm": "Conferma",
+    "an_error_occurred": "Si è verificato un errore durante questo processo.",
 
     "unknown_qr_code_title": "Codice Qr sconosciuto",
     "unknown_qr_code_text": "Questo codice non è stato generato da",
-    "unknown_qr_code_subtext": "Tuttavia, puoi copiare i dati contenuti in esso e accedervi utilizzando il tuo browser preferito.",
+    "unknown_qr_code_subtext": "Tuttavia, puoi copiare i dati contenuti e accedervi utilizzando il tuo browser preferito.",
 
     "scheduled_meeting_title": "{title} non è ancora iniziata",
     "scheduled_meeting_text": "Questa riunione è programmata per: {date}",
@@ -34,6 +35,8 @@
     "meeting_not_found_title": "Riunione '{title}' non trovata!",
     "meeting_not_found_text": "La riunione con ID: {meetingId} non è stata trovata!\nPotrebbe essere stata eliminata o l'URL potrebbe essere errata!",
     "meeting_not_found_subtext": "Si prega di contattare l'organizzatore della riunione per ulteriori informazioni.",
+
+    "meeting_status_app_bar_button": "Fornisce lo stato della riunione",
 
     "download_transcript": "Scarica trascrizione",
     "share_transcript": "Condividi trascrizione",
@@ -62,6 +65,8 @@
     "saved_file_path": "File salvato in",
     "empty_transcription": "Non ci sono trascrizioni",
     "show_qr_code": "Mostra codice QR",
+    "share_qr_code": "Condividi codice QR",
+    "show_qr_code_dialog_title": "Codice QR",
     "unknown_document": "Il documento non esiste",
     "show_details": "Mostra dettagli",
     "archived_button_tooltip": "Questa riunione è stata archiviata",

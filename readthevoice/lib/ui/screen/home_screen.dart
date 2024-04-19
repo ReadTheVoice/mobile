@@ -110,10 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             setState(() {});
                                           },
                                           cardDeleteFunction:
-                                              (String meetingId) {
-                                            meetingService
+                                              (String meetingId) async {
+                                            await meetingService
                                                 .deleteMeetingById(meetingId);
+
                                             meetingIds?.remove(meetingId);
+
                                             setState(() {
                                               toastification.show(
                                                 context: context,
