@@ -84,13 +84,18 @@ extension MeetingModelConversion on MeetingModel {
   }
 
   MeetingStatus getMeetingStatus() {
-    MeetingStatus status = MeetingStatus.createdNotStarted;
+    MeetingStatus status = MeetingStatus.created;
 
     if (isFinished || endDate != null) {
       status = MeetingStatus.ended;
-    } else if (scheduledDate != null &&
-        (DateTime.now().isAfter(scheduledDate!))) {
-      status = MeetingStatus.started;
+    } else if (scheduledDate != null) {
+      if((DateTime.now().isBefore(scheduledDate!))) {
+        status = MeetingStatus.scheduled;
+      } else {
+        if (transcription != null && transcription!.trim().isNotEmpty) {
+          status = MeetingStatus.started;
+        }
+      }
     } else if (transcription != null && transcription!.trim().isNotEmpty) {
       status = MeetingStatus.started;
     }

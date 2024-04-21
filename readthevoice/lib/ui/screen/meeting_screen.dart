@@ -4,9 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
@@ -15,23 +17,25 @@ import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/ui/screen/meeting_details_screen.dart';
 import 'package:scrollable_text_indicator/scrollable_text_indicator.dart';
-import 'package:toastification/toastification.dart';
 
 class MeetingScreen extends StatefulWidget {
   final String meetingModelId;
   final String meetingModelName;
   final bool meetingModelAllowDownload;
   final String meetingModelTranscription;
+  final MeetingStatus meetingModelStatus;
 
   const MeetingScreen(
       {super.key,
       required this.meetingModelId,
       required this.meetingModelName,
       required this.meetingModelAllowDownload,
-      required this.meetingModelTranscription});
+      required this.meetingModelTranscription,
+      required this.meetingModelStatus});
 
   @override
   State<MeetingScreen> createState() => _MeetingScreenState();
@@ -122,6 +126,69 @@ class _MeetingScreenState extends State<MeetingScreen> {
     return result.isGranted;
   }
 
+  void _showQrCodeDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'show_qr_code_dialog_title',
+              textAlign: TextAlign.center,
+            ).tr(),
+            content: Padding(
+              padding: const EdgeInsets.all(10),
+              child: PrettyQrView.data(
+                data: '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
+                decoration: PrettyQrDecoration(
+                  shape: PrettyQrSmoothSymbol(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer),
+                  image: const PrettyQrDecorationImage(
+                    image: AssetImage('assets/logos/logo_new.png'),
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              CupertinoButton(
+                onPressed: () async {
+                  // shareQrCode
+                  await shareQrCode(
+                      widget.meetingModelName,
+                      '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
+                      Theme.of(context).colorScheme.onPrimaryContainer, () {
+                    showUnsuccessfulToast(context, "an_error_occurred",
+                        iconData: FontAwesomeIcons.triangleExclamation);
+                  });
+
+                  Navigator.pop(context, true);
+                },
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.share_rounded,
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'share_qr_code',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                    ).tr(),
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -135,36 +202,42 @@ class _MeetingScreenState extends State<MeetingScreen> {
           centerTitle: true,
           actions: [
             PopupMenuButton(
+                icon: Icon(
+                  Icons.info_outline_rounded,
+                  color: widget.meetingModelStatus.backgroundColor,
+                ),
+                tooltip: tr("meeting_status_app_bar_button"),
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        enabled: false,
+                        child: Center(
+                          child: MeetingStatusChip(
+                              meetingStatus: widget.meetingModelStatus),
+                        ),
+                      ),
+                    ]),
+            PopupMenuButton(
+                iconColor: Theme.of(context).colorScheme.onSurface,
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         child: TextButton(
                           onPressed: () {
-                            toastification.show(
-                              context: context,
-                              alignment: Alignment.bottomCenter,
-                              style: ToastificationStyle.minimal,
-                              type: ToastificationType.warning,
-                              autoCloseDuration: const Duration(seconds: 2),
-                              title: const Text('not_yet_implemented').tr(),
-                              icon: const FaIcon(
-                                  FontAwesomeIcons.triangleExclamation),
-                            );
-
                             Navigator.pop(context);
+                            _showQrCodeDialog();
                           },
-                          child: const Row(
+                          child: Row(
                             children: [
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
                                 child: Icon(
                                   Icons.info_outline_rounded,
                                   color: Colors.white,
                                 ),
                               ),
-                              Text("show_qr_code",
+                              const Text("show_qr_code",
                                   style: TextStyle(
                                     color: Colors.white,
-                                  ))
+                                  )).tr()
                             ],
                           ),
                         ),
@@ -183,31 +256,18 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   downloadTextFile(widget.meetingModelName,
                                       widget.meetingModelTranscription,
                                       onSuccess: (filePath) {
-                                    toastification.show(
-                                      context: context,
-                                      alignment: Alignment.bottomCenter,
-                                      type: ToastificationType.success,
-                                      style: ToastificationStyle.minimal,
-                                      autoCloseDuration:
-                                          const Duration(seconds: 5),
-                                      title: Text(
-                                          "${tr("saved_file_path")}: $filePath"),
-                                      icon: const Icon(
-                                          Icons.download_done_rounded),
-                                    );
+                                    showSuccessfulToast(context,
+                                        "${tr("saved_file_path")}: $filePath",
+                                        iconData: Icons.download_done_rounded,
+                                        duration: 5);
                                   });
                                 }
                               } else {
-                                toastification.show(
-                                  context: context,
-                                  alignment: Alignment.bottomCenter,
-                                  type: ToastificationType.error,
-                                  style: ToastificationStyle.minimal,
-                                  autoCloseDuration: const Duration(seconds: 2),
-                                  title: const Text("empty_transcription").tr(),
-                                  icon: const FaIcon(
-                                      FontAwesomeIcons.triangleExclamation),
-                                );
+                                showUnsuccessfulToast(
+                                    context, "empty_transcription",
+                                    iconData:
+                                        FontAwesomeIcons.triangleExclamation,
+                                    duration: 2);
                               }
 
                               Navigator.pop(context);
@@ -241,16 +301,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                 shareTextFile(widget.meetingModelName,
                                     widget.meetingModelTranscription);
                               } else {
-                                toastification.show(
-                                  context: context,
-                                  alignment: Alignment.bottomCenter,
-                                  type: ToastificationType.error,
-                                  style: ToastificationStyle.minimal,
-                                  autoCloseDuration: const Duration(seconds: 2),
-                                  title: const Text("empty_transcription").tr(),
-                                  icon: const FaIcon(
-                                      FontAwesomeIcons.triangleExclamation),
-                                );
+                                showUnsuccessfulToast(
+                                    context, "empty_transcription",
+                                    iconData:
+                                        FontAwesomeIcons.triangleExclamation,
+                                    duration: 2);
                               }
 
                               Navigator.pop(context);
@@ -274,7 +329,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ),
                           ),
                         ),
-                    ])
+                    ]),
           ],
         ),
         body: StreamBuilder<DocumentSnapshot>(
@@ -306,54 +361,54 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 MeetingModel.fromFirebase(snapshot.data!.id, data);
 
             return Padding(
-              padding: const EdgeInsets.all(10),
-              child: Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints.tightFor(height: 70),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Text("show_details").tr(),
-                              const Spacer(),
-                              IconButton(
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.eye,
-                                  size: 15,
-                                ),
-                                onPressed: () => {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          MeetingDetailsScreen(
-                                            onClose: () =>
-                                                Navigator.pop(context),
-                                            meetingModel: model,
-                                            meeting: currentMeeting ??
-                                                Meeting.example(
-                                                    widget.meetingModelId),
-                                          )))
-                                },
-                              ),
-                            ],
-                          ),
-                          const MeetingCardDivider(),
-                        ],
-                      ),
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "show_details",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                              fontSize: 18),
+                        ).tr(),
+                        const Spacer(),
+                        IconButton(
+                          icon: FaIcon(FontAwesomeIcons.eye,
+                              size: 18,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground),
+                          onPressed: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MeetingDetailsScreen(
+                                      onClose: () => Navigator.pop(context),
+                                      meetingModel: model,
+                                      meeting: currentMeeting ??
+                                          Meeting.example(
+                                              widget.meetingModelId),
+                                    )))
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints.tightFor(height: screenHeight - 170),
+                    MeetingCardDivider(
+                        color: Theme.of(context).colorScheme.onBackground),
+                    MeetingCardDivider(
+                        color: Theme.of(context).colorScheme.onBackground),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
                       child: (model.endDate != null ||
                               currentMeeting?.status == MeetingStatus.ended)
                           ? ScrollableTextIndicator(
-                              text: Text("${currentMeeting?.transcription}"),
+                              text: Text(
+                                "${currentMeeting?.transcription}",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground),
+                              ),
                               indicatorBarColor:
                                   Theme.of(context).colorScheme.onBackground,
                               indicatorThumbColor:
@@ -400,9 +455,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
                                         String transcript = data["data"] ?? "";
 
-                                        return Text(transcript.trim().isNotEmpty
-                                            ? transcript
-                                            : tr("empty_transcription"));
+                                        return Text(
+                                          transcript.trim().isNotEmpty
+                                              ? transcript
+                                              : tr("empty_transcription"),
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onBackground),
+                                        );
                                       }
 
                                       if (snapshot.hasError) {
@@ -411,26 +472,40 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       }
 
                                       return Center(
-                                        child: const Text("empty_transcription")
-                                            .tr(),
+                                        child: Text(
+                                          "empty_transcription",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onBackground),
+                                        ).tr(),
                                       );
                                     } else if (snapshot.hasError) {
-                                      return Text("Error: \n${snapshot.error}");
+                                      return Text(
+                                        "Error: \n${snapshot.error}",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onBackground),
+                                      );
                                     } else {
                                       return (widget.meetingModelTranscription
                                               .trim()
                                               .isNotEmpty)
                                           ? Text(
-                                              widget.meetingModelTranscription)
+                                              widget.meetingModelTranscription,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onBackground),
+                                            )
                                           : const AppPlaceholder();
                                     }
                                   }),
                             ),
-                    ),
-                  )
-                ],
-              ),
-            );
+                    )
+                  ],
+                ));
           },
         ));
   }

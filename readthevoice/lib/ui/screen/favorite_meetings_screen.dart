@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
-import 'package:toastification/toastification.dart';
 
 class FavoriteMeetingsScreen extends StatefulWidget {
   const FavoriteMeetingsScreen({super.key});
@@ -30,7 +28,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
     meetingIds =
         (await meetingService.getFavoriteMeetings()).map((e) => e.id).toList();
 
-    if(mounted) {
+    if (mounted) {
       setState(() {});
     }
   }
@@ -75,32 +73,32 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                                     Map<String, dynamic> data = document.data()!
                                         as Map<String, dynamic>;
 
-                                    MeetingModel model = MeetingModel.fromFirebase(document.id, data);
+                                    MeetingModel model =
+                                        MeetingModel.fromFirebase(
+                                            document.id, data);
 
                                     // Whether the meeting is archived or not
                                     return MeetingCard(
                                       isFavoriteList: true,
                                       meetingModel: model,
                                       favoriteFunction: (String meetingId) {
-                                        meetingIds?.remove(meetingId);
-                                        setState(() {});
+                                        setState(() {
+                                          meetingIds?.remove(meetingId);
+                                        });
                                       },
                                       deleteFunction: (String meetingId) {
-                                        meetingService
-                                            .deleteMeetingById(meetingId);
-                                        meetingIds?.remove(meetingId);
                                         setState(() {
-                                          toastification.show(
-                                            context: context,
-                                            alignment: Alignment.bottomCenter,
-                                            type: ToastificationType.success,
-                                            style: ToastificationStyle.minimal,
-                                            autoCloseDuration: const Duration(seconds: 5),
-                                            title: const Text('successful_deletion').tr(),
-                                            icon: const FaIcon(FontAwesomeIcons.circleCheck),
-                                            primaryColor: Colors.green,
-                                          );
+                                          meetingIds?.remove(meetingId);
                                         });
+
+                                        if (meetingIds != null &&
+                                            meetingIds!.contains(meetingId)) {
+                                          showUnsuccessfulToast(
+                                              context, "unsuccessful_deletion");
+                                        } else {
+                                          showSuccessfulToast(
+                                              context, "successful_deletion");
+                                        }
                                       },
                                     );
                                   } else {

@@ -86,9 +86,15 @@ class MeetingDetailsScreen extends StatelessWidget {
                   MeetingField(
                       name: "meeting_description",
                       value: meetingModel.description),
-                  MeetingField(
-                      name: "meeting_end_date",
-                      value: meetingModel.endDate.toString()),
+                  if (meeting.status == MeetingStatus.scheduled ||
+                      meetingModel.scheduledDate != null)
+                    MeetingField(
+                        name: "meeting_schedule_date",
+                        value: meetingModel.scheduledDate.toString()),
+                  if (meetingModel.endDate != null)
+                    MeetingField(
+                        name: "meeting_end_date",
+                        value: meetingModel.endDate.toString()),
                   if (autoDeletion == true)
                     MeetingField(
                         name: "meeting_auto_delete_date",
