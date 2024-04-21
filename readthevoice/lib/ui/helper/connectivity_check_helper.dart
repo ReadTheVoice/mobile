@@ -33,5 +33,6 @@ class ConnectivityCheckHelper {
     _controller.sink.add({result: isOnline});
   }
 
-  void disposeStream() => _controller.close();
+  // void disposeStream() => _controller.close();
+  void disposeStream() => {};
 }

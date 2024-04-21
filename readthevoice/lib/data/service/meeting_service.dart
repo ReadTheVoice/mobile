@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/data/model/meeting.dart';
@@ -72,13 +74,25 @@ class MeetingService {
     }
   }
 
-  Future<void> deleteMeetingById(String meetingId) async {
+  Future<bool> deleteMeetingById(String meetingId) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
 
     final meetingDao = database.meetingDao;
-    await meetingDao.deleteMeeting(meetingId);
+    final res = await meetingDao.deleteMeeting(meetingId);
+    return res != null && res >= 1;
+  }
+
+  Future<bool> deleteSingleMeeting(Meeting meeting) async {
+    final database = await $FloorAppDatabase
+        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+        .build();
+
+    final meetingDao = database.meetingDao;
+    final res = await meetingDao.deleteSingleMeeting(meeting);
+    print("RESULT => $res");
+    return res >= 1;
   }
 
   Future<Meeting?> getMeetingById(String meetingId) async {

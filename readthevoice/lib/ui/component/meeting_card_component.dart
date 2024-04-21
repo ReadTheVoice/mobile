@@ -5,6 +5,7 @@ import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
 
 class MeetingCard extends StatefulWidget {
@@ -57,26 +58,53 @@ class _MeetingCardState extends State<MeetingCard> {
   }
 
   void _showConfirmationDialog() {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('deletion_confirmation_title').tr(),
-        content: const Text('confirmation_message_text').tr(),
+        backgroundColor: (!isDarkMode)
+            ? Theme.of(context).colorScheme.primaryContainer
+            : null,
+        title: Text('deletion_confirmation_title',
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null))
+            .tr(),
+        content: Text('confirmation_message_text',
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null))
+            .tr(),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('cancel').tr(),
+            child: const Text('cancel', style: TextStyle(fontSize: 20)).tr(),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('confirm').tr(),
+            child: const Text('confirm', style: TextStyle(fontSize: 20)).tr(),
           ),
         ],
       ),
-    ).then((confirmed) {
+    ).then((confirmed) async {
       if (confirmed ?? false) {
-        if (widget.deleteFunction != null) {
-          widget.deleteFunction!(widget.meetingModel.id);
+        bool isDeleted =
+            await meetingService.deleteMeetingById(widget.meetingModel.id);
+
+        print("${"isDeleted => ".toUpperCase()}$isDeleted");
+
+        if (isDeleted) {
+          if (widget.deleteFunction != null) {
+            widget.deleteFunction!(widget.meetingModel.id);
+          }
+        } else {
+          setState(() {
+            showSuccessfulToast(context,
+                "successful_deletion");
+          });
         }
       }
     });
@@ -84,6 +112,7 @@ class _MeetingCardState extends State<MeetingCard> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
@@ -96,13 +125,15 @@ class _MeetingCardState extends State<MeetingCard> {
               meetingModelAllowDownload: widget.meetingModel.allowDownload,
               meetingModelTranscription:
                   widget.meetingModel.transcription ?? "",
+              meetingModelStatus: widget.meetingModel.getMeetingStatus(),
             ),
           ),
         );
       },
       child: Card(
-          color: widget.background ??
-              Theme.of(context).colorScheme.primaryContainer,
+          color: isDarkMode
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.primary,
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
             title: Row(
@@ -112,7 +143,9 @@ class _MeetingCardState extends State<MeetingCard> {
                   widget.meetingModel.name.trim() != ""
                       ? widget.meetingModel.name
                       : "${tr("meeting_title")}: ...",
-                  style: TextStyle(color: widget.textColor, fontSize: 20),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -148,7 +181,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                     FontAwesomeIcons.snowflake,
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .onPrimaryContainer,
+                                        .onSurface,
                                     size: 15,
                                   ),
                                   const SizedBox(
@@ -159,14 +192,16 @@ class _MeetingCardState extends State<MeetingCard> {
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .onPrimaryContainer),
+                                            .onSurface),
                                   ).tr()
                                 ],
                               ),
                             Text(
                               widget.meetingModel.description ?? "",
                               style: TextStyle(
-                                  color: widget.textColor, fontSize: 16),
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 16),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -189,7 +224,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                       widget.meetingModel.id, fav);
 
                                   if (widget.favoriteFunction != null) {
-                                    widget.favoriteFunction!();
+                                    widget.favoriteFunction!(widget.meetingModel.id);
                                   }
                                 }
                               });
@@ -200,13 +235,13 @@ class _MeetingCardState extends State<MeetingCard> {
                                       : false)
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_border_rounded,
-                              color: widget.textColor,
+                              color: Theme.of(context).colorScheme.onSurface,
                             )),
                         IconButton(
                             onPressed: _showConfirmationDialog,
                             icon: Icon(
                               Icons.delete_outline_rounded,
-                              color: widget.textColor,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ))
                       ],
                     ),
@@ -218,8 +253,7 @@ class _MeetingCardState extends State<MeetingCard> {
                   child: Text(
                     "${tr("meeting_creation_date")}: ${widget.meetingModel.createdAt.toString()}",
                     style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onPrimaryContainer),
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
               ],

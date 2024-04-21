@@ -6,8 +6,10 @@ const lightColorScheme = ColorScheme(
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFD6E3FF),
   onPrimaryContainer: Color(0xFF001B3D),
+  // secondary:  Color(0xFF295EA7),
   secondary: Color(0xFF7C5800),
   onSecondary: Color(0xFFFFFFFF),
+  // secondaryContainer: Color(0xFF295EA7),
   secondaryContainer: Color(0xFFFFDEA8),
   onSecondaryContainer: Color(0xFF271900),
   tertiary: Color(0xFF5D53A7),
@@ -20,8 +22,10 @@ const lightColorScheme = ColorScheme(
   onErrorContainer: Color(0xFF410002),
   background: Color(0xFFFDFBFF),
   onBackground: Color(0xFF1A1B1E),
-  surface: Color(0xFFFFF7F8), // #FEFCFD - #FFF8F0
-  onSurface: Color(0xFF1A1B1E),
+  // surface: Color(0xFFFFF7F8), // #FEFCFD - #FFF8F0
+  // onSurface: Color(0xFF1A1B1E),
+  surface: Color(0xFF295EA7),
+  onSurface: Color(0xFFFFFFFF),
   surfaceVariant: Color(0xFFE0E2EC),
   onSurfaceVariant: Color(0xFF44474E),
   outline: Color(0xFF74777F),
@@ -53,9 +57,12 @@ const darkColorScheme = ColorScheme(
   onError: Color(0xFF690005),
   onErrorContainer: Color(0xFFFFDAD6),
   background: Color(0xFF1f1f1f), // #1f1f1f
+  // background: Color(0xFF1f1f1f), // #1f1f1f
   onBackground: Color(0xFFE3E2E6),
-  surface: Color(0xFF181818),  // #181818
-  onSurface: Color(0xFFE3E2E6),
+  // surface: Color(0xFF181818),  // #181818
+  // onSurface: Color(0xFFE3E2E6),
+  surface: Color(0xFF003063),
+  onSurface: Color(0xFFFFFFFF),
   surfaceVariant: Color(0xFF44474E),
   onSurfaceVariant: Color(0xFFC4C6D0),
   outline: Color(0xFF8E9099),
