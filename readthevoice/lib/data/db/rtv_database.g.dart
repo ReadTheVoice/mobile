@@ -260,14 +260,15 @@ class _$MeetingDao extends MeetingDao {
   }
 
   @override
-  Future<void> deleteMeeting(String id) async {
-    await _queryAdapter
-        .queryNoReturn('DELETE FROM meeting WHERE id = ?1', arguments: [id]);
+  Future<int?> deleteMeeting(String id) async {
+    return _queryAdapter.query('DELETE FROM meeting WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => row.values.first as int,
+        arguments: [id]);
   }
 
   @override
   Future<void> insertMeeting(Meeting meeting) async {
-    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.rollback);
+    await _meetingInsertionAdapter.insert(meeting, OnConflictStrategy.abort);
   }
 
   @override
@@ -279,6 +280,11 @@ class _$MeetingDao extends MeetingDao {
   @override
   Future<void> updateMeeting(Meeting meeting) async {
     await _meetingUpdateAdapter.update(meeting, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> deleteSingleMeeting(Meeting meeting) {
+    return _meetingDeletionAdapter.deleteAndReturnChangedRows(meeting);
   }
 
   @override

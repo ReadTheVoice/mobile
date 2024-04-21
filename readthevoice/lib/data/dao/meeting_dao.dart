@@ -38,7 +38,8 @@ abstract class MeetingDao {
       'UPDATE $MEETING_TABLE_NAME SET transcription = :transcription WHERE id = :id')
   Future<void> updateTranscriptionMeetingById(String id, String transcription);
 
-  @Insert(onConflict: OnConflictStrategy.rollback)
+  // @Insert(onConflict: OnConflictStrategy.rollback)
+  @insert
   Future<void> insertMeeting(Meeting meeting);
 
   @insert
@@ -48,7 +49,10 @@ abstract class MeetingDao {
   Future<void> updateMeeting(Meeting meeting);
 
   @Query("DELETE FROM $MEETING_TABLE_NAME WHERE id = :id")
-  Future<void> deleteMeeting(String id);
+  Future<int?> deleteMeeting(String id);
+
+  @delete
+  Future<int> deleteSingleMeeting(Meeting meeting);
 
   @delete
   Future<void> deleteAllMeeting(List<Meeting> list);

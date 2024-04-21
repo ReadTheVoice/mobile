@@ -217,11 +217,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         enabled: false,
-                        child: MeetingStatusChip(
-                            meetingStatus: widget.meetingModelStatus),
+                        child: Center(
+                          child: MeetingStatusChip(
+                              meetingStatus: widget.meetingModelStatus),
+                        ),
                       ),
                     ]),
             PopupMenuButton(
+                iconColor: Theme.of(context).colorScheme.onSurface,
                 itemBuilder: (context) => [
                       PopupMenuItem(
                         child: TextButton(
@@ -383,54 +386,54 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 MeetingModel.fromFirebase(snapshot.data!.id, data);
 
             return Padding(
-              padding: const EdgeInsets.all(10),
-              child: Stack(
-                alignment: AlignmentDirectional.topCenter,
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints.tightFor(height: 70),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Text("show_details").tr(),
-                              const Spacer(),
-                              IconButton(
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.eye,
-                                  size: 15,
-                                ),
-                                onPressed: () => {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          MeetingDetailsScreen(
-                                            onClose: () =>
-                                                Navigator.pop(context),
-                                            meetingModel: model,
-                                            meeting: currentMeeting ??
-                                                Meeting.example(
-                                                    widget.meetingModelId),
-                                          )))
-                                },
-                              ),
-                            ],
-                          ),
-                          const MeetingCardDivider(),
-                        ],
-                      ),
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "show_details",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                              fontSize: 18),
+                        ).tr(),
+                        const Spacer(),
+                        IconButton(
+                          icon: FaIcon(FontAwesomeIcons.eye,
+                              size: 18,
+                              color:
+                                  Theme.of(context).colorScheme.onBackground),
+                          onPressed: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MeetingDetailsScreen(
+                                      onClose: () => Navigator.pop(context),
+                                      meetingModel: model,
+                                      meeting: currentMeeting ??
+                                          Meeting.example(
+                                              widget.meetingModelId),
+                                    )))
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints.tightFor(height: screenHeight - 170),
+                    MeetingCardDivider(
+                        color: Theme.of(context).colorScheme.onBackground),
+                    MeetingCardDivider(
+                        color: Theme.of(context).colorScheme.onBackground),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
                       child: (model.endDate != null ||
                               currentMeeting?.status == MeetingStatus.ended)
                           ? ScrollableTextIndicator(
-                              text: Text("${currentMeeting?.transcription}"),
+                              text: Text(
+                                "${currentMeeting?.transcription}",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground),
+                              ),
                               indicatorBarColor:
                                   Theme.of(context).colorScheme.onBackground,
                               indicatorThumbColor:
@@ -477,9 +480,15 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
                                         String transcript = data["data"] ?? "";
 
-                                        return Text(transcript.trim().isNotEmpty
-                                            ? transcript
-                                            : tr("empty_transcription"));
+                                        return Text(
+                                          transcript.trim().isNotEmpty
+                                              ? transcript
+                                              : tr("empty_transcription"),
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onBackground),
+                                        );
                                       }
 
                                       if (snapshot.hasError) {
@@ -488,26 +497,41 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       }
 
                                       return Center(
-                                        child: const Text("empty_transcription")
-                                            .tr(),
+                                        child: Text(
+                                          "empty_transcription",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onBackground),
+                                        ).tr(),
                                       );
                                     } else if (snapshot.hasError) {
-                                      return Text("Error: \n${snapshot.error}");
+                                      return Text(
+                                        "Error: \n${snapshot.error}",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onBackground),
+                                      );
                                     } else {
                                       return (widget.meetingModelTranscription
                                               .trim()
                                               .isNotEmpty)
                                           ? Text(
-                                              widget.meetingModelTranscription)
+                                              widget.meetingModelTranscription,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onBackground),
+                                            )
                                           : const AppPlaceholder();
                                     }
                                   }),
                             ),
-                    ),
-                  )
-                ],
-              ),
-            );
+                    )
+                  ],
+                )
+                );
           },
         ));
   }

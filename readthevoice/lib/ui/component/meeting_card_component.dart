@@ -6,6 +6,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
+import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
   final MeetingModel meetingModel;
@@ -73,10 +74,35 @@ class _MeetingCardState extends State<MeetingCard> {
           ),
         ],
       ),
-    ).then((confirmed) {
+    ).then((confirmed) async {
       if (confirmed ?? false) {
-        if (widget.deleteFunction != null) {
-          widget.deleteFunction!(widget.meetingModel.id);
+        bool isDeleted = await meetingService.deleteMeetingById(widget.meetingModel.id);
+
+        if(isDeleted) {
+          if (widget.deleteFunction != null) {
+            widget.deleteFunction!(widget.meetingModel.id);
+          }
+        } else {
+          setState(() {
+            toastification.show(
+              context: context,
+              alignment:
+              Alignment.bottomCenter,
+              type:
+              ToastificationType.error,
+              style:
+              ToastificationStyle.minimal,
+              autoCloseDuration:
+              const Duration(seconds: 5),
+              title: const Text(
+                  'unsuccessful_deletion')
+                  .tr(),
+              icon: const FaIcon(
+                  FontAwesomeIcons
+                      .xmark),
+              primaryColor: Colors.red,
+            );
+          });
         }
       }
     });
@@ -84,6 +110,7 @@ class _MeetingCardState extends State<MeetingCard> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
@@ -102,8 +129,7 @@ class _MeetingCardState extends State<MeetingCard> {
         );
       },
       child: Card(
-          color: widget.background ??
-              Theme.of(context).colorScheme.primaryContainer,
+          color: isDarkMode ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.primary,
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
             title: Row(
@@ -113,7 +139,7 @@ class _MeetingCardState extends State<MeetingCard> {
                   widget.meetingModel.name.trim() != ""
                       ? widget.meetingModel.name
                       : "${tr("meeting_title")}: ...",
-                  style: TextStyle(color: widget.textColor, fontSize: 20),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -167,7 +193,7 @@ class _MeetingCardState extends State<MeetingCard> {
                             Text(
                               widget.meetingModel.description ?? "",
                               style: TextStyle(
-                                  color: widget.textColor, fontSize: 16),
+                                  color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -201,13 +227,13 @@ class _MeetingCardState extends State<MeetingCard> {
                                       : false)
                                   ? Icons.favorite_rounded
                                   : Icons.favorite_border_rounded,
-                              color: widget.textColor,
+                              color: Theme.of(context).colorScheme.onSurface,
                             )),
                         IconButton(
                             onPressed: _showConfirmationDialog,
                             icon: Icon(
                               Icons.delete_outline_rounded,
-                              color: widget.textColor,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ))
                       ],
                     ),
@@ -219,8 +245,7 @@ class _MeetingCardState extends State<MeetingCard> {
                   child: Text(
                     "${tr("meeting_creation_date")}: ${widget.meetingModel.createdAt.toString()}",
                     style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onPrimaryContainer),
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
               ],

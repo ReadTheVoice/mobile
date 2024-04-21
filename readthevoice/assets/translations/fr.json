@@ -59,6 +59,7 @@
     "deletion_confirmation_title": "Suppression locale permanente",
     "confirmation_message_text": "Êtes-vous sûr de vouloir effectuer cette action ?",
     "successful_deletion": "Suppression réussie",
+    "unsuccessful_deletion": "Suppression non réussie",
     "successful_archiving": "Archivage terminé",
     "successful_unarchiving": "Désarchivage terminé",
     "not_yet_implemented": "Pas encore implémentée",

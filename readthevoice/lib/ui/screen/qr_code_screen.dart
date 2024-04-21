@@ -40,6 +40,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         context: context,
         builder: (BuildContext context) {
           return GiffyDialog.image(
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             Image.asset(
               "assets/gifs/question_mark.gif",
               width: 200,
@@ -101,54 +102,61 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   }
 
   void _showNotYetStartedDialog(MeetingModel meetingModel) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return GiffyDialog.image(
-            Image.asset(
-              "assets/gifs/moving_clock.gif",
-              width: 200,
-              height: 150,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
-            ),
-            title: const Text(
-              'scheduled_meeting_title',
-              textAlign: TextAlign.center,
-            ).tr(namedArgs: {"title": meetingModel.name}),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
+          return AppDialogComponent(
+              image: Image.asset(
+                "assets/gifs/moving_clock.gif",
+                width: 200,
+                height: 150,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+              ),
+              title: Text(
+                'scheduled_meeting_title',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null),
+              ).tr(namedArgs: {"title": meetingModel.name}),
+              content: [
+                Text(
                   'scheduled_meeting_text',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null),
                 ).tr(namedArgs: {
                   "date": meetingModel.scheduledDate?.toString() ?? ""
                 }),
-                const Text(
+                Text(
                   'scheduled_meeting_subtext',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null),
                 ).tr(),
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
+                Text(
                   'scheduled_meeting_info',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null),
                 ).tr(namedArgs: {
                   "creator":
                       "${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}"
                 }),
               ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Ok'),
-              ),
-            ],
-          );
+              confirmButtonText: "Ok");
         }).then((confirmed) => {
           if (confirmed)
             {
@@ -333,6 +341,56 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           onQRViewCreated: _onQRViewCreated,
         ),
       ),
+    );
+  }
+}
+
+class AppDialogComponent extends StatelessWidget {
+  const AppDialogComponent(
+      {super.key,
+      required this.image,
+      required this.title,
+      required this.content,
+      required this.confirmButtonText,
+      this.cancelButtonText,
+      this.isDeletionDialog = false});
+
+  final Image image;
+  final Text title;
+  final List<Widget> content;
+  final String confirmButtonText;
+  final String? cancelButtonText;
+  final bool? isDeletionDialog;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return GiffyDialog.image(
+      backgroundColor:
+          (!isDarkMode) ? Theme.of(context).colorScheme.primaryContainer : null,
+      image,
+      title: title,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: content,
+      ),
+      actions: [
+        if (cancelButtonText != null && cancelButtonText!.trim().isNotEmpty)
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(cancelButtonText!, style: const TextStyle(fontSize: 20))
+                .tr(),
+          ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(
+            confirmButtonText,
+            style: const TextStyle(fontSize: 20),
+          ),
+        ),
+      ],
     );
   }
 }

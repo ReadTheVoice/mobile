@@ -104,38 +104,89 @@ class _HomeScreenState extends State<HomeScreen> {
                                               meetingService
                                                   .setArchiveMeetingById(
                                                       meetingId, true);
-                                              meetingIds?.remove(meetingId);
+                                              setState(() {
+                                                meetingIds?.remove(meetingId);
+                                                // initList();
+                                              });
                                             }
 
                                             setState(() {});
                                           },
                                           cardDeleteFunction:
-                                              (String meetingId) async {
-                                            await meetingService
-                                                .deleteMeetingById(meetingId);
-
-                                            meetingIds?.remove(meetingId);
-
+                                              (String meetingId) {
                                             setState(() {
-                                              toastification.show(
-                                                context: context,
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                type:
-                                                    ToastificationType.success,
-                                                style:
-                                                    ToastificationStyle.minimal,
-                                                autoCloseDuration:
-                                                    const Duration(seconds: 5),
-                                                title: const Text(
-                                                        'successful_deletion')
-                                                    .tr(),
-                                                icon: const FaIcon(
-                                                    FontAwesomeIcons
-                                                        .circleCheck),
-                                                primaryColor: Colors.green,
-                                              );
+                                              meetingIds?.remove(meetingId);
                                             });
+
+                                            if (meetingIds != null &&
+                                                meetingIds!
+                                                    .contains(meetingId)) {
+                                              setState(() {
+                                                toastification.show(
+                                                  context: context,
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  type:
+                                                      ToastificationType.error,
+                                                  style: ToastificationStyle
+                                                      .minimal,
+                                                  autoCloseDuration:
+                                                      const Duration(
+                                                          seconds: 5),
+                                                  title: const Text(
+                                                          'unsuccessful_deletion')
+                                                      .tr(),
+                                                  icon: const FaIcon(
+                                                      FontAwesomeIcons.xmark),
+                                                  primaryColor: Colors.red,
+                                                );
+                                              });
+                                            } else {
+                                              setState(() {
+                                                toastification.show(
+                                                  context: context,
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  type: ToastificationType
+                                                      .success,
+                                                  style: ToastificationStyle
+                                                      .minimal,
+                                                  autoCloseDuration:
+                                                      const Duration(
+                                                          seconds: 5),
+                                                  title: const Text(
+                                                          'successful_deletion')
+                                                      .tr(),
+                                                  icon: const FaIcon(
+                                                      FontAwesomeIcons
+                                                          .circleCheck),
+                                                  primaryColor: Colors.green,
+                                                );
+                                              });
+                                            }
+
+                                            // meetingIds?.remove(meetingId);
+                                            //
+                                            // setState(() {
+                                            //   toastification.show(
+                                            //     context: context,
+                                            //     alignment:
+                                            //         Alignment.bottomCenter,
+                                            //     type:
+                                            //         ToastificationType.success,
+                                            //     style:
+                                            //         ToastificationStyle.minimal,
+                                            //     autoCloseDuration:
+                                            //         const Duration(seconds: 5),
+                                            //     title: const Text(
+                                            //             'successful_deletion')
+                                            //         .tr(),
+                                            //     icon: const FaIcon(
+                                            //         FontAwesomeIcons
+                                            //             .circleCheck),
+                                            //     primaryColor: Colors.green,
+                                            //   );
+                                            // });
                                           },
                                         );
                                       } else {

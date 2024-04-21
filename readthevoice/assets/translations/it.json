@@ -59,6 +59,7 @@
     "deletion_confirmation_title": "Eliminazione permanente locale",
     "confirmation_message_text": "Sei sicuro di voler eseguire questa azione?",
     "successful_deletion": "Eliminazione completata",
+    "unsuccessful_deletion": "Eliminazione non riuscita",
     "successful_archiving": "Archiviazione completata",
     "successful_unarchiving": "Disarchiviazione completata",
     "not_yet_implemented": "Non ancora implementato",
