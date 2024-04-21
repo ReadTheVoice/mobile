@@ -15,8 +15,8 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
-import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/ui/screen/meeting_details_screen.dart';
@@ -127,14 +127,21 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void _showQrCodeDialog() {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(
-              'show_qr_code_dialog_title',
-              textAlign: TextAlign.center,
-            ).tr(),
+            backgroundColor: (!isDarkMode)
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            title: Text('show_qr_code_dialog_title',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null))
+                .tr(),
             content: Padding(
               padding: const EdgeInsets.all(10),
               child: PrettyQrView.data(
@@ -167,7 +174,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   children: [
                     Icon(
                       Icons.share_rounded,
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                      color: (!isDarkMode)
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primaryContainer,
                     ),
                     const SizedBox(
                       width: 10,
@@ -178,7 +187,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: (!isDarkMode)
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.primaryContainer,
                       ),
                     ).tr(),
                   ],
@@ -191,8 +202,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -499,7 +508,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                                       .colorScheme
                                                       .onBackground),
                                             )
-                                          : const AppPlaceholder();
+                                          : const AppProgressIndicator();
                                     }
                                   }),
                             ),

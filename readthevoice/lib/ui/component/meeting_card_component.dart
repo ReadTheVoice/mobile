@@ -102,8 +102,7 @@ class _MeetingCardState extends State<MeetingCard> {
           }
         } else {
           setState(() {
-            showSuccessfulToast(context,
-                "successful_deletion");
+            showSuccessfulToast(context, "successful_deletion");
           });
         }
       }
@@ -113,7 +112,6 @@ class _MeetingCardState extends State<MeetingCard> {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTap: () {
@@ -162,8 +160,7 @@ class _MeetingCardState extends State<MeetingCard> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: screenWidth - 150,
+                    Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                         child: Column(
@@ -179,9 +176,8 @@ class _MeetingCardState extends State<MeetingCard> {
                                 children: [
                                   FaIcon(
                                     FontAwesomeIcons.snowflake,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     size: 15,
                                   ),
                                   const SizedBox(
@@ -197,7 +193,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                 ],
                               ),
                             Text(
-                              widget.meetingModel.description ?? "",
+                              (widget.meetingModel.description ?? ""),
                               style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.onSurface,
@@ -209,7 +205,6 @@ class _MeetingCardState extends State<MeetingCard> {
                         ),
                       ),
                     ),
-                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -224,7 +219,8 @@ class _MeetingCardState extends State<MeetingCard> {
                                       widget.meetingModel.id, fav);
 
                                   if (widget.favoriteFunction != null) {
-                                    widget.favoriteFunction!(widget.meetingModel.id);
+                                    widget.favoriteFunction!(
+                                        widget.meetingModel.id);
                                   }
                                 }
                               });

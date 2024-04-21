@@ -80,8 +80,8 @@ class _SteamedMeetingCardState extends State<SteamedMeetingCard> {
         key: ValueKey<String>(widget.meetingModel.id),
         onDismissed: (DismissDirection direction) async {
           if (direction == DismissDirection.startToEnd) {
-            widget.leftFunction(widget.meetingModel.id,
-                currentMeeting?.archived ?? false);
+            widget.leftFunction(
+                widget.meetingModel.id, currentMeeting?.archived ?? false);
 
             setState(() {
               String snackBarText = tr("successful_archiving");

@@ -84,10 +84,8 @@ class _MyAppState extends State<MyApp> {
         fontFamily: appFontFamily,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // debugShowCheckedModeBanner: false,
-      // home: const MasterScreen(),
+      debugShowCheckedModeBanner: false,
       home: screen,
-      // home: const NativeSplashScreen(),
     );
   }
 }

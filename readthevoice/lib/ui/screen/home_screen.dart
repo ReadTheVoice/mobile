@@ -1,18 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
+import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
-import 'package:toastification/toastification.dart';
 
 class HomeScreen extends StatefulWidget {
   String? newMeetingId = null;
@@ -75,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Text("Loading");
+                          return const Center(child: Text("Loading"));
                         }
 
                         return (snapshot.data != null)
@@ -145,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     )
                   : const NoDataWidget(currentScreen: AvailableScreens.home))
-              : const AppPlaceholder()),
+              : const AppProgressIndicator()),
     );
   }
 }
