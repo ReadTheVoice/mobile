@@ -12,10 +12,15 @@ class NoDataWidget extends StatelessWidget {
 
     switch (currentScreen) {
       case AvailableScreens.home:
-        widget = Text("No data for ${currentScreen.name}");
+        widget = Text(
+          "No data for ${currentScreen.name}",
+          style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+        );
         break;
       default:
-        widget = Text("No data for ${currentScreen.name}");
+        widget = Text("No data for ${currentScreen.name}",
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.onBackground));
         break;
     }
 

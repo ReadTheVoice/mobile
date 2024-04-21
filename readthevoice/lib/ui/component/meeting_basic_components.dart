@@ -108,7 +108,7 @@ class MeetingCardDivider extends StatelessWidget {
     return Divider(
       height: 2,
       thickness: 1,
-      color: color ?? Theme.of(context).colorScheme.onPrimaryContainer,
+      color: color ?? Theme.of(context).colorScheme.onSurface,
     );
   }
 }

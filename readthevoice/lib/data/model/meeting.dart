@@ -6,17 +6,20 @@ import 'package:readthevoice/data/constants.dart';
 // flutter packages pub run build_runner build
 // dart run build_runner build
 enum MeetingStatus {
-  createdNotStarted,
+  created,
   started,
   // ongoingTranscription,
+  scheduled,
   ended;
 
   String get title {
     switch (this) {
-      case MeetingStatus.createdNotStarted:
+      case MeetingStatus.created:
         return tr("meeting_status_created"); // Has not yet started
       case MeetingStatus.started:
         return tr("meeting_status_started");
+      case MeetingStatus.scheduled:
+        return tr("meeting_status_scheduled");
       case MeetingStatus.ended:
         return tr("meeting_status_ended");
       default:
@@ -26,10 +29,12 @@ enum MeetingStatus {
 
   Color get backgroundColor {
     switch (this) {
-      case MeetingStatus.createdNotStarted:
-        return Colors.grey; // Has not yet started
+      case MeetingStatus.created:
+        return Colors.white; // Has not yet started
       case MeetingStatus.started:
         return Colors.green;
+      case MeetingStatus.scheduled:
+        return Colors.orange;
       case MeetingStatus.ended:
         return Colors.grey;
       default:
@@ -39,14 +44,16 @@ enum MeetingStatus {
 
   Color get textColor {
     switch (this) {
-      case MeetingStatus.createdNotStarted:
+      case MeetingStatus.created:
         return Colors.black; // Has not yet started
       case MeetingStatus.started:
         return Colors.white;
+      case MeetingStatus.scheduled:
+        return Colors.white;
       case MeetingStatus.ended:
-        return Colors.white;
+        return Colors.black;
       default:
-        return Colors.white;
+        return Colors.black;
     }
   }
 }
@@ -69,7 +76,7 @@ class Meeting {
     required this.userId,
     this.transcription = "",
     this.userName,
-    this.status = MeetingStatus.createdNotStarted,
+    this.status = MeetingStatus.created,
     this.favorite = false,
     this.archived = false,
   });
