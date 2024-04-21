@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/dialog_component.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
 
 class QrCodeScreen extends StatefulWidget {
@@ -36,64 +36,59 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   }
 
   void _showNotRecognizedDialog(String qrcodeData) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return GiffyDialog.image(
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            Image.asset(
-              "assets/gifs/question_mark.gif",
-              width: 200,
-              height: 150,
-              fit: BoxFit.contain,
-            ),
-            title: const Text(
-              'unknown_qr_code_title',
-              textAlign: TextAlign.center,
-            ).tr(),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${tr("unknown_qr_code_text")} ${tr("app_name")}!',
+          return AppDialogComponent(
+            imagePath: "assets/gifs/question_mark.gif",
+            title: Text('unknown_qr_code_title',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null))
+                .tr(),
+            content: [
+              Text('${tr("unknown_qr_code_text")} ${tr("app_name")}!',
                   textAlign: TextAlign.center,
-                ),
-                const Text(
-                  'unknown_qr_code_subtext',
-                  textAlign: TextAlign.center,
-                ).tr(),
-                ListTile(
-                  leading: null,
-                  title: Text(
-                    qrcodeData,
+                  style: TextStyle(
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null)),
+              Text('unknown_qr_code_subtext',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: (!isDarkMode)
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : null))
+                  .tr(),
+              ListTile(
+                leading: null,
+                title: Text(qrcodeData,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.copy_rounded),
-                    onPressed: () async {
-                      await Clipboard.setData(ClipboardData(text: qrcodeData));
-                    },
-                  ),
-                )
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('retry').tr(),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Ok'),
-              ),
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null)),
+                trailing: IconButton(
+                  icon: Icon(Icons.copy_rounded,
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null),
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: qrcodeData));
+                  },
+                ),
+              )
             ],
+            confirmButtonText: "OK",
+            cancelButtonText: "retry",
           );
         }).then((confirmed) {
       if (confirmed) {
-        // Dismiss the dialog after operation
         Navigator.pop(context, true);
       } else {
         controller?.resumeCamera();
@@ -107,13 +102,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         context: context,
         builder: (BuildContext context) {
           return AppDialogComponent(
-              image: Image.asset(
-                "assets/gifs/moving_clock.gif",
-                width: 200,
-                height: 150,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.high,
-              ),
+              imagePath: "assets/gifs/moving_clock.gif",
               title: Text(
                 'scheduled_meeting_title',
                 textAlign: TextAlign.center,
@@ -156,61 +145,47 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       "${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}"
                 }),
               ],
-              confirmButtonText: "Ok");
+              confirmButtonText: "OK");
         }).then((confirmed) => {
-          if (confirmed)
-            {
-              // Dismiss the dialog after operation
-              Navigator.pop(context, meetingModel.id)
-            }
+          if (confirmed) {Navigator.pop(context, meetingModel.id)}
         });
   }
 
   void _showMeetingNotExistingDialog(String meetingId, {String? meetingTitle}) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return GiffyDialog.image(
-            Image.asset(
-              "assets/gifs/warning_sign.gif",
-              // "assets/images/no_data.png",
-              width: 200,
-              height: 170,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
-            ),
-            title: const Text(
-              'meeting_not_found_title',
-              textAlign: TextAlign.center,
-            ).tr(namedArgs: {"title": meetingTitle ?? ""}),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'meeting_not_found_text',
-                  textAlign: TextAlign.center,
-                ).tr(namedArgs: {"meetingId": meetingId}),
-                const Text(
-                  'meeting_not_found_subtext',
-                  textAlign: TextAlign.center,
-                ).tr(),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('retry').tr(),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Ok'),
-              ),
+          return AppDialogComponent(
+            imagePath: "assets/gifs/warning_sign.gif",
+            title: Text('meeting_not_found_title',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null))
+                .tr(namedArgs: {"title": meetingTitle ?? ""}),
+            content: [
+              Text('meeting_not_found_text',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: (!isDarkMode)
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : null))
+                  .tr(namedArgs: {"meetingId": meetingId}),
+              Text('meeting_not_found_subtext',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: (!isDarkMode)
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : null))
+                  .tr(),
             ],
+            confirmButtonText: "OK",
+            cancelButtonText: "retry",
           );
         }).then((confirmed) {
       if (confirmed) {
-        // Dismiss the dialog after operation
         Navigator.pop(context, true);
       } else {
         controller?.resumeCamera();
@@ -341,56 +316,6 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           onQRViewCreated: _onQRViewCreated,
         ),
       ),
-    );
-  }
-}
-
-class AppDialogComponent extends StatelessWidget {
-  const AppDialogComponent(
-      {super.key,
-      required this.image,
-      required this.title,
-      required this.content,
-      required this.confirmButtonText,
-      this.cancelButtonText,
-      this.isDeletionDialog = false});
-
-  final Image image;
-  final Text title;
-  final List<Widget> content;
-  final String confirmButtonText;
-  final String? cancelButtonText;
-  final bool? isDeletionDialog;
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    return GiffyDialog.image(
-      backgroundColor:
-          (!isDarkMode) ? Theme.of(context).colorScheme.primaryContainer : null,
-      image,
-      title: title,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: content,
-      ),
-      actions: [
-        if (cancelButtonText != null && cancelButtonText!.trim().isNotEmpty)
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(cancelButtonText!, style: const TextStyle(fontSize: 20))
-                .tr(),
-          ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: Text(
-            confirmButtonText,
-            style: const TextStyle(fontSize: 20),
-          ),
-        ),
-      ],
     );
   }
 }

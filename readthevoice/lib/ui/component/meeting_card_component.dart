@@ -5,8 +5,8 @@ import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
-import 'package:toastification/toastification.dart';
 
 class MeetingCard extends StatefulWidget {
   final MeetingModel meetingModel;
@@ -58,50 +58,52 @@ class _MeetingCardState extends State<MeetingCard> {
   }
 
   void _showConfirmationDialog() {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('deletion_confirmation_title').tr(),
-        content: const Text('confirmation_message_text').tr(),
+        backgroundColor: (!isDarkMode)
+            ? Theme.of(context).colorScheme.primaryContainer
+            : null,
+        title: Text('deletion_confirmation_title',
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null))
+            .tr(),
+        content: Text('confirmation_message_text',
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null))
+            .tr(),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('cancel').tr(),
+            child: const Text('cancel', style: TextStyle(fontSize: 20)).tr(),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('confirm').tr(),
+            child: const Text('confirm', style: TextStyle(fontSize: 20)).tr(),
           ),
         ],
       ),
     ).then((confirmed) async {
       if (confirmed ?? false) {
-        bool isDeleted = await meetingService.deleteMeetingById(widget.meetingModel.id);
+        bool isDeleted =
+            await meetingService.deleteMeetingById(widget.meetingModel.id);
 
-        if(isDeleted) {
+        print("${"isDeleted => ".toUpperCase()}$isDeleted");
+
+        if (isDeleted) {
           if (widget.deleteFunction != null) {
             widget.deleteFunction!(widget.meetingModel.id);
           }
         } else {
           setState(() {
-            toastification.show(
-              context: context,
-              alignment:
-              Alignment.bottomCenter,
-              type:
-              ToastificationType.error,
-              style:
-              ToastificationStyle.minimal,
-              autoCloseDuration:
-              const Duration(seconds: 5),
-              title: const Text(
-                  'unsuccessful_deletion')
-                  .tr(),
-              icon: const FaIcon(
-                  FontAwesomeIcons
-                      .xmark),
-              primaryColor: Colors.red,
-            );
+            showSuccessfulToast(context,
+                "successful_deletion");
           });
         }
       }
@@ -129,7 +131,9 @@ class _MeetingCardState extends State<MeetingCard> {
         );
       },
       child: Card(
-          color: isDarkMode ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.primary,
+          color: isDarkMode
+              ? Theme.of(context).colorScheme.primaryContainer
+              : Theme.of(context).colorScheme.primary,
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
             title: Row(
@@ -139,7 +143,9 @@ class _MeetingCardState extends State<MeetingCard> {
                   widget.meetingModel.name.trim() != ""
                       ? widget.meetingModel.name
                       : "${tr("meeting_title")}: ...",
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 20),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 20),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -175,7 +181,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                     FontAwesomeIcons.snowflake,
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .onPrimaryContainer,
+                                        .onSurface,
                                     size: 15,
                                   ),
                                   const SizedBox(
@@ -186,14 +192,16 @@ class _MeetingCardState extends State<MeetingCard> {
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .onPrimaryContainer),
+                                            .onSurface),
                                   ).tr()
                                 ],
                               ),
                             Text(
                               widget.meetingModel.description ?? "",
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 16),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -216,7 +224,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                       widget.meetingModel.id, fav);
 
                                   if (widget.favoriteFunction != null) {
-                                    widget.favoriteFunction!();
+                                    widget.favoriteFunction!(widget.meetingModel.id);
                                   }
                                 }
                               });

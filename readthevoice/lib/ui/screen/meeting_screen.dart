@@ -17,10 +17,10 @@ import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/ui/screen/meeting_details_screen.dart';
 import 'package:scrollable_text_indicator/scrollable_text_indicator.dart';
-import 'package:toastification/toastification.dart';
 
 class MeetingScreen extends StatefulWidget {
   final String meetingModelId;
@@ -156,15 +156,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       widget.meetingModelName,
                       '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
                       Theme.of(context).colorScheme.onPrimaryContainer, () {
-                    toastification.show(
-                      context: context,
-                      alignment: Alignment.bottomCenter,
-                      type: ToastificationType.error,
-                      style: ToastificationStyle.minimal,
-                      autoCloseDuration: const Duration(seconds: 2),
-                      title: const Text("an_error_occurred").tr(),
-                      icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
-                    );
+                    showUnsuccessfulToast(context, "an_error_occurred",
+                        iconData: FontAwesomeIcons.triangleExclamation);
                   });
 
                   Navigator.pop(context, true);
@@ -263,31 +256,18 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   downloadTextFile(widget.meetingModelName,
                                       widget.meetingModelTranscription,
                                       onSuccess: (filePath) {
-                                    toastification.show(
-                                      context: context,
-                                      alignment: Alignment.bottomCenter,
-                                      type: ToastificationType.success,
-                                      style: ToastificationStyle.minimal,
-                                      autoCloseDuration:
-                                          const Duration(seconds: 5),
-                                      title: Text(
-                                          "${tr("saved_file_path")}: $filePath"),
-                                      icon: const Icon(
-                                          Icons.download_done_rounded),
-                                    );
+                                    showSuccessfulToast(context,
+                                        "${tr("saved_file_path")}: $filePath",
+                                        iconData: Icons.download_done_rounded,
+                                        duration: 5);
                                   });
                                 }
                               } else {
-                                toastification.show(
-                                  context: context,
-                                  alignment: Alignment.bottomCenter,
-                                  type: ToastificationType.error,
-                                  style: ToastificationStyle.minimal,
-                                  autoCloseDuration: const Duration(seconds: 2),
-                                  title: const Text("empty_transcription").tr(),
-                                  icon: const FaIcon(
-                                      FontAwesomeIcons.triangleExclamation),
-                                );
+                                showUnsuccessfulToast(
+                                    context, "empty_transcription",
+                                    iconData:
+                                        FontAwesomeIcons.triangleExclamation,
+                                    duration: 2);
                               }
 
                               Navigator.pop(context);
@@ -321,16 +301,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                 shareTextFile(widget.meetingModelName,
                                     widget.meetingModelTranscription);
                               } else {
-                                toastification.show(
-                                  context: context,
-                                  alignment: Alignment.bottomCenter,
-                                  type: ToastificationType.error,
-                                  style: ToastificationStyle.minimal,
-                                  autoCloseDuration: const Duration(seconds: 2),
-                                  title: const Text("empty_transcription").tr(),
-                                  icon: const FaIcon(
-                                      FontAwesomeIcons.triangleExclamation),
-                                );
+                                showUnsuccessfulToast(
+                                    context, "empty_transcription",
+                                    iconData:
+                                        FontAwesomeIcons.triangleExclamation,
+                                    duration: 2);
                               }
 
                               Navigator.pop(context);
@@ -530,8 +505,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ),
                     )
                   ],
-                )
-                );
+                ));
           },
         ));
   }

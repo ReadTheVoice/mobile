@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
+import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
 import 'package:toastification/toastification.dart';
@@ -121,72 +121,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             if (meetingIds != null &&
                                                 meetingIds!
                                                     .contains(meetingId)) {
-                                              setState(() {
-                                                toastification.show(
-                                                  context: context,
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  type:
-                                                      ToastificationType.error,
-                                                  style: ToastificationStyle
-                                                      .minimal,
-                                                  autoCloseDuration:
-                                                      const Duration(
-                                                          seconds: 5),
-                                                  title: const Text(
-                                                          'unsuccessful_deletion')
-                                                      .tr(),
-                                                  icon: const FaIcon(
-                                                      FontAwesomeIcons.xmark),
-                                                  primaryColor: Colors.red,
-                                                );
-                                              });
+                                              showUnsuccessfulToast(context,
+                                                  "unsuccessful_deletion");
                                             } else {
-                                              setState(() {
-                                                toastification.show(
-                                                  context: context,
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  type: ToastificationType
-                                                      .success,
-                                                  style: ToastificationStyle
-                                                      .minimal,
-                                                  autoCloseDuration:
-                                                      const Duration(
-                                                          seconds: 5),
-                                                  title: const Text(
-                                                          'successful_deletion')
-                                                      .tr(),
-                                                  icon: const FaIcon(
-                                                      FontAwesomeIcons
-                                                          .circleCheck),
-                                                  primaryColor: Colors.green,
-                                                );
-                                              });
+                                              showSuccessfulToast(context,
+                                                  "successful_deletion");
                                             }
-
-                                            // meetingIds?.remove(meetingId);
-                                            //
-                                            // setState(() {
-                                            //   toastification.show(
-                                            //     context: context,
-                                            //     alignment:
-                                            //         Alignment.bottomCenter,
-                                            //     type:
-                                            //         ToastificationType.success,
-                                            //     style:
-                                            //         ToastificationStyle.minimal,
-                                            //     autoCloseDuration:
-                                            //         const Duration(seconds: 5),
-                                            //     title: const Text(
-                                            //             'successful_deletion')
-                                            //         .tr(),
-                                            //     icon: const FaIcon(
-                                            //         FontAwesomeIcons
-                                            //             .circleCheck),
-                                            //     primaryColor: Colors.green,
-                                            //   );
-                                            // });
                                           },
                                         );
                                       } else {
