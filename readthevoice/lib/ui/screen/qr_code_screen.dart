@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
@@ -9,6 +12,8 @@ import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/dialog_component.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
+
+import '../../firebase_options.dart';
 
 class QrCodeScreen extends StatefulWidget {
   const QrCodeScreen({super.key});
@@ -193,8 +198,33 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     });
   }
 
+  Future<void> checkIOSPermissions() async {
+    var status = await Permission.camera.request();
+
+    print("status => ${status.toString()}");
+
+    if (status.isPermanentlyDenied) {
+      // The user opted to never again see the permission request dialog for this
+      // app. The only way to change the permission's status now is to let the
+      // user manually enables it in the system settings.
+      openAppSettings();
+    } else if (status.isDenied) {
+      print("controller.hasPermissions => ${controller?.hasPermissions}");
+      Navigator.pop(context);
+    } else {
+
+    }
+  }
+
   void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+    setState(() {
+      this.controller = controller;
+    });
+
+    if(Platform.isIOS) {
+      checkIOSPermissions();
+    }
+
     controller.scannedDataStream.listen((scanData) async {
       String result = "";
 
