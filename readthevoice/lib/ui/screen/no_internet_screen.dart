@@ -25,7 +25,6 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
             children: [
               Image.asset(
                 "assets/images/no-connection-girl.png",
-                // "assets/gifs/repeat-jump.gif",
                 fit: BoxFit.contain,
                 filterQuality: FilterQuality.high,
               ),
