@@ -72,5 +72,8 @@
     "show_details": "Afficher les détails",
     "archived_button_tooltip": "Cette réunion a été archivée",
     "favorite_button_tooltip": "Cette réunion fait partie de vos favoris",
-    "close_details_view": "Fermer la vue détaillée"
+    "close_details_view": "Fermer la vue détaillée",
+
+    "no_internet_connection_title": "Pas de connexion Internet",
+    "no_internet_connection_text": "Désolés ! Vous avez besoin d'une connexion Internet active pour que l'application fonctionne correctement ! Veuillez vérifier votre connexion Internet !"
 }
