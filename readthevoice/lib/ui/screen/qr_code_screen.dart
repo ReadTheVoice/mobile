@@ -13,8 +13,6 @@ import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/component/dialog_component.dart';
 import 'package:readthevoice/ui/screen/meeting_screen.dart';
 
-import '../../firebase_options.dart';
-
 class QrCodeScreen extends StatefulWidget {
   const QrCodeScreen({super.key});
 
@@ -198,21 +196,15 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     });
   }
 
-  Future<void> checkIOSPermissions() async {
+  Future<void> checkIOSPermissions(QRViewController controller) async {
     var status = await Permission.camera.request();
 
-    print("status => ${status.toString()}");
-
     if (status.isPermanentlyDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enables it in the system settings.
       openAppSettings();
     } else if (status.isDenied) {
-      print("controller.hasPermissions => ${controller?.hasPermissions}");
       Navigator.pop(context);
     } else {
-
+      // TODO Test on a real device....
     }
   }
 
@@ -221,8 +213,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       this.controller = controller;
     });
 
-    if(Platform.isIOS) {
-      checkIOSPermissions();
+    if (Platform.isIOS) {
+      checkIOSPermissions(controller);
     }
 
     controller.scannedDataStream.listen((scanData) async {
@@ -340,11 +332,30 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       appBar: AppBar(
         title: const Text("qr_code_scan_screen_title").tr(),
       ),
-      body: Center(
-        child: QRView(
-          key: qrKey,
-          onQRViewCreated: _onQRViewCreated,
-        ),
+      body: Stack(
+        children: [
+          Center(
+              child: QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+          )),
+          Positioned(
+              child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // if(controller?.hasPermissions)
+                      // TODO Test on real device
+                      controller?.toggleFlash();
+                    });
+                  },
+                  icon: const Icon(Icons.flashlight_on_rounded))
+            ],
+          ))
+        ],
       ),
     );
   }
