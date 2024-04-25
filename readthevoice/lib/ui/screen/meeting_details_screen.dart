@@ -20,6 +20,7 @@ class MeetingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool autoDeletion = meetingModel.deletionDate != null;
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
         child: Material(
@@ -31,23 +32,27 @@ class MeetingDetailsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: Theme.of(context).colorScheme.surface,
                     margin: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Row(
                         children: [
-                          const Text(
+                          Text(
                             "Details",
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface),
                           ),
                           const Spacer(),
                           if (meeting.archived)
                             Tooltip(
                               message: tr("archived_button_tooltip"),
                               showDuration: const Duration(seconds: 3),
-                              child: const FaIcon(FontAwesomeIcons.snowflake),
+                              child: FaIcon(FontAwesomeIcons.snowflake,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                             ),
                           const SizedBox(
                             width: 10,
@@ -56,7 +61,10 @@ class MeetingDetailsScreen extends StatelessWidget {
                             Tooltip(
                               message: tr("favorite_button_tooltip"),
                               showDuration: const Duration(seconds: 3),
-                              child: const FaIcon(FontAwesomeIcons.solidHeart),
+                              child: FaIcon(
+                                FontAwesomeIcons.solidHeart,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             )
                         ],
                       ),
@@ -67,19 +75,23 @@ class MeetingDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      MeetingAttributeCard(
-                        firstName: "meeting_status",
-                        firstValue: meeting.status.title,
-                        secondName: "meeting_schedule_date",
-                        secondValue: meetingModel.scheduledDate?.toString(),
+                      Expanded(
+                        child: MeetingAttributeCard(
+                          firstName: "meeting_status",
+                          firstValue: meeting.status.title,
+                          secondName: "meeting_schedule_date",
+                          secondValue: meetingModel.scheduledDate?.toString(),
+                        ),
                       ),
-                      MeetingAttributeCard(
-                        firstName: "meeting_creator",
-                        firstValue: meeting.userName!.trim().isNotEmpty
-                            ? meeting.userName
-                            : "${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}",
-                        secondName: "meeting_creation_date",
-                        secondValue: meetingModel.createdAt.toString(),
+                      Expanded(
+                        child: MeetingAttributeCard(
+                          firstName: "meeting_creator",
+                          firstValue: meeting.userName!.trim().isNotEmpty
+                              ? meeting.userName
+                              : "${meetingModel.creatorModel?.firstName} ${meetingModel.creatorModel?.lastName}",
+                          secondName: "meeting_creation_date",
+                          secondValue: meetingModel.createdAt.toString(),
+                        ),
                       ),
                     ],
                   ),
@@ -106,7 +118,7 @@ class MeetingDetailsScreen extends StatelessWidget {
                     child: Text(
                       "ID: ${meetingModel.id}",
                       style: TextStyle(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.onBackground,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),

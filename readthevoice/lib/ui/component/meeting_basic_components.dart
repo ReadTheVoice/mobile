@@ -10,15 +10,20 @@ class MeetingField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       child: TextField(
+          style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
           decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: tr(name),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primaryContainer))),
+                      width: 2,
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.surface
+                          : Theme.of(context).colorScheme.primary))),
           controller: TextEditingController(text: value),
           readOnly: true,
           maxLines: null,
@@ -59,12 +64,9 @@ class MeetingAttributeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return SizedBox(
-      width: (screenWidth/2 - 20),
       child: Card(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: Theme.of(context).colorScheme.surface,
         child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(

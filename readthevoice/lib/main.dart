@@ -38,8 +38,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // const MyApp({super.key});
-
   Map _source = {ConnectivityResult.none: false};
   final ConnectivityCheckHelper _connectivity =
       ConnectivityCheckHelper.instance;
@@ -76,10 +74,9 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: Provider.of<ThemeProvider>(context).themeData,
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       // home: const MasterScreen(),
       home: screen,
-      // home: const NativeSplashScreen(),
     );
   }
 }

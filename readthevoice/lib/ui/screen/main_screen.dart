@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
+import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -67,15 +68,20 @@ class _MainScreenState extends State<MainScreen> {
         items: [
           BottomBarItem(
             icon: Icon(
-                selected == 0 ? Icons.house_rounded : Icons.house_outlined, color: Theme.of(context).colorScheme.onSurface,),
+              selected == 0 ? Icons.house_rounded : Icons.house_outlined,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             unSelectedColor: Theme.of(context).colorScheme.onSurface,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('home_bottom_bar').tr(),
           ),
           BottomBarItem(
-            icon: Icon(selected == 1
-                ? Icons.favorite_rounded
-                : Icons.favorite_border_rounded, color: Theme.of(context).colorScheme.onSurface,),
+            icon: Icon(
+              selected == 1
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             unSelectedColor: Theme.of(context).colorScheme.onSurface,
             selectedColor: Theme.of(context).colorScheme.onSurface,
             title: const Text('favorite_bottom_bar').tr(),

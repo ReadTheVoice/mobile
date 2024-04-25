@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
+import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
 import 'package:readthevoice/utils/utils.dart';
@@ -42,8 +42,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: RefreshIndicator(
+        body: RefreshIndicator(
       onRefresh: initList,
       child: (meetingIds != null)
           ? ((meetingIds!.isNotEmpty)
@@ -118,7 +117,7 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                 )
               : const NoDataWidget(
                   currentScreen: AvailableScreens.favoriteMeetings))
-          : const AppPlaceholder(),
-    )));
+          : const AppProgressIndicator(),
+    ));
   }
 }

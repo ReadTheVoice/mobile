@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -15,7 +14,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
-import 'package:readthevoice/ui/component/basic_components.dart';
+import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
@@ -127,14 +126,21 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   void _showQrCodeDialog() {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(
-              'show_qr_code_dialog_title',
-              textAlign: TextAlign.center,
-            ).tr(),
+            backgroundColor: (!isDarkMode)
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            title: Text('show_qr_code_dialog_title',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null))
+                .tr(),
             content: Padding(
               padding: const EdgeInsets.all(10),
               child: PrettyQrView.data(
@@ -149,12 +155,20 @@ class _MeetingScreenState extends State<MeetingScreen> {
               ),
             ),
             actions: [
-              CupertinoButton(
+              FilledButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    minimumSize: MaterialStateProperty.all(
+                        const Size(double.infinity, double.minPositive)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(10))),
                 onPressed: () async {
                   // shareQrCode
                   await shareQrCode(
-                      widget.meetingModelName,
-                      '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
+                      "widget.meetingModelName",
+                      '${QR_CODE_DATA_PREFIX}meetingModelId',
                       Theme.of(context).colorScheme.onPrimaryContainer, () {
                     showUnsuccessfulToast(context, "an_error_occurred",
                         iconData: FontAwesomeIcons.triangleExclamation);
@@ -162,27 +176,23 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
                   Navigator.pop(context, true);
                 },
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.share_rounded,
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'share_qr_code',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                      ),
-                    ).tr(),
-                  ],
+                icon: Icon(
+                  Icons.share_rounded,
+                  color: (!isDarkMode)
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.primaryContainer,
                 ),
+                label: Text(
+                  'share_qr_code',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: (!isDarkMode)
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ).tr(),
               ),
             ],
           );
@@ -191,8 +201,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -499,7 +507,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                                       .colorScheme
                                                       .onBackground),
                                             )
-                                          : const AppPlaceholder();
+                                          : const AppProgressIndicator();
                                     }
                                   }),
                             ),
