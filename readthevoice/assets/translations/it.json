@@ -72,5 +72,12 @@
     "show_details": "Mostra dettagli",
     "archived_button_tooltip": "Questa riunione è stata archiviata",
     "favorite_button_tooltip": "Questa riunione è tra i tuoi preferiti",
-    "close_details_view": "Chiudi la vista dettagli"
+    "close_details_view": "Chiudi la vista dettagli",
+
+    "no_internet_connection_title": "Nessuna connessione Internet",
+    "no_internet_connection_text": "Spiacente! È necessaria una connessione Internet attiva per il corretto funzionamento dell'app! Controlla la tua connessione Internet, per favore!",
+
+    "no_home_list_title": "Non hai ancora scansionato nessun codice QR.",
+    "no_favorite_list_title": "Non hai ancora nessuna riunione preferita.",
+    "no_archived_list_title": "Non ci sono ancora riunioni archiviate."
 }
