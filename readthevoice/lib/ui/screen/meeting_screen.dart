@@ -145,6 +145,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               padding: const EdgeInsets.all(10),
               child: PrettyQrView.data(
                 data: '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
+                errorCorrectLevel: QrErrorCorrectLevel.H,
                 decoration: PrettyQrDecoration(
                   shape: PrettyQrSmoothSymbol(
                       color: Theme.of(context).colorScheme.onPrimaryContainer),
