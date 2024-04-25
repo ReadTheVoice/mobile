@@ -72,5 +72,12 @@
     "show_details": "Afficher les détails",
     "archived_button_tooltip": "Cette réunion a été archivée",
     "favorite_button_tooltip": "Cette réunion fait partie de vos favoris",
-    "close_details_view": "Fermer la vue détaillée"
+    "close_details_view": "Fermer la vue détaillée",
+
+    "no_internet_connection_title": "Pas de connexion Internet",
+    "no_internet_connection_text": "Désolés ! Vous avez besoin d'une connexion Internet active pour que l'application fonctionne correctement ! Veuillez vérifier votre connexion Internet !",
+
+    "no_home_list_title": "Vous n'avez pas encore scanné de code QR.",
+    "no_favorite_list_title": "Vous n'avez pas encore de réunions préférées.",
+    "no_archived_list_title": "Il n'y a pas encore de réunions archivées."
 }
