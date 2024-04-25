@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class NoInternetScreen extends StatefulWidget {
   const NoInternetScreen({super.key});
@@ -23,10 +24,11 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                "assets/images/no-connection-girl.png",
+              SvgPicture.asset(
+                "assets/images/svg/no-connection.svg",
                 fit: BoxFit.contain,
-                filterQuality: FilterQuality.high,
+                width: 300,
+                height: 300,
               ),
               Text(
                 "no_internet_connection_title",

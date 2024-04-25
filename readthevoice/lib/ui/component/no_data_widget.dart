@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readthevoice/utils/utils.dart';
 
 class NoDataWidget extends StatelessWidget {
@@ -16,17 +17,22 @@ class NoDataWidget extends StatelessWidget {
 
     switch (currentScreen) {
       case AvailableScreens.home:
-        text = "You have never scanned any Qr code yet";
-        assetPath = "assets/images/no_data.png";
+        text = "no_home_list_title";
+        assetPath = "assets/images/svg/QR-code-scanning.svg";
         break;
       case AvailableScreens.favoriteMeetings:
-        text = "You do not have any favorite yet";
-        // text += "\nClick on the heart next to the description on the card, and you will see it here next time you visit.";
-        assetPath = "assets/images/Shopaholics-Avatar.png";
+        text = "no_favorite_list_title";
+        assetPath = "assets/images/svg/no-fav-data.svg";
+        break;
+      case AvailableScreens.archivedMeetings:
+        text = "no_archived_list_title";
+        assetPath = "assets/images/svg/transfer-files.svg";
+        width = 300;
+        height = 300;
         break;
       default:
         text = "No data for ${currentScreen.name}";
-        assetPath = "assets/images/no_data.png";
+        assetPath = "assets/images/svg/no_data.svg";
         break;
     }
 
@@ -37,12 +43,12 @@ class NoDataWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
+            SvgPicture.asset(
               assetPath,
+              // colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
               width: width,
               height: height,
               fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
