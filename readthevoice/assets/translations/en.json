@@ -67,5 +67,7 @@
 
   "no_home_list_title": "You have yet to scan any QR code.",
   "no_favorite_list_title": "You do not have any favorite meetings yet.",
-  "no_archived_list_title": "There are no meetings that have been archived yet."
+  "no_archived_list_title": "There are no meetings that have been archived yet.",
+
+  "no_match_text": "No matches for '{searchText}'"
 }

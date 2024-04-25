@@ -79,5 +79,7 @@
 
     "no_home_list_title": "Non hai ancora scansionato nessun codice QR.",
     "no_favorite_list_title": "Non hai ancora nessuna riunione preferita.",
-    "no_archived_list_title": "Non ci sono ancora riunioni archiviate."
+    "no_archived_list_title": "Non ci sono ancora riunioni archiviate.",
+
+    "no_match_text": "Nessuna corrispondenza per '{searchText}'"
 }
