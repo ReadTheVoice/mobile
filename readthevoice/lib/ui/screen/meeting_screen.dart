@@ -171,7 +171,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   // shareQrCode
                   await shareQrCode(
                       "widget.meetingModelName",
-                      '${QR_CODE_DATA_PREFIX}meetingModelId',
+                      '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
                       Theme.of(context).colorScheme.onPrimaryContainer, () {
                     showUnsuccessfulToast(context, "an_error_occurred",
                         iconData: FontAwesomeIcons.triangleExclamation);
