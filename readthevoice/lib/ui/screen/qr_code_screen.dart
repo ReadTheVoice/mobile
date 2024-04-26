@@ -352,7 +352,18 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       controller?.toggleFlash();
                     });
                   },
-                  icon: const Icon(Icons.flashlight_on_rounded))
+                  icon: const Icon(Icons.flashlight_on_rounded)),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // if(controller?.hasPermissions)
+                      // TODO Test on real device
+                      // controller?.toggleFlash();
+
+                      // go to the gallery and scan one !
+                    });
+                  },
+                  icon: const Icon(Icons.image_rounded)),
             ],
           ))
         ],
