@@ -28,7 +28,7 @@ Future<void> shareQrCode(
     {String? logoPath}) async {
   final qrCode = QrCode.fromData(
     data: data,
-    errorCorrectLevel: QrErrorCorrectLevel.L,
+    errorCorrectLevel: QrErrorCorrectLevel.H,
   );
 
   final qrImage = QrImage(qrCode);
