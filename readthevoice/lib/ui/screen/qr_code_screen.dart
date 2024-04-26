@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobile_scanner/mobile_scanner.dart' as mobile_scanner;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
@@ -26,6 +28,30 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   MeetingService meetingService = const MeetingService();
   FirebaseDatabaseService firebaseService = FirebaseDatabaseService();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (controller != null) {
+        try {
+          await controller?.resumeCamera();
+        } catch (error) {
+          print("Error resuming camera: $error");
+        }
+      }
+    });
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller?.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller?.resumeCamera();
+    }
+  }
 
   @override
   void dispose() {
@@ -204,7 +230,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     } else if (status.isDenied) {
       Navigator.pop(context);
     } else {
-      // TODO Test on a real device....
+      // TODO Test on a real device.... (iOS)
     }
   }
 
@@ -224,62 +250,68 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         result = scanData.code!;
       });
 
-      if (result.isNotEmpty && result.trim() != "") {
-        controller.pauseCamera();
+      await processQrData(result, qrController: controller);
+    });
+  }
 
-        bool isOk = result.isNotEmpty && result.startsWith(QR_CODE_DATA_PREFIX);
-        if (mounted) {
-          if (!isOk) {
-            _showNotRecognizedDialog(result);
-          } else {
-            // split and get ID
-            // readthevoice://<meeting_id>
-            String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
+  Future<void> processQrData(String result,
+      {QRViewController? qrController}) async {
+    var controller = qrController ?? this.controller;
+    if (result.isNotEmpty && result.trim() != "") {
+      controller?.pauseCamera();
 
-            // get fb entity
-            MeetingModel? meetingModel =
-                await firebaseService.getMeetingModel(meetingId);
-            meetingModel?.transcription =
-                await firebaseService.getMeetingTranscription(meetingId);
+      bool isOk = result.isNotEmpty && result.startsWith(QR_CODE_DATA_PREFIX);
+      if (mounted) {
+        if (!isOk) {
+          _showNotRecognizedDialog(result);
+        } else {
+          // split and get ID
+          // readthevoice://<meeting_id>
+          String meetingId = result.replaceAll(QR_CODE_DATA_PREFIX, "");
 
-            if (meetingModel != null) {
-              meetingModel.creatorModel =
-                  await firebaseService.getMeetingCreator(meetingModel.creator);
-            }
+          // get fb entity
+          MeetingModel? meetingModel =
+              await firebaseService.getMeetingModel(meetingId);
+          meetingModel?.transcription =
+              await firebaseService.getMeetingTranscription(meetingId);
 
-            Meeting? meeting = meetingModel?.toMeeting();
+          if (meetingModel != null) {
+            meetingModel.creatorModel =
+                await firebaseService.getMeetingCreator(meetingModel.creator);
+          }
 
-            // get local entity
-            Meeting? existing = await meetingService.getMeetingById(meetingId);
+          Meeting? meeting = meetingModel?.toMeeting();
 
-            if (existing != null) {
-              // check whether it exists in firestore or not
-              if (meeting != null) {
-                meeting.favorite = existing.favorite;
-                meeting.archived = existing.archived;
-                meeting.status = meetingModel!.getMeetingStatus();
+          // get local entity
+          Meeting? existing = await meetingService.getMeetingById(meetingId);
 
-                await meetingService.updateMeeting(meeting);
-                manageMeeting(meeting, meetingModel);
-              } else {
-                String title = meetingModel?.name ?? "";
-                await meetingService.deleteMeetingById(existing.id);
+          if (existing != null) {
+            // check whether it exists in firestore or not
+            if (meeting != null) {
+              meeting.favorite = existing.favorite;
+              meeting.archived = existing.archived;
+              meeting.status = meetingModel!.getMeetingStatus();
 
-                _showMeetingNotExistingDialog(meetingId, meetingTitle: title);
-              }
+              await meetingService.updateMeeting(meeting);
+              manageMeeting(meeting, meetingModel);
             } else {
-              if (meeting != null) {
-                // insert it locally
-                await meetingService.insertMeeting(meeting);
-                manageMeeting(meeting, meetingModel!);
-              } else {
-                _showMeetingNotExistingDialog(meetingId);
-              }
+              String title = meetingModel?.name ?? "";
+              await meetingService.deleteMeetingById(existing.id);
+
+              _showMeetingNotExistingDialog(meetingId, meetingTitle: title);
+            }
+          } else {
+            if (meeting != null) {
+              // insert it locally
+              await meetingService.insertMeeting(meeting);
+              manageMeeting(meeting, meetingModel!);
+            } else {
+              _showMeetingNotExistingDialog(meetingId);
             }
           }
         }
       }
-    });
+    }
   }
 
   void manageMeeting(Meeting meeting, MeetingModel meetingModel) {
@@ -312,18 +344,65 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (controller != null) {
-        try {
-          await controller?.resumeCamera();
-        } catch (error) {
-          print("Error resuming camera: $error");
-        }
-      }
+  void _showBadQrCodeSent() {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AppDialogComponent(
+            imagePath: "assets/gifs/moving-xmark.gif",
+            title: Text('bad_qr_code_title',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: (!isDarkMode)
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null))
+                .tr(),
+            content: [
+              Text('bad_qr_code_text',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: (!isDarkMode)
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null))
+                  .tr(),
+            ],
+            confirmButtonText: "OK",
+          );
+        }).then((confirmed) {
+      controller?.resumeCamera();
     });
+  }
+
+  Future<void> _scanGalleryQrCode() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    final mobile_scanner.MobileScannerController controller =
+        mobile_scanner.MobileScannerController(
+      formats: [mobile_scanner.BarcodeFormat.qrCode],
+    );
+
+    if (pickedFile != null) {
+      final mobile_scanner.BarcodeCapture? barcodes =
+          await controller.analyzeImage(
+        pickedFile.path,
+      );
+
+      if (barcodes != null) {
+        if (barcodes.barcodes.isNotEmpty) {
+          var result = barcodes.barcodes.first.rawValue;
+          await processQrData(result ?? "", qrController: this.controller);
+        } else {
+          _showBadQrCodeSent();
+        }
+      } else {
+        _showBadQrCodeSent();
+      }
+    } else {
+      // User canceled picking image
+      this.controller?.resumeCamera();
+    }
   }
 
   @override
@@ -340,32 +419,48 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
             onQRViewCreated: _onQRViewCreated,
           )),
           Positioned(
+              bottom: 50,
+              left: 50,
+              right: 50,
               child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      // if(controller?.hasPermissions)
-                      // TODO Test on real device
-                      controller?.toggleFlash();
-                    });
-                  },
-                  icon: const Icon(Icons.flashlight_on_rounded)),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      // if(controller?.hasPermissions)
-                      // TODO Test on real device
-                      // controller?.toggleFlash();
-
-                      // go to the gallery and scan one !
-                    });
-                  },
-                  icon: const Icon(Icons.image_rounded)),
-            ],
-          ))
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.grey.withOpacity(0.5),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() async {
+                          // TODO Test on real device (iOS)
+                          controller?.toggleFlash();
+                        });
+                      },
+                      icon: const Icon(Icons.flashlight_on_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.grey.withOpacity(0.5),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        controller?.pauseCamera();
+                        _scanGalleryQrCode();
+                      },
+                      icon: const Icon(
+                        Icons.image_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ))
         ],
       ),
     );

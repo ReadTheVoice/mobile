@@ -1,10 +1,5 @@
 {
-    "Language": "Italiano",
-
-    "AppName": "Read The Voice",
-
-    "HomeScreen": "Iniziale",
-    "QrCodeScan": "Qr Code",
+    "language": "Italiano",
 
     "app_name": "Read The Voice",
     "home_screen_title": "Iniziale",
@@ -81,5 +76,8 @@
     "no_favorite_list_title": "Non hai ancora nessuna riunione preferita.",
     "no_archived_list_title": "Non ci sono ancora riunioni archiviate.",
 
-    "no_match_text": "Nessuna corrispondenza per '{searchText}'"
+    "no_match_text": "Nessuna corrispondenza per '{searchText}'",
+
+    "bad_qr_code_title": "Scansione di un codice QR da un'immagine",
+    "bad_qr_code_text": "O il codice QR non era leggibile o si è commesso un errore nella selezione dell'immagine. Prova a scannerizzare nuovamente il codice QR."
 }
