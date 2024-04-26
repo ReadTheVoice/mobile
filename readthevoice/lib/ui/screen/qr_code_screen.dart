@@ -380,7 +380,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
     final mobile_scanner.MobileScannerController controller =
         mobile_scanner.MobileScannerController(
-      formats: [mobile_scanner.BarcodeFormat.qrCode],
+      formats: [mobile_scanner.BarcodeFormat.all, mobile_scanner.BarcodeFormat.qrCode],
     );
 
     if (pickedFile != null) {

@@ -114,12 +114,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
     PermissionStatus result;
     result = await Permission.storage.request();
 
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    final androidInfo = await deviceInfoPlugin.androidInfo;
+    if(Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      final androidInfo = await deviceInfoPlugin.androidInfo;
 
-    // On Android 13 (API 33) and above
-    if (Platform.isAndroid && androidInfo.version.sdkInt >= 33) {
-      result = await Permission.manageExternalStorage.request();
+      // On Android 13 (API 33) and above
+      if (androidInfo.version.sdkInt >= 33) {
+        result = await Permission.manageExternalStorage.request();
+      }
     }
 
     return result.isGranted;
