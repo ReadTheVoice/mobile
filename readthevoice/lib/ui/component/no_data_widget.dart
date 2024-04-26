@@ -86,7 +86,9 @@ class NoMatchingMeeting extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: const Text("no_match_text")
+            child: Text("no_match_text", style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+            ),)
                 .tr(namedArgs: {"searchText": searchText}),
           ),
         ],
