@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
@@ -193,8 +196,27 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     });
   }
 
+  Future<void> checkIOSPermissions(QRViewController controller) async {
+    var status = await Permission.camera.request();
+
+    if (status.isPermanentlyDenied) {
+      openAppSettings();
+    } else if (status.isDenied) {
+      Navigator.pop(context);
+    } else {
+      // TODO Test on a real device....
+    }
+  }
+
   void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+    setState(() {
+      this.controller = controller;
+    });
+
+    if (Platform.isIOS) {
+      checkIOSPermissions(controller);
+    }
+
     controller.scannedDataStream.listen((scanData) async {
       String result = "";
 
@@ -310,11 +332,41 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       appBar: AppBar(
         title: const Text("qr_code_scan_screen_title").tr(),
       ),
-      body: Center(
-        child: QRView(
-          key: qrKey,
-          onQRViewCreated: _onQRViewCreated,
-        ),
+      body: Stack(
+        children: [
+          Center(
+              child: QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+          )),
+          Positioned(
+              child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // if(controller?.hasPermissions)
+                      // TODO Test on real device
+                      controller?.toggleFlash();
+                    });
+                  },
+                  icon: const Icon(Icons.flashlight_on_rounded)),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // if(controller?.hasPermissions)
+                      // TODO Test on real device
+                      // controller?.toggleFlash();
+
+                      // go to the gallery and scan one !
+                    });
+                  },
+                  icon: const Icon(Icons.image_rounded)),
+            ],
+          ))
+        ],
       ),
     );
   }
