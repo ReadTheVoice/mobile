@@ -114,12 +114,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
     PermissionStatus result;
     result = await Permission.storage.request();
 
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    final androidInfo = await deviceInfoPlugin.androidInfo;
+    if(Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      final androidInfo = await deviceInfoPlugin.androidInfo;
 
-    // On Android 13 (API 33) and above
-    if (Platform.isAndroid && androidInfo.version.sdkInt >= 33) {
-      result = await Permission.manageExternalStorage.request();
+      // On Android 13 (API 33) and above
+      if (androidInfo.version.sdkInt >= 33) {
+        result = await Permission.manageExternalStorage.request();
+      }
     }
 
     return result.isGranted;
@@ -145,6 +147,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               padding: const EdgeInsets.all(10),
               child: PrettyQrView.data(
                 data: '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
+                errorCorrectLevel: QrErrorCorrectLevel.H,
                 decoration: PrettyQrDecoration(
                   shape: PrettyQrSmoothSymbol(
                       color: Theme.of(context).colorScheme.onPrimaryContainer),
@@ -168,7 +171,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   // shareQrCode
                   await shareQrCode(
                       "widget.meetingModelName",
-                      '${QR_CODE_DATA_PREFIX}meetingModelId',
+                      '$QR_CODE_DATA_PREFIX${widget.meetingModelId}',
                       Theme.of(context).colorScheme.onPrimaryContainer, () {
                     showUnsuccessfulToast(context, "an_error_occurred",
                         iconData: FontAwesomeIcons.triangleExclamation);

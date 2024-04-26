@@ -60,6 +60,8 @@ dependencies:
   connectivity_plus: ^6.0.2
   giffy_dialog: ^2.1.0
   pretty_qr_code: ^3.3.0
+  image_picker: ^1.1.0
+  mobile_scanner: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -135,12 +137,16 @@ flutter:
 
 # Splash screen settings
 flutter_native_splash:
-  color: "#D6E3FF"
+  color: "#295EA7"
   color_dark: "#003063"
-
   android_12:
-    color: "#D6E3FF"
-    color_dark: #003063"
-
+    color: "#295EA7"
+    color_dark: "#003063"
   web: false
+  # Platform specific images can be specified with the following parameters, which will override
+  # the respective parameter.  You may specify all, selected, or none of these parameters:
+  color_ios: "#295EA7"
+  color_dark_ios: "#003063"
+  image_ios: assets/logos/logo_new.png
+  image_dark_ios: assets/logos/logo_new.png
 

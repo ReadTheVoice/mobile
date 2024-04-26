@@ -1,9 +1,7 @@
 {
-  "Language": "English",
-  "AppName": "ReadTheVoice",
-  "HomeScreen": "Home",
-  "QrCodeScan": "Qr Code",
+  "language": "English",
   "app_name": "Read The Voice",
+
   "home_screen_title": "Home",
   "qr_code_scan_screen_title": "Qr Code Scanning",
   "favorite_meetings_screen_title": "Favorite meetings",
@@ -67,5 +65,10 @@
 
   "no_home_list_title": "You have yet to scan any QR code.",
   "no_favorite_list_title": "You do not have any favorite meetings yet.",
-  "no_archived_list_title": "There are no meetings that have been archived yet."
+  "no_archived_list_title": "There are no meetings that have been archived yet.",
+
+  "no_match_text": "No matches for '{searchText}'",
+
+  "bad_qr_code_title": "QR code scan from image",
+  "bad_qr_code_text": "Either the QR code was not readable or a mistake was made when selecting the image. Try scanning the QR code again."
 }

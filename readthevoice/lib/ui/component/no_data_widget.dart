@@ -65,3 +65,34 @@ class NoDataWidget extends StatelessWidget {
     );
   }
 }
+
+class NoMatchingMeeting extends StatelessWidget {
+  final String searchText;
+
+  const NoMatchingMeeting({super.key, required this.searchText});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            "assets/images/svg/search.svg",
+            width: 200,
+            height: 200,
+            fit: BoxFit.contain,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: Text("no_match_text", style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+            ),)
+                .tr(namedArgs: {"searchText": searchText}),
+          ),
+        ],
+      ),
+    );
+  }
+}
