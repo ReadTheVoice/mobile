@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late List<String>? meetingIds = null;
   String searchText = "";
+  TextEditingController searchController = TextEditingController();
 
   Future<void> initList() async {
     await refreshMeetingList();
@@ -46,6 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.newMeetingId != null) {
       meetingIds?.add(widget.newMeetingId!);
@@ -60,11 +67,25 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             SearchBar(
+              controller: searchController,
+              trailing: [
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () {
+                    if (searchController.value.text.isNotEmpty) {
+                      searchController.clear();
+                      setState(() {
+                        initList();
+                      });
+                    }
+                  },
+                )
+              ],
               backgroundColor: (isDarkMode)
                   ? const MaterialStatePropertyAll(Color(0x55bdbdbd))
                   : const MaterialStatePropertyAll(Color(0xFFD6E3FF)),
               overlayColor: const MaterialStatePropertyAll(Color(0xFF295EA7)),
-              hintText: "test",
+              hintText: "search...",
               hintStyle: (isDarkMode)
                   ? const MaterialStatePropertyAll(
                       TextStyle(color: Colors.white60))
