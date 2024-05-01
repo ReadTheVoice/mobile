@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
+import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/utils/utils.dart';
 
@@ -20,18 +21,8 @@ class CustomSearchDelegate extends SearchDelegate {
 
   Future<void> initList() async {
     var meetings = await meetingService.getAllMeetings();
-
-    var mtIds = [
-      "ACb3Yoa7mipNPp9w7DWV",
-      "DKImtUhslZ58xNDBwy3l",
-      "EmQ5jKfbG9un9QVsrodK",
-      "OgMdJEdcMAuf5wtGS7sK"
-    ];
-
-    // if (meetings.isNotEmpty) {
-    if (mtIds.isNotEmpty) {
-      // var meetingIds = meetings.map((e) => e.id).toList();
-      var meetingIds = mtIds.toList();
+    if (meetings.isNotEmpty) {
+      var meetingIds = meetings.map((e) => e.id).toList();
       var models = await firebaseService.meetingCollectionReference
           .where(FieldPath.documentId, whereIn: meetingIds)
           .orderBy("createdAt", descending: true)
@@ -95,36 +86,29 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return displayResults(context);
+    return displayResults(context, isSuggestion: true);
   }
 
-  Widget displayResults(BuildContext context) {
+  Widget displayResults(BuildContext context, {bool isSuggestion = false}) {
     List<MeetingModel> finalResults = results
         .where((element) =>
-            element.name.contains(query) ||
+            element.name.toLowerCase().contains(query.toLowerCase()) ||
             (element.description != null &&
-                element.description!.contains(query)))
+                element.description!
+                    .toLowerCase()
+                    .contains(query.toLowerCase())))
         .toList();
 
     return (results.isEmpty)
         ? const NoDataWidget(
             currentScreen: AvailableScreens.customSearchDelegate)
-        : ((query.isNotEmpty)
+        : ((!isSuggestion && query.isEmpty)
             ? NoMatchingMeeting(searchText: query)
             : ListView.builder(
                 itemCount: finalResults.length,
                 itemBuilder: (context, index) {
                   var result = finalResults[index];
-                  return ListTile(
-                    title: Text(
-                      result.name,
-                    ),
-                    subtitle: Text(
-                      result.description ?? "",
-                      maxLines: 2,
-                    ),
-                    textColor: Theme.of(context).colorScheme.onBackground,
-                  );
+                  return MeetingCard(meetingModel: result, isFavoriteList: true,);
                 },
               ));
   }
