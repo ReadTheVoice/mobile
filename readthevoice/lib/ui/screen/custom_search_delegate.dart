@@ -86,10 +86,10 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return displayResults(context, isSuggestion: true);
+    return displayResults(context);
   }
 
-  Widget displayResults(BuildContext context, {bool isSuggestion = false}) {
+  Widget displayResults(BuildContext context) {
     List<MeetingModel> finalResults = results
         .where((element) =>
             element.name.toLowerCase().contains(query.toLowerCase()) ||
@@ -102,13 +102,16 @@ class CustomSearchDelegate extends SearchDelegate {
     return (results.isEmpty)
         ? const NoDataWidget(
             currentScreen: AvailableScreens.customSearchDelegate)
-        : ((!isSuggestion && query.isEmpty)
+        : ((finalResults.isEmpty)
             ? NoMatchingMeeting(searchText: query)
             : ListView.builder(
                 itemCount: finalResults.length,
                 itemBuilder: (context, index) {
                   var result = finalResults[index];
-                  return MeetingCard(meetingModel: result, isFavoriteList: true,);
+                  return MeetingCard(
+                    meetingModel: result,
+                    isFavoriteList: true,
+                  );
                 },
               ));
   }
