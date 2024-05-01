@@ -233,6 +233,7 @@ class _MeetingCardState extends State<MeetingCard> {
                                   : Icons.favorite_border_rounded,
                               color: Theme.of(context).colorScheme.onSurface,
                             )),
+                        if (widget.deleteFunction != null)
                         IconButton(
                             onPressed: _showConfirmationDialog,
                             icon: Icon(

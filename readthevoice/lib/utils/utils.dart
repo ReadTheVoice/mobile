@@ -15,7 +15,8 @@ enum AvailableScreens {
   meeting,
   transcriptionStream,
   noData,
-  noInternetConnection
+  noInternetConnection,
+  customSearchDelegate
 }
 
 extension DateTimeStringConversion on int {
