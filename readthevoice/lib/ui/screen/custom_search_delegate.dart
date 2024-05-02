@@ -17,7 +17,7 @@ class CustomSearchDelegate extends SearchDelegate {
     initList();
   }
 
-  List<MeetingModel> results = List.empty();
+  List<MeetingModel> results = List.empty(growable: true);
 
   Future<void> initList() async {
     var meetings = await meetingService.getAllMeetings();
