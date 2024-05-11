@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ThemeProvider>(context, listen: false).initTheme();
+    Provider.of<ThemeProvider>(context, listen: false).initTheme(context);
     _connectivity.initialize();
     _connectivity.myStream.listen((source) {
       setState(() => _source = source);
@@ -75,8 +75,8 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: Provider.of<ThemeProvider>(context).themeData,
+      // themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      // home: const MasterScreen(),
       home: screen,
     );
   }

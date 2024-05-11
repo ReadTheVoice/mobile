@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:readthevoice/theme/theme.dart';
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:readthevoice/theme/theme.dart';
 
 class ThemeProvider with ChangeNotifier {
   File fileData = File('');
@@ -22,16 +23,17 @@ class ThemeProvider with ChangeNotifier {
     return file;
   }
 
-  Future<void> initTheme() async {
+  Future<void> initTheme(BuildContext context) async {
     fileData = await initFile();
 
     if (await fileData.exists()) {
       Map<String, dynamic> data = json.decode(await fileData.readAsString());
       String theme = data['theme'];
 
-      themeData = theme == 'lightMode' ? lightMode : darkMode;
+      themeData = theme == Brightness.light.toString() ? lightMode : darkMode;
     } else {
-      Map<String, dynamic> donnees = {'theme': 'lightMode'};
+      var baseBrightness = MediaQuery.of(context).platformBrightness;
+      Map<String, dynamic> donnees = {'theme': baseBrightness.toString()};
       await fileData.writeAsString(json.encode(donnees));
     }
   }
@@ -41,15 +43,17 @@ class ThemeProvider with ChangeNotifier {
 
     if (await fileData.exists()) {
       Map<String, dynamic> donnees = {
-        'theme': index == 0 ? 'lightMode' : 'darkMode',
+        'theme': index == 0
+            ? Brightness.light.toString()
+            : Brightness.dark.toString(),
       };
+
       await fileData.writeAsString(json.encode(donnees));
     }
   }
 
   void toggleTheme(int index) async {
     saveSettings(index);
-
     themeData = index == 0 ? lightMode : darkMode;
   }
 }

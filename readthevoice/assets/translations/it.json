@@ -82,5 +82,14 @@
     "bad_qr_code_text": "O il codice QR non era leggibile o si è commesso un errore nella selezione dell'immagine. Prova a scannerizzare nuovamente il codice QR.",
 
     "error_screen_title": "Si è verificato un errore",
-    "loading": "Caricamento in corso..."
+    "loading": "Caricamento in corso...",
+
+    "theme": "Tema",
+    "manage_your_data": "Gestisci i tuoi dati",
+    "clear_all_your_data": "Cancella tutti gli incontri",
+
+    "permanent_deletion_confirmation_toast": "Eliminazione in corso...",
+    "permanent_deletion_confirmation_title": "Eliminazione permanente",
+    "permanent_confirmation_message_text": "Tutti gli incontri verranno eliminati! Sei sicuro di voler eseguire questa azione?",
+    "permanent_confirmation_message_text_hint": "L'azione richiederà del tempo. Per favore, attendi!"
 }
