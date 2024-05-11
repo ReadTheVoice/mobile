@@ -6,6 +6,8 @@ import 'package:readthevoice/firebase_options.dart';
 import 'package:readthevoice/ui/helper/connectivity_check_helper.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/no_internet_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:readthevoice/theme/theme_provider.dart';
 
 import 'ui/color_scheme/color_schemes_material.dart';
 
@@ -20,7 +22,10 @@ void main() async {
       supportedLocales: const [Locale('en'), Locale('fr'), Locale('it')],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      child: const MyApp(),
+      child: ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -33,10 +38,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // const MyApp({super.key});
-
-  static const String appFontFamily = "Madimi One";
-
   Map _source = {ConnectivityResult.none: false};
   final ConnectivityCheckHelper _connectivity =
       ConnectivityCheckHelper.instance;
@@ -44,6 +45,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ThemeProvider>(context, listen: false).initTheme(context);
     _connectivity.initialize();
     _connectivity.myStream.listen((source) {
       setState(() => _source = source);
@@ -72,18 +74,8 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: lightColorScheme,
-        fontFamily: appFontFamily,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: darkColorScheme,
-        fontFamily: appFontFamily,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: Provider.of<ThemeProvider>(context).themeData,
+      // themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: screen,
     );

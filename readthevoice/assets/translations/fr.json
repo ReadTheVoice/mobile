@@ -82,5 +82,14 @@
     "bad_qr_code_text": "Soit le code QR n'était pas lisible, soit une erreur a été commise lors de la sélection de l'image. Essayez de scanner à nouveau le code QR.",
 
     "error_screen_title": "Une erreur est survenue",
-    "loading": "Chargement en cours..."
+    "loading": "Chargement en cours...",
+
+    "theme": "Thème",
+    "manage_your_data": "Gérez vos données",
+    "clear_all_your_data": "Effacer toutes les réunions",
+
+    "permanent_deletion_confirmation_toast": "Suppression en cours...",
+    "permanent_deletion_confirmation_title": "Suppression permanente",
+    "permanent_confirmation_message_text": "Toutes les réunions seront supprimées ! Êtes-vous sûr de vouloir effectuer cette action ?",
+    "permanent_confirmation_message_text_hint": "L'action prendra un certain temps. Veuillez patienter !"
 }

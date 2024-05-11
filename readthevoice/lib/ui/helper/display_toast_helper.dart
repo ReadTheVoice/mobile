@@ -11,7 +11,6 @@ void showSuccessfulToast(BuildContext context, String title, {IconData? iconData
     autoCloseDuration: Duration(seconds: duration ?? 3),
     title: Text(title).tr(),
     icon: Icon(iconData ?? Icons.check_rounded),
-    // icon: FaIcon(iconData ?? FontAwesomeIcons.circleCheck),
     primaryColor: Colors.green,
   );
 }
@@ -25,7 +24,19 @@ void showUnsuccessfulToast(BuildContext context, String title, {IconData? iconDa
     autoCloseDuration: Duration(seconds: duration ?? 3),
     title: Text(title).tr(),
     icon: Icon(iconData ?? Icons.close_rounded),
-    // icon: FaIcon(iconData ?? FontAwesomeIcons.xmark),
     primaryColor: Colors.red,
+  );
+}
+
+void showToast(BuildContext context, String title, ToastificationType toastType, Color color, IconData iconData, {int? duration}) {
+  toastification.show(
+    context: context,
+    alignment: Alignment.bottomCenter,
+    type: toastType,
+    style: ToastificationStyle.minimal,
+    autoCloseDuration: Duration(seconds: duration ?? 3),
+    title: Text(title).tr(),
+    icon: Icon(iconData),
+    primaryColor: color,
   );
 }

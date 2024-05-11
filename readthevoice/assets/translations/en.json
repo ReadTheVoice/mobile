@@ -60,6 +60,7 @@
   "archived_button_tooltip": "This meeting has been archived",
   "favorite_button_tooltip": "This meeting is one of your favorites",
   "close_details_view": "Close the details view",
+
   "no_internet_connection_title": "No internet connection",
   "no_internet_connection_text": "Sorry! You need an active internet connection for the app to run smoothly! Please check your internet connection!",
 
@@ -73,5 +74,14 @@
   "bad_qr_code_text": "Either the QR code was not readable or a mistake was made when selecting the image. Try scanning the QR code again.",
 
   "error_screen_title": "An error occurred",
-  "loading": "Loading..."
+  "loading": "Loading...",
+
+  "theme": "Theme",
+  "manage_your_data": "Manage your data",
+  "clear_all_your_data": "Clear all meetings",
+
+  "permanent_deletion_confirmation_toast": "Ongoing deletion...",
+  "permanent_deletion_confirmation_title": "Permanent Deletion",
+  "permanent_confirmation_message_text": "All the meetings will be deleted! Are you sure you want to perform this action ?",
+  "permanent_confirmation_message_text_hint": "The action will take some time. Please bear with us!"
 }

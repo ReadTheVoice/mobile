@@ -25,3 +25,5 @@ class LoadingScreen extends StatelessWidget {
     return Center(child: const Text("loading").tr());
   }
 }
+
+
