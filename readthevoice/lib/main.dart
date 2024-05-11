@@ -45,6 +45,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ThemeProvider>(context, listen: false).initTheme();
     _connectivity.initialize();
     _connectivity.myStream.listen((source) {
       setState(() => _source = source);
