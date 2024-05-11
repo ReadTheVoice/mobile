@@ -14,7 +14,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_compoents.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
@@ -351,12 +351,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasError) {
               return ErrorScreen(
-                text: "Something went wrong\n${snapshot.error}",
+                text: "${snapshot.error}",
               );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const LoadingScreen();
             }
 
             if (!snapshot.hasData ||

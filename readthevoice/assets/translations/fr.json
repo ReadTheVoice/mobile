@@ -79,5 +79,8 @@
     "no_match_text": "Aucune correspondance pour '{searchText}'",
 
     "bad_qr_code_title": "Scan de code QR à partir d'une image",
-    "bad_qr_code_text": "Soit le code QR n'était pas lisible, soit une erreur a été commise lors de la sélection de l'image. Essayez de scanner à nouveau le code QR."
+    "bad_qr_code_text": "Soit le code QR n'était pas lisible, soit une erreur a été commise lors de la sélection de l'image. Essayez de scanner à nouveau le code QR.",
+
+    "error_screen_title": "Une erreur est survenue",
+    "loading": "Chargement en cours..."
 }

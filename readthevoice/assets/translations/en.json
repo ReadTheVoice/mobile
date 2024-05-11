@@ -71,5 +71,8 @@
   "no_match_text": "No matches for '{searchText}'",
 
   "bad_qr_code_title": "QR code scan from image",
-  "bad_qr_code_text": "Either the QR code was not readable or a mistake was made when selecting the image. Try scanning the QR code again."
+  "bad_qr_code_text": "Either the QR code was not readable or a mistake was made when selecting the image. Try scanning the QR code again.",
+
+  "error_screen_title": "An error occurred",
+  "loading": "Loading..."
 }

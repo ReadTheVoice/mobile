@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_compoents.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
@@ -41,8 +42,6 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
         body: Padding(
             padding: const EdgeInsets.all(10),
@@ -60,13 +59,13 @@ class _FavoriteMeetingsScreenState extends State<FavoriteMeetingsScreen> {
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
                               return ErrorScreen(
-                                text: "Something went wrong\n${snapshot.error}",
+                                text: "${snapshot.error}",
                               );
                             }
 
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return const Text("Loading");
+                              return const LoadingScreen();
                             }
 
                             return (snapshot.data != null)
