@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
       dark: darkMode,
       initial: widget.savedThemeMode ?? AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
-        title: tr("app_name"),
+        title: "ReadTheVoice",
         theme: theme,
         darkTheme: darkTheme,
         localizationsDelegates: context.localizationDelegates,
