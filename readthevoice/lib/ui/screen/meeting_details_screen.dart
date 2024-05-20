@@ -20,7 +20,6 @@ class MeetingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool autoDeletion = meetingModel.deletionDate != null;
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
         child: Material(

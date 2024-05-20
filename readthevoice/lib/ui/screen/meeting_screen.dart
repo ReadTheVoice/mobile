@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,7 +15,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
@@ -114,7 +115,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     PermissionStatus result;
     result = await Permission.storage.request();
 
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final androidInfo = await deviceInfoPlugin.androidInfo;
 
@@ -351,12 +352,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasError) {
               return ErrorScreen(
-                text: "Something went wrong\n${snapshot.error}",
+                text: "${snapshot.error}",
               );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const LoadingScreen();
             }
 
             if (!snapshot.hasData ||
@@ -478,8 +479,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       }
 
                                       if (snapshot.hasError) {
-                                        print("SNAPSHOT ERROR");
-                                        print(snapshot.error);
+                                        if (kDebugMode) {
+                                          print("SNAPSHOT ERROR");
+                                          print(snapshot.error);
+                                        }
                                       }
 
                                       return Center(

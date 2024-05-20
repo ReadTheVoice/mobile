@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
@@ -56,8 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       widget.newMeetingId = null;
     }
 
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -82,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const Center(child: Text("Loading"));
+                            return const LoadingScreen();
                           }
 
                           return (snapshot.data != null)
@@ -101,10 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             meetingModel: model,
                                             leftIcon: const Icon(
                                                 Icons.archive_outlined),
-                                            rightIcon: const Icon(
-                                                Icons.delete_forever),
                                             leftColor: Colors.green,
-                                            rightColor: Colors.red,
                                             leftFunction: (String meetingId,
                                                 bool archived) {
                                               if (!archived) {

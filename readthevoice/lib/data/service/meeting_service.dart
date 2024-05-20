@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:readthevoice/data/constants.dart';
 import 'package:readthevoice/data/db/rtv_database.dart';
 import 'package:readthevoice/data/model/meeting.dart';
@@ -43,7 +41,8 @@ class MeetingService {
     return await meetingDao.findFavoriteMeetings() ?? List.empty();
   }
 
-  Future<void> setArchiveMeetingById(String meetingId, bool archiveMeeting) async {
+  Future<void> setArchiveMeetingById(
+      String meetingId, bool archiveMeeting) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -52,7 +51,8 @@ class MeetingService {
     await meetingDao.setArchiveMeetingById(meetingId, archiveMeeting);
   }
 
-  Future<void> setFavoriteMeetingById(String meetingId, bool favoriteMeeting) async {
+  Future<void> setFavoriteMeetingById(
+      String meetingId, bool favoriteMeeting) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
@@ -91,7 +91,6 @@ class MeetingService {
 
     final meetingDao = database.meetingDao;
     final res = await meetingDao.deleteSingleMeeting(meeting);
-    print("RESULT => $res");
     return res >= 1;
   }
 
@@ -114,14 +113,22 @@ class MeetingService {
     await meetingDao.updateMeeting(meeting);
   }
 
-  Future<void> updateMeetingTranscription(String meetingId, String? transcription) async {
+  Future<void> updateMeetingTranscription(
+      String meetingId, String? transcription) async {
     final database = await $FloorAppDatabase
         .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
         .build();
 
     final meetingDao = database.meetingDao;
-    if(transcription != null && transcription.isNotEmpty) {
+    if (transcription != null && transcription.isNotEmpty) {
       await meetingDao.updateTranscriptionMeetingById(meetingId, transcription);
     }
+  }
+
+  Future<void> clearAllData() async {
+    final database = await $FloorAppDatabase
+        .databaseBuilder('$READ_THE_VOICE_DATABASE_NAME.db')
+        .build();
+    await database.database.database.delete(MEETING_TABLE_NAME);
   }
 }

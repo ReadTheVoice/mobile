@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/component/streamed_meeting_card.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
@@ -43,8 +43,6 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
         appBar: AppBar(
           title: const Text("archived_meetings_screen_title").tr(),
@@ -79,13 +77,13 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                               AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
                               return ErrorScreen(
-                                text: "Something went wrong\n${snapshot.error}",
+                                text: "${snapshot.error}",
                               );
                             }
 
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return const Text("Loading");
+                              return const LoadingScreen();
                             }
 
                             return (snapshot.data != null)
@@ -107,10 +105,7 @@ class _ArchivedMeetingsScreenState extends State<ArchivedMeetingsScreen> {
                                               unarchiving: true,
                                               leftIcon: const Icon(
                                                   Icons.unarchive_outlined),
-                                              rightIcon: const Icon(
-                                                  Icons.delete_forever),
                                               leftColor: Colors.green,
-                                              rightColor: Colors.red,
                                               leftFunction: (String meetingId,
                                                   bool archived) {
                                                 if (archived) {

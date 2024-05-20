@@ -17,7 +17,7 @@ class CustomSearchDelegate extends SearchDelegate {
     initList();
   }
 
-  List<MeetingModel> results = List.empty();
+  List<MeetingModel> results = List.empty(growable: true);
 
   Future<void> initList() async {
     var meetings = await meetingService.getAllMeetings();
@@ -42,7 +42,6 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   PreferredSizeWidget? buildBottom(BuildContext context) {
-    // Think about building a row with chips to select
     return PreferredSize(
         preferredSize: const Size(5, 5),
         child: Divider(

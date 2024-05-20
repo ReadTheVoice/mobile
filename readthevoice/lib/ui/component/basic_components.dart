@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AppProgressIndicator extends StatelessWidget {
@@ -15,3 +16,14 @@ class AppProgressIndicator extends StatelessWidget {
     );
   }
 }
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: const Text("loading").tr());
+  }
+}
+
+
