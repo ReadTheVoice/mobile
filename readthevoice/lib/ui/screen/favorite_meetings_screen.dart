@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/ui/component/basic_compoents.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_card_component.dart';
 import 'package:readthevoice/ui/component/no_data_widget.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';

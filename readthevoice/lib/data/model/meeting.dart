@@ -3,7 +3,6 @@ import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/constants.dart';
 
-// flutter packages pub run build_runner build
 // dart run build_runner build
 enum MeetingStatus {
   created,

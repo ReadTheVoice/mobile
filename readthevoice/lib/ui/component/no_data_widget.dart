@@ -48,7 +48,6 @@ class NoDataWidget extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   assetPath,
-                  // colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
                   width: width,
                   height: height,
                   fit: BoxFit.contain,
@@ -95,10 +94,12 @@ class NoMatchingMeeting extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Text("no_match_text", style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),)
-                      .tr(namedArgs: {"searchText": searchText}),
+                  child: Text(
+                    "no_match_text",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ).tr(namedArgs: {"searchText": searchText}),
                 ),
               ],
             ),

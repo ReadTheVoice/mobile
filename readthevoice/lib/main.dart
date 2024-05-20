@@ -1,15 +1,13 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/firebase_options.dart';
+import 'package:readthevoice/theme/theme.dart';
 import 'package:readthevoice/ui/helper/connectivity_check_helper.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/no_internet_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:readthevoice/theme/theme_provider.dart';
-
-import 'ui/color_scheme/color_schemes_material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,21 +15,23 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('fr'), Locale('it')],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      child: ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
-        child: const MyApp(),
+      child: MyApp(savedThemeMode: savedThemeMode),
       ),
-    ),
+
   );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final AdaptiveThemeMode? savedThemeMode;
+
+  const MyApp({super.key, required this.savedThemeMode});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -45,7 +45,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ThemeProvider>(context, listen: false).initTheme(context);
     _connectivity.initialize();
     _connectivity.myStream.listen((source) {
       setState(() => _source = source);
@@ -60,7 +59,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Widget screen = const MasterScreen();
 
     switch (_source.keys.toList()[0]) {
@@ -70,14 +68,20 @@ class _MyAppState extends State<MyApp> {
         break;
     }
 
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      theme: Provider.of<ThemeProvider>(context).themeData,
-      // themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      home: screen,
+    return AdaptiveTheme(
+      light: lightMode,
+      dark: darkMode,
+      initial: widget.savedThemeMode ?? AdaptiveThemeMode.system,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: tr("app_name"),
+        theme: theme,
+        darkTheme: darkTheme,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        debugShowCheckedModeBanner: false,
+        home: screen,
+      ),
     );
   }
 }

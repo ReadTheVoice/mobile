@@ -34,11 +34,6 @@ class _MasterScreenState extends State<MasterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("app_name").tr(),
-        // title: screenTitle,
-        // leading: IconButton(
-        //   icon: const FaIcon(FontAwesomeIcons.barsStaggered),
-        //   onPressed: () => Scaffold.of(context).openDrawer(),
-        // ),
         actions: [
           IconButton(
             onPressed: () {

@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   easy_localization: ^3.0.3
   qr_code_scanner: ^1.0.1
-  provider:
+#  provider:
   toggle_switch: ^2.3.0
 
   # Utility packages
@@ -46,7 +46,7 @@ dependencies:
   firebase_database: ^10.4.9
   flutter_svg: ^2.0.10+1
   font_awesome_flutter: ^10.7.0
-  lottie: ^3.1.0
+#  lottie: ^3.1.0
   stylish_bottom_bar: ^1.0.3
   sqflite: ^2.3.2
   floor: ^1.4.2
@@ -64,6 +64,7 @@ dependencies:
   pretty_qr_code: ^3.3.0
   image_picker: ^1.1.0
   mobile_scanner: 5.0.0
+  adaptive_theme: ^3.6.0
 
 dev_dependencies:
   flutter_test:
@@ -105,7 +106,6 @@ flutter:
     - assets/icons/
     - assets/icons/shapes/
     - assets/logos/
-    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
