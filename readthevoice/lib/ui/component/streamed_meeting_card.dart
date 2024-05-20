@@ -7,26 +7,18 @@ import 'package:readthevoice/ui/component/meeting_card_component.dart';
 
 class SteamedMeetingCard extends StatefulWidget {
   final Icon leftIcon;
-  final Icon rightIcon;
-
   final Color leftColor;
-  final Color rightColor;
-
   final Function leftFunction;
   final Function cardDeleteFunction;
 
   final bool? unarchiving;
   final bool? isFavoriteList;
-
-  // New attributes
   final MeetingModel meetingModel;
 
   const SteamedMeetingCard(
       {super.key,
       required this.leftIcon,
-      required this.rightIcon,
       required this.leftColor,
-      required this.rightColor,
       required this.leftFunction,
       required this.cardDeleteFunction,
       this.unarchiving,

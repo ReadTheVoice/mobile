@@ -42,7 +42,6 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   PreferredSizeWidget? buildBottom(BuildContext context) {
-    // Think about building a row with chips to select
     return PreferredSize(
         preferredSize: const Size(5, 5),
         child: Divider(

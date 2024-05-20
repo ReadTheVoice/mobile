@@ -1,9 +1,7 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
-import 'package:readthevoice/theme/theme.dart';
-import 'package:readthevoice/theme/theme_provider.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:toastification/toastification.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -17,6 +15,21 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   MeetingService meetingService = const MeetingService();
+
+  late AdaptiveThemeMode savedThemeMode = AdaptiveThemeMode.system;
+
+  Future<void> setupDefaultThemeMode() async {
+    savedThemeMode =
+        (await AdaptiveTheme.getThemeMode()) ?? AdaptiveThemeMode.system;
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupDefaultThemeMode();
+  }
 
   void _showConfirmationDialog() {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -110,19 +123,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     Theme.of(context).colorScheme.onBackground))
                         .tr(),
                     ToggleSwitch(
-                      initialLabelIndex:
-                          Provider.of<ThemeProvider>(context, listen: false)
-                                      .themeData ==
-                                  lightMode
-                              ? 0
-                              : 1,
-                      totalSwitches: 2,
-                      icons: const [Icons.sunny, Icons.bedtime],
+                      initialLabelIndex: savedThemeMode.isLight
+                          ? 0
+                          : (savedThemeMode.isDark ? 1 : 2),
+                      totalSwitches: 3,
+                      icons: [
+                        savedThemeMode.isLight
+                            ? Icons.brightness_high_rounded
+                            : Icons.brightness_low_rounded,
+                        savedThemeMode.isDark
+                            ? Icons.brightness_4_rounded
+                            : Icons.brightness_4_outlined,
+                        savedThemeMode.isSystem
+                            ? Icons.brightness_auto_rounded
+                            : Icons.brightness_auto_outlined
+                      ],
                       activeFgColor: Colors.white,
-                      inactiveFgColor: Colors.white,
+                      inactiveFgColor: Colors.grey.shade200,
                       onToggle: (index) {
-                        Provider.of<ThemeProvider>(context, listen: false)
-                            .toggleTheme(index!);
+                        if (index != null) {
+                          switch (index) {
+                            case 0:
+                              AdaptiveTheme.of(context).setLight();
+                              break;
+                            case 1:
+                              AdaptiveTheme.of(context).setDark();
+                              break;
+                            case 2:
+                            default:
+                              AdaptiveTheme.of(context).setSystem();
+                              break;
+                          }
+                        }
+
+                        setupDefaultThemeMode();
                       },
                     )
                   ],

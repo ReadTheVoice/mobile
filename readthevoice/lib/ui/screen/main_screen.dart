@@ -104,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                 .then((value) {
               if (value != null && value is String) {
                 setState(() {
-                  this.newMeetingId = value;
+                  newMeetingId = value;
                 });
               }
             });
