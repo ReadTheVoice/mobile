@@ -116,11 +116,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text("theme",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color:
-                                    Theme.of(context).colorScheme.onBackground))
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color:
+                            Theme.of(context).colorScheme.onBackground))
                         .tr(),
                     ToggleSwitch(
                       initialLabelIndex: savedThemeMode.isLight
@@ -172,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       "manage_your_data",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 15,
                           color: Theme.of(context).colorScheme.onBackground),
                       textAlign: TextAlign.left,
                     ).tr(),
@@ -183,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         'clear_all_your_data',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 15,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ).tr(),

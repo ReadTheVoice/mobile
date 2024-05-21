@@ -61,42 +61,49 @@ class _AboutScreenState extends State<AboutScreen> {
                 },
                 itemBuilder: (index, selectedIndex) {
                   final teamMember = teamMembers[index];
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: selectedIndex == index ? 150 : 100,
-                        child: Image.asset(
-                          teamMember.image,
-                          filterQuality: FilterQuality.high,
-                          frameBuilder: (BuildContext context, Widget child,
-                              int? frame, bool? wasSynchronouslyLoaded) {
-                            return !teamMember.clipImage
-                                ? child
-                                : Container(
-                                    height: 150,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: child);
-                          },
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: selectedIndex == index ? 100 : 60,
+                          child: Image.asset(
+                            teamMember.image,
+                            filterQuality: FilterQuality.high,
+                            frameBuilder: (BuildContext context, Widget child,
+                                int? frame, bool? wasSynchronouslyLoaded) {
+                              return !teamMember.clipImage
+                                  ? child
+                                  : Container(
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: child);
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        teamMember.name,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: selectedIndex == index ? 25 : 20),
-                      ),
-                      Text(
-                        teamMember.description,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: selectedIndex == index ? 15 : 10),
-                      ),
-                    ],
+                        const SizedBox(height: 15),
+                        Text(
+                          teamMember.name,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: selectedIndex == index ? 25 : 20),
+                        ),
+                        Expanded(
+                            child: Text(
+                          teamMember.description,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: selectedIndex == index ? 15 : 10),
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        )),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -195,8 +202,8 @@ class _AboutScreenState extends State<AboutScreen> {
     MoreLinksItem(
         name: "Github (code)", link: "https://github.com/ReadTheVoice/mobile"),
     MoreLinksItem(
-        name: "ReadTheVoice Web", link: "https://readthevoice.web.app"),
-    MoreLinksItem(name: "Flutter", link: "https://flutter.dev"),
+        name: "ReadTheVoice Web", link: "https://readthevoice.web.app/"),
+    MoreLinksItem(name: "Flutter", link: "https://flutter.dev/"),
   ];
 }
 
