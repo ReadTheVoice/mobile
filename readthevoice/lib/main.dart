@@ -8,6 +8,7 @@ import 'package:readthevoice/theme/theme.dart';
 import 'package:readthevoice/ui/helper/connectivity_check_helper.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:readthevoice/ui/screen/no_internet_screen.dart';
+import 'package:readthevoice/ui/screen/onboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     Widget screen = const MasterScreen();
+    // Widget screen = const OnboardScreen();
 
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
