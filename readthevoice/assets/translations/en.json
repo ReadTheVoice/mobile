@@ -87,5 +87,10 @@
   "could_not_launch_link_text": "Could not launch",
   "play_dino_text": "Play with the dino",
   "play_dino_score_text": "Score",
+  "welcome_title": "Welcome to ReadTheVoice",
+  "welcome_text": "Welcome to ReadTheVoice",
+  "real_time_title": "Real-time transcription",
+  "real_time_text": "Real-time transcription",
+  "attending_meetings_title": "Meeting attendance made easy",
   "attending_meetings_text": "Meeting attendance made easy"
 }

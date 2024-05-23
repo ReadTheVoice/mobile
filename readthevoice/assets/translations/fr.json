@@ -87,5 +87,10 @@
   "could_not_launch_link_text": "Impossible de lancer",
   "play_dino_text": "Jouer avec le dino",
   "play_dino_score_text": "Score",
+  "welcome_title": "Bienvenue sur ReadTheVoice",
+  "welcome_text": "Bienvenue sur ReadTheVoice",
+  "real_time_title": "Transcription en temps réel",
+  "real_time_text": "Transcription en temps réel",
+  "attending_meetings_title": "Assister à des réunions en toute simplicité",
   "attending_meetings_text": "Assister à des réunions en toute simplicité"
 }

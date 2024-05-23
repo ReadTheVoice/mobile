@@ -104,6 +104,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - assets/images/onboarding/
     - assets/images/dino-game/
     - assets/images/dino-game/cactus/
     - assets/images/dino-game/dino/
