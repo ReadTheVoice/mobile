@@ -57,9 +57,6 @@ class _MyAppState extends State<MyApp> {
     if(!onboardingShown) {
       await prefs.setBool('onboardingShown', true);
     }
-    // setState(() {
-    //
-    // });
   }
 
   @override
@@ -85,9 +82,6 @@ class _MyAppState extends State<MyApp> {
     if(onboardingShown) {
       screen = const MasterScreen();
     }
-
-    // Widget screen = const MasterScreen();
-    // Widget screen = const OnboardScreen();
 
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
