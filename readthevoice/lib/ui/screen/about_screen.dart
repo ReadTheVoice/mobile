@@ -204,6 +204,7 @@ class _AboutScreenState extends State<AboutScreen> {
     MoreLinksItem(
         name: "ReadTheVoice Web", link: "https://readthevoice.web.app/"),
     MoreLinksItem(name: "Flutter", link: "https://flutter.dev/"),
+    MoreLinksItem(name: "Dino game", link: "https://www.thkp.co/blog/2020/10/19/building-the-chrome-dino-game-from-scratch-in-flutter"),
   ];
 }
 

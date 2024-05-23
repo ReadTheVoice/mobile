@@ -31,7 +31,9 @@ final List<OnBoard> demoData = [
 ];
 
 class OnboardScreen extends StatefulWidget {
-  const OnboardScreen({super.key});
+  final Function onboardingFinished;
+
+  const OnboardScreen({super.key, required this.onboardingFinished});
 
   @override
   State<OnboardScreen> createState() => _OnboardScreenState();
@@ -41,6 +43,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
   void _onIntroEnd(context) {
+    widget.onboardingFinished();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const MasterScreen()),
     );

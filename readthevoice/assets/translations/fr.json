@@ -9,7 +9,6 @@
   "about_screen_title": "À propos de ReadTheVoice",
   "home_bottom_bar": "Accueil",
   "favorite_bottom_bar": "Favoris",
-  "menu_bottom_bar": "Menu",
   "retry": "Réessayer",
   "cancel": "Annuler",
   "confirm": "Confirmer",
@@ -85,5 +84,8 @@
   "read_the_voice_team_s": "Ne peut pas vivre sans musique!",
   "read_the_voice_more_title": "Plus",
   "read_the_voice_more_link_text": "lien",
-  "could_not_launch_link_text": "Impossible de lancer"
+  "could_not_launch_link_text": "Impossible de lancer",
+  "play_dino_text": "Jouer avec le dino",
+  "play_dino_score_text": "Score",
+  "attending_meetings_text": "Assister à des réunions en toute simplicité"
 }

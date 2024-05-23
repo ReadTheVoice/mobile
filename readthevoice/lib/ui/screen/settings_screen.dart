@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
+import 'package:readthevoice/ui/screen/master_screen.dart';
 import 'package:toastification/toastification.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -88,6 +89,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ToastificationType.warning,
               Colors.deepOrangeAccent,
               Icons.front_loader);
+
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const MasterScreen()));
         });
       }
     });
