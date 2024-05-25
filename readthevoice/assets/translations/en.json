@@ -88,9 +88,11 @@
   "play_dino_text": "Play with the dino",
   "play_dino_score_text": "Score",
   "welcome_title": "Welcome to ReadTheVoice",
-  "welcome_text": "Welcome to ReadTheVoice",
   "real_time_title": "Real-time transcription",
-  "real_time_text": "Real-time transcription",
   "attending_meetings_title": "Meeting attendance made easy",
-  "attending_meetings_text": "Meeting attendance made easy"
+  "welcome_text": "Designed to be inclusive and accessible for individuals with hearing impairments and those who are distant from the speaker.",
+  "real_time_text": "Scan a meeting QR code and attend it through its live transcription.",
+  "attending_meetings_text": "ReadTheVoice offers a convenient and accessible method for following along with the orator and accessing transcripts after the meeting has ended.",
+  "get_started_button": "Get started",
+  "skip_button": "Skip"
 }

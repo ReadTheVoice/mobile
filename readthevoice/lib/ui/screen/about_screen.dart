@@ -14,6 +14,9 @@ class AboutScreen extends StatefulWidget {
 class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
+    final Color textColor = Theme.of(context).colorScheme.onBackground;
+    const double textFontSize = 16;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("about_screen_title").tr(),
@@ -26,9 +29,7 @@ class _AboutScreenState extends State<AboutScreen> {
             children: [
               Text(
                 "🪷 ${tr("read_the_voice_about_title")}",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fontSize: 20),
+                style: TextStyle(color: textColor, fontSize: 20),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(
@@ -36,8 +37,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               Text(
                 "read_the_voice_about",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground),
+                style: TextStyle(color: textColor, fontSize: textFontSize),
                 textAlign: TextAlign.justify,
               ).tr(),
               const SizedBox(
@@ -49,9 +49,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               Text(
                 "🪷 ${tr("read_the_voice_team_title")}",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fontSize: 20),
+                style: TextStyle(color: textColor, fontSize: 20),
                 textAlign: TextAlign.justify,
               ),
               ScaledList(
@@ -68,7 +66,8 @@ class _AboutScreenState extends State<AboutScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: selectedIndex == index ? 100 : 60,
+                          height: selectedIndex == index ? 150 : 100,
+                          // height: selectedIndex == index ? 100 : 60,
                           child: Image.asset(
                             teamMember.image,
                             filterQuality: FilterQuality.high,
@@ -92,16 +91,15 @@ class _AboutScreenState extends State<AboutScreen> {
                               color: Colors.white,
                               fontSize: selectedIndex == index ? 25 : 20),
                         ),
-                        Expanded(
-                            child: Text(
+                        Text(
                           teamMember.description,
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: selectedIndex == index ? 15 : 10),
+                              fontSize: selectedIndex == index ? 18 : 15),
                           textAlign: TextAlign.center,
-                          maxLines: 3,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                        )),
+                        )
                       ],
                     ),
                   );
@@ -116,9 +114,7 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               Text(
                 "🪷 ${tr("read_the_voice_more_title")}",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    fontSize: 20),
+                style: TextStyle(color: textColor, fontSize: 20),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(
@@ -126,46 +122,44 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               for (var item in acknowledgmentItems)
                 RichText(
-                    text: TextSpan(
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground),
-                        children: [
-                      WidgetSpan(
-                          child: Text(
-                        "⚈ ${item.name}",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground),
-                      )),
-                      const WidgetSpan(
-                          child: SizedBox(
-                        width: 5,
-                      )),
-                      WidgetSpan(
-                          child: GestureDetector(
-                        child: Text(
-                          "read_the_voice_more_link_text",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              decoration: TextDecoration.underline,
-                              decorationColor:
-                                  Theme.of(context).colorScheme.primary),
-                        ).tr(),
-                        onTap: () async {
-                          if (item.link.isNotEmpty) {
-                            if (!await launchUrl(Uri.parse(item.link))) {
-                              String errorMessage =
-                                  "${tr("could_not_launch_link_text")} ${item.link}";
+                    text:
+                        TextSpan(style: TextStyle(color: textColor), children: [
+                  WidgetSpan(
+                      child: Text(
+                    "⚈ ${item.name}",
+                    style: TextStyle(color: textColor, fontSize: textFontSize),
+                  )),
+                  const WidgetSpan(
+                      child: SizedBox(
+                    width: 5,
+                  )),
+                  WidgetSpan(
+                      child: GestureDetector(
+                    child: Text(
+                      "read_the_voice_more_link_text",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                          decorationColor:
+                              Theme.of(context).colorScheme.primary,
+                          fontSize: textFontSize),
+                    ).tr(),
+                    onTap: () async {
+                      if (item.link.isNotEmpty) {
+                        if (!await launchUrl(Uri.parse(item.link))) {
+                          String errorMessage =
+                              "${tr("could_not_launch_link_text")} ${item.link}";
 
-                              if (mounted) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        ErrorScreen(text: errorMessage)));
-                              }
-                            }
+                          if (mounted) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ErrorScreen(text: errorMessage)));
                           }
-                        },
-                      )),
-                    ])),
+                        }
+                      }
+                    },
+                  )),
+                ])),
               const SizedBox(
                 height: 10,
               ),
@@ -204,7 +198,10 @@ class _AboutScreenState extends State<AboutScreen> {
     MoreLinksItem(
         name: "ReadTheVoice Web", link: "https://readthevoice.web.app/"),
     MoreLinksItem(name: "Flutter", link: "https://flutter.dev/"),
-    MoreLinksItem(name: "Dino game", link: "https://www.thkp.co/blog/2020/10/19/building-the-chrome-dino-game-from-scratch-in-flutter"),
+    MoreLinksItem(
+        name: "Dino game",
+        link:
+            "https://www.thkp.co/blog/2020/10/19/building-the-chrome-dino-game-from-scratch-in-flutter"),
   ];
 }
 

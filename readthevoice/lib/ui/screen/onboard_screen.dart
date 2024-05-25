@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:readthevoice/ui/color_scheme/color_schemes_material.dart';
+import 'package:readthevoice/ui/component/on_board_page.dart';
 import 'package:readthevoice/ui/screen/master_screen.dart';
 
 class OnboardScreen extends StatefulWidget {
@@ -30,20 +32,22 @@ class _OnboardScreenState extends State<OnboardScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return OnBoardingSlider(
-      finishButtonText: 'Get started',
+      finishButtonText: tr('get_started_button'),
       onFinish: () => _onIntroEnd(context),
       finishButtonStyle: FinishButtonStyle(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: lightColorScheme.surface,
       ),
       skipTextButton: Text(
-        'Skip',
+        'skip_button',
         style: TextStyle(
           fontSize: 16,
           color: titleColor,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
         ),
+      ).tr(),
+      trailing: const SizedBox(
+        height: 10,
       ),
-      trailing: const Text(""),
       controllerColor: isDarkMode ? textColor : surfaceColor,
       totalPage: 3,
       headerBackgroundColor: backgroundColor,
@@ -64,112 +68,20 @@ class _OnboardScreenState extends State<OnboardScreen> {
         ),
       ],
       speed: 1.8,
-      pageBodies: [
-        Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(
-                height: 480,
-              ),
-              Text(
-                'welcome_title',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: titleColor,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'welcome_text',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-            ],
-          ),
+      pageBodies: const [
+        OnBoardPage(
+          pageTitle: "welcome_title",
+          pageText: "welcome_text",
         ),
-        Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(
-                height: 480,
-              ),
-              Text(
-                'real_time_title',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: titleColor,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'real_time_text',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-            ],
-          ),
+        OnBoardPage(
+          pageTitle: "real_time_title",
+          pageText: "real_time_text",
         ),
-        Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(
-                height: 480,
-              ),
-              Text(
-                'attending_meetings_title',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: titleColor,
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'attending_meetings_text',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ).tr(),
-            ],
-          ),
-        ),
+        OnBoardPage(
+          pageTitle: "attending_meetings_title",
+          pageText: "attending_meetings_text",
+          bottomMargin: 125,
+        )
       ],
     );
   }
