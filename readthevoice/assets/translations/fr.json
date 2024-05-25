@@ -9,7 +9,6 @@
   "about_screen_title": "À propos de ReadTheVoice",
   "home_bottom_bar": "Accueil",
   "favorite_bottom_bar": "Favoris",
-  "menu_bottom_bar": "Menu",
   "retry": "Réessayer",
   "cancel": "Annuler",
   "confirm": "Confirmer",
@@ -85,5 +84,15 @@
   "read_the_voice_team_s": "Ne peut pas vivre sans musique!",
   "read_the_voice_more_title": "Plus",
   "read_the_voice_more_link_text": "lien",
-  "could_not_launch_link_text": "Impossible de lancer"
+  "could_not_launch_link_text": "Impossible de lancer",
+  "play_dino_text": "Jouer avec le dino",
+  "play_dino_score_text": "Score",
+  "welcome_title": "Bienvenue sur ReadTheVoice",
+  "real_time_title": "Transcription en temps réel",
+  "attending_meetings_title": "Assister à des réunions en toute simplicité",
+  "welcome_text": "Conçue pour être inclusive et accessible aux personnes malentendantes ainsi qu'à celles qui sont éloignées de l'orateur(trice).",
+  "real_time_text": "Obtenez une transcription en direct d'une réunion en scannant son spécifique code QR.",
+  "attending_meetings_text": "ReadTheVoice offre une méthode pratique et accessible pour suivre l'orateur(trice) et accéder aux transcriptions une fois la réunion terminée.",
+  "get_started_button": "Commencer",
+  "skip_button": "Passer"
 }
