@@ -17,12 +17,15 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   MeetingService meetingService = const MeetingService();
 
+  late bool hasMeetings = true;
   late AdaptiveThemeMode savedThemeMode = AdaptiveThemeMode.system;
 
   Future<void> setupDefaultThemeMode() async {
     savedThemeMode =
         (await AdaptiveTheme.getThemeMode()) ?? AdaptiveThemeMode.system;
 
+    var meetings = await meetingService.getAllMeetings();
+    hasMeetings = meetings.isNotEmpty;
     setState(() {});
   }
 
@@ -99,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final ButtonStyle flatButtonStyle = TextButton.styleFrom(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: hasMeetings ? Theme.of(context).colorScheme.surface : Colors.grey,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -181,7 +184,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ).tr(),
                     TextButton(
                       style: flatButtonStyle,
-                      onPressed: _showConfirmationDialog,
+                      onPressed: hasMeetings ? _showConfirmationDialog : null,
                       child: Text(
                         'clear_all_your_data',
                         textAlign: TextAlign.center,
