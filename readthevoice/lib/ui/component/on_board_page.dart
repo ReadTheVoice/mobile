@@ -20,7 +20,6 @@ class OnBoardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).colorScheme.onBackground;
-    final marginTop = MediaQuery.of(context).size.height / 2 + 50;
 
     return Container(
       alignment: Alignment.center,
@@ -28,14 +27,14 @@ class OnBoardPage extends StatelessWidget {
       height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const Spacer(),
           SvgPicture.asset(
             imagePath,
             width: imageWidth,
           ),
+          const SizedBox(height: 30,),
           Text(
             pageTitle,
             textAlign: TextAlign.center,
@@ -45,26 +44,15 @@ class OnBoardPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ).tr(),
-          Padding(
-            padding: EdgeInsets.only(bottom: bottomMargin),
-            child: Text(
-              pageText,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 17.0,
-              ),
-            ).tr(),
-          ),
-          // Text(
-          //   pageText,
-          //   textAlign: TextAlign.center,
-          //   style: TextStyle(
-          //     color: textColor,
-          //     fontSize: 17.0,
-          //   ),
-          //   textScaler: TextScaler.linear(20),
-          // ).tr(),
+          Text(
+            pageText,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 17.0,
+            ),
+          ).tr(),
+          const Spacer(),
         ],
       ),
     );
