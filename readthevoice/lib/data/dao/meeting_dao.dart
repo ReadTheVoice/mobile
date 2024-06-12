@@ -26,8 +26,6 @@ abstract class MeetingDao {
   @Query('SELECT * FROM $MEETING_TABLE_NAME WHERE id = :id')
   Future<Meeting?> findMeetingById(String id);
 
-  // Stream<Meeting?> findMeetingById(String id);
-
   @Query('UPDATE $MEETING_TABLE_NAME SET archived = :archived WHERE id = :id')
   Future<void> setArchiveMeetingById(String id, bool archived);
 

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readthevoice/data/firebase_model/meeting_model.dart';
@@ -94,7 +95,9 @@ class _MeetingCardState extends State<MeetingCard> {
         bool isDeleted =
             await meetingService.deleteMeetingById(widget.meetingModel.id);
 
-        print("${"isDeleted => ".toUpperCase()}$isDeleted");
+        if (kDebugMode) {
+          print("${"isDeleted => ".toUpperCase()}$isDeleted");
+        }
 
         if (isDeleted) {
           if (widget.deleteFunction != null) {
@@ -233,12 +236,13 @@ class _MeetingCardState extends State<MeetingCard> {
                                   : Icons.favorite_border_rounded,
                               color: Theme.of(context).colorScheme.onSurface,
                             )),
-                        IconButton(
-                            onPressed: _showConfirmationDialog,
-                            icon: Icon(
-                              Icons.delete_outline_rounded,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ))
+                        if (widget.deleteFunction != null)
+                          IconButton(
+                              onPressed: _showConfirmationDialog,
+                              icon: Icon(
+                                Icons.delete_outline_rounded,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ))
                       ],
                     ),
                   ],

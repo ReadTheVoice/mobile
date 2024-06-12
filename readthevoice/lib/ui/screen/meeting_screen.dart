@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,7 +15,7 @@ import 'package:readthevoice/data/model/meeting.dart';
 import 'package:readthevoice/data/service/firebase_database_service.dart';
 import 'package:readthevoice/data/service/meeting_service.dart';
 import 'package:readthevoice/data/service/transcription_service.dart';
-import 'package:readthevoice/ui/component/app_progress_indicator_component.dart';
+import 'package:readthevoice/ui/component/basic_components.dart';
 import 'package:readthevoice/ui/component/meeting_basic_components.dart';
 import 'package:readthevoice/ui/helper/display_toast_helper.dart';
 import 'package:readthevoice/ui/screen/error_screen.dart';
@@ -114,7 +115,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     PermissionStatus result;
     result = await Permission.storage.request();
 
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final androidInfo = await deviceInfoPlugin.androidInfo;
 
@@ -160,13 +161,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
             actions: [
               FilledButton.icon(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
+                    backgroundColor: WidgetStateProperty.all(
                       Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
-                    minimumSize: MaterialStateProperty.all(
+                    minimumSize: WidgetStateProperty.all(
                         const Size(double.infinity, double.minPositive)),
-                    padding:
-                        MaterialStateProperty.all(const EdgeInsets.all(10))),
+                    padding: WidgetStateProperty.all(const EdgeInsets.all(10))),
                 onPressed: () async {
                   // shareQrCode
                   await shareQrCode(
@@ -351,12 +351,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasError) {
               return ErrorScreen(
-                text: "Something went wrong\n${snapshot.error}",
+                text: "${snapshot.error}",
               );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const LoadingScreen();
             }
 
             if (!snapshot.hasData ||
@@ -371,6 +371,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
             MeetingModel model =
                 MeetingModel.fromFirebase(snapshot.data!.id, data);
 
+            Color textColor = Theme.of(context).colorScheme.onBackground;
+
             return Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
@@ -379,16 +381,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
                       children: [
                         Text(
                           "show_details",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                              fontSize: 18),
+                          style: TextStyle(color: textColor, fontSize: 20),
                         ).tr(),
                         const Spacer(),
                         IconButton(
                           icon: FaIcon(FontAwesomeIcons.eye,
-                              size: 18,
-                              color:
-                                  Theme.of(context).colorScheme.onBackground),
+                              size: 18, color: textColor),
                           onPressed: () => {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => MeetingDetailsScreen(
@@ -402,10 +400,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         ),
                       ],
                     ),
-                    MeetingCardDivider(
-                        color: Theme.of(context).colorScheme.onBackground),
-                    MeetingCardDivider(
-                        color: Theme.of(context).colorScheme.onBackground),
+                    MeetingCardDivider(color: textColor),
+                    MeetingCardDivider(color: textColor),
                     const SizedBox(
                       height: 10,
                     ),
@@ -415,15 +411,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           ? ScrollableTextIndicator(
                               text: Text(
                                 "${currentMeeting?.transcription}",
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground),
+                                style: TextStyle(color: textColor, fontSize: 18),
                               ),
-                              indicatorBarColor:
-                                  Theme.of(context).colorScheme.onBackground,
-                              indicatorThumbColor:
-                                  Theme.of(context).colorScheme.onBackground,
+                              indicatorBarColor: textColor,
+                              indicatorThumbColor: textColor,
                             )
                           : SingleChildScrollView(
                               controller: _scrollController,
@@ -470,34 +461,27 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                           transcript.trim().isNotEmpty
                                               ? transcript
                                               : tr("empty_transcription"),
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground),
+                                          style: TextStyle(color: textColor, fontSize: 18),
                                         );
                                       }
 
                                       if (snapshot.hasError) {
-                                        print("SNAPSHOT ERROR");
-                                        print(snapshot.error);
+                                        if (kDebugMode) {
+                                          print("SNAPSHOT ERROR");
+                                          print(snapshot.error);
+                                        }
                                       }
 
                                       return Center(
                                         child: Text(
                                           "empty_transcription",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onBackground),
+                                          style: TextStyle(color: textColor, fontSize: 18),
                                         ).tr(),
                                       );
                                     } else if (snapshot.hasError) {
                                       return Text(
                                         "Error: \n${snapshot.error}",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onBackground),
+                                        style: TextStyle(color: textColor, fontSize: 18),
                                       );
                                     } else {
                                       return (widget.meetingModelTranscription
@@ -505,10 +489,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                               .isNotEmpty)
                                           ? Text(
                                               widget.meetingModelTranscription,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onBackground),
+                                              style:
+                                                  TextStyle(color: textColor, fontSize: 18),
                                             )
                                           : const AppProgressIndicator();
                                     }

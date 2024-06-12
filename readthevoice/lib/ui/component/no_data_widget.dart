@@ -17,6 +17,7 @@ class NoDataWidget extends StatelessWidget {
 
     switch (currentScreen) {
       case AvailableScreens.home:
+      case AvailableScreens.customSearchDelegate:
         text = "no_home_list_title";
         assetPath = "assets/images/svg/QR-code-scanning.svg";
         break;
@@ -36,30 +37,33 @@ class NoDataWidget extends StatelessWidget {
         break;
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              assetPath,
-              // colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
-              width: width,
-              height: height,
-              fit: BoxFit.contain,
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  assetPath,
+                  width: width,
+                  height: height,
+                  fit: BoxFit.contain,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onBackground),
+                  ).tr(),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground),
-              ).tr(),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -74,24 +78,33 @@ class NoMatchingMeeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            "assets/images/svg/search.svg",
-            width: 200,
-            height: 200,
-            fit: BoxFit.contain,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  "assets/images/svg/search.svg",
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Text(
+                    "no_match_text",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ).tr(namedArgs: {"searchText": searchText}),
+                ),
+              ],
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Text("no_match_text", style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
-            ),)
-                .tr(namedArgs: {"searchText": searchText}),
-          ),
-        ],
+        ),
       ),
     );
   }

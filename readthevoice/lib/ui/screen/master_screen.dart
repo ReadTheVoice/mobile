@@ -6,6 +6,8 @@ import 'package:readthevoice/ui/screen/archived_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/main_screen.dart';
 import 'package:readthevoice/ui/screen/settings_screen.dart';
 
+import 'custom_search_delegate.dart';
+
 class MasterScreen extends StatefulWidget {
   const MasterScreen({super.key});
 
@@ -32,11 +34,21 @@ class _MasterScreenState extends State<MasterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("app_name").tr(),
-        // title: screenTitle,
-        // leading: IconButton(
-        //   icon: const FaIcon(FontAwesomeIcons.barsStaggered),
-        //   onPressed: () => Scaffold.of(context).openDrawer(),
-        // ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              // method to show the search bar
+              showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate(
+                      Theme.of(context).colorScheme.onBackground));
+            },
+            icon: Icon(
+              Icons.search_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          )
+        ],
       ),
       drawer: Drawer(
         child: SafeArea(

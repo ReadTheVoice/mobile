@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,7 +38,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         try {
           await controller?.resumeCamera();
         } catch (error) {
-          print("Error resuming camera: $error");
+          if (kDebugMode) {
+            print("Error resuming camera: $error");
+          }
         }
       }
     });
@@ -352,19 +355,19 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           return AppDialogComponent(
             imagePath: "assets/gifs/moving-xmark.gif",
             title: Text('bad_qr_code_title',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: (!isDarkMode)
-                        ? Theme.of(context).colorScheme.onPrimaryContainer
-                        : null))
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (!isDarkMode)
+                            ? Theme.of(context).colorScheme.onPrimaryContainer
+                            : null))
                 .tr(),
             content: [
               Text('bad_qr_code_text',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: (!isDarkMode)
-                          ? Theme.of(context).colorScheme.onPrimaryContainer
-                          : null))
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: (!isDarkMode)
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : null))
                   .tr(),
             ],
             confirmButtonText: "OK",
@@ -380,7 +383,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
     final mobile_scanner.MobileScannerController controller =
         mobile_scanner.MobileScannerController(
-      formats: [mobile_scanner.BarcodeFormat.all, mobile_scanner.BarcodeFormat.qrCode],
+      formats: [
+        mobile_scanner.BarcodeFormat.all,
+        mobile_scanner.BarcodeFormat.qrCode
+      ],
     );
 
     if (pickedFile != null) {
@@ -438,7 +444,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                           controller?.toggleFlash();
                         });
                       },
-                      icon: const Icon(Icons.flashlight_on_rounded,
+                      icon: const Icon(
+                        Icons.flashlight_on_rounded,
                         color: Colors.white,
                       ),
                     ),

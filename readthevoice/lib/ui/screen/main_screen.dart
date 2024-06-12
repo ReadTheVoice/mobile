@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:readthevoice/ui/screen/favorite_meetings_screen.dart';
 import 'package:readthevoice/ui/screen/home_screen.dart';
 import 'package:readthevoice/ui/screen/qr_code_screen.dart';
-import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -105,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                 .then((value) {
               if (value != null && value is String) {
                 setState(() {
-                  this.newMeetingId = value;
+                  newMeetingId = value;
                 });
               }
             });
