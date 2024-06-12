@@ -66,8 +66,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: selectedIndex == index ? 150 : 100,
-                          // height: selectedIndex == index ? 100 : 60,
+                          height: selectedIndex == index ? 100 : 60,
                           child: Image.asset(
                             teamMember.image,
                             filterQuality: FilterQuality.high,
@@ -84,18 +83,17 @@ class _AboutScreenState extends State<AboutScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 15),
                         Text(
                           teamMember.name,
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: selectedIndex == index ? 25 : 20),
+                              fontSize: selectedIndex == index ? 20 : 15),
                         ),
                         Text(
                           teamMember.description,
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: selectedIndex == index ? 18 : 15),
+                              fontSize: selectedIndex == index ? 15 : 10),
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
